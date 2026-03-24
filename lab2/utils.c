@@ -17,8 +17,11 @@ int(util_get_MSB)(uint16_t val, uint8_t *msb) {
 }
 
 int (util_sys_inb)(int port, uint8_t *value) {
-  /* To be implemented by the students */
-  printf("%s is not yet implemented!\n", __func__);
-
-  return 1;
+  uint32_t temp;
+  int ret = sys_inb(port, &temp);
+  if(ret != 0){
+    return ret;
+  }
+  *value = uint8_t(temp & 0xFF) 
+  return 0;
 }
