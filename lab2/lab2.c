@@ -32,17 +32,22 @@ int main(int argc, char *argv[]) {
 }
 
 int(timer_test_read_config)(uint8_t timer, enum timer_status_field field) {
+  if (timer > 2) return 1;
+
   uint8_t st;
-  if (int ret = timer_get_conf(timer, &st)!= 0){return ret};
-  if(int ret_ = timer_display_conf(timer, st, field) != 0){return ret_};  
+  int ret = timer_get_conf(timer, &st);
+  if (ret != 0) return ret;
+
+  int ret2 = timer_display_conf(timer, st, field);
+  if (ret2 != 0) return ret2;
+
   return 0;
 }
 
 int(timer_test_time_base)(uint8_t timer, uint32_t freq) {
-  /* To be implemented by the students */
-  printf("%s is not yet implemented!\n", __func__);
+  if (timer > 2 || freq == 0 || freq > TIMER_FREQ) return 1;
 
-  return 1;
+  return timer_set_frequency(timer, freq);
 }
 
 int(timer_test_int)(uint8_t time) {
