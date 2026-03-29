@@ -1,9 +1,19 @@
 #include <lcom/lcf.h>
 #include <lcom/lab2.h>
+<<<<<<< HEAD
 
 #include <stdbool.h>
 #include <stdint.h>
 
+=======
+#include <lcom/utils.h>
+
+#include <stdbool.h>
+#include <stdint.h>
+#include "i8254.h"
+
+int util_sys_inb(int port, uint8_t *byte);
+>>>>>>> main
 
 int main(int argc, char *argv[]) {
   // sets the language of LCF messages (can be either EN-US or PT-PT)
@@ -19,8 +29,12 @@ int main(int argc, char *argv[]) {
 
   // handles control over to LCF
   // [LCF handles command line arguments and invokes the right function]
+<<<<<<< HEAD
   if (lcf_start(argc, argv))
     return 1;
+=======
+  if (lcf_start(argc, argv))return 1;
+>>>>>>> main
 
   // LCF clean up tasks
   // [must be the last statement before return]
@@ -30,9 +44,15 @@ int main(int argc, char *argv[]) {
 }
 
 int(timer_test_read_config)(uint8_t timer, enum timer_status_field field) {
+<<<<<<< HEAD
   /* To be implemented by the students */
   printf("%s is not yet implemented!\n", __func__);
 
+=======
+  uint8_t st;
+      timer_get_conf(timer, &st);
+      timer_display_conf(timer, st, field);  
+>>>>>>> main
   return 1;
 }
 
