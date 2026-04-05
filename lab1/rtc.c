@@ -1,6 +1,7 @@
 #include "rtc.h"
 #include <lcom/lcf.h>
 #include <minix/syslib.h>
+#include <minix/sysutil.h>
 
 #define TODO return -1
 
@@ -37,7 +38,7 @@ int rtc_read_date(rtc_date *date) {
   if (rtc_read_reg(RTC_REG_A, &reg_a) != 0) return 1;
 
   while (reg_a & RTC_UIP_MSK) {
-    tickdelay(micros_to_ticks(500));
+    tickdelay(micros_to_ticks(1000));
     if (rtc_read_reg(RTC_REG_A, &reg_a) != 0) return 1;
   } 
 
