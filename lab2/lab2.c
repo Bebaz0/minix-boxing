@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+extern uint32_t counter;
 
 int main(int argc, char *argv[]) {
   // sets the language of LCF messages (can be either EN-US or PT-PT)
@@ -30,22 +31,52 @@ int main(int argc, char *argv[]) {
 }
 
 int(timer_test_read_config)(uint8_t timer, enum timer_status_field field) {
-  /* To be implemented by the students */
-  printf("%s is not yet implemented!\n", __func__);
-
-  return 1;
+  uint8_t st;
+  if (timer_get_conf(timer, &st) != 0)
+    return 1;
+  return timer_display_conf(timer, st, field);
 }
 
 int(timer_test_time_base)(uint8_t timer, uint32_t freq) {
-  /* To be implemented by the students */
-  printf("%s is not yet implemented!\n", __func__);
-
-  return 1;
-}
+  if (freq < 19 || timer > 2) return 1;                 // se o timer não for válido ou a frequência menor que 19 aborta a missão
+  if (timer_set_frequency(timer, freq) != 0) return 1;  // muda a frequência
+  return 0;
+}  
 
 int(timer_test_int)(uint8_t time) {
-  /* To be implemented by the students */
-  printf("%s is not yet implemented!\n", __func__);
+  
+  int ipc_status, r;
+  uint8_t irq_set;
+  message msg;
 
-  return 1;
+  if(timer_subscribe_int(&irq_set) != 0) return 1;
+  
+  while(time > 0) { /* time  */
+     /* Get a request message. */
+     if ( (r = driver_receive(ANY, &msg, &ipc_status)) != 0 ) { 
+         printf("driver_receive failed with: %d", r);
+         continue;
+     }
+     if (is_ipc_notify(ipc_status)) { /* received notification */
+         switch (_ENDPOINT_P(msg.m_source)) {
+            case HARDWARE: /* hardware interrupt notification */                
+                if (msg.m_notify.interrupts & irq_set) { /* subscribed interrupt */
+                   timer_int_handler(); 
+                   //if (counter == (UINT32_MAX - (UINT32_MAX % 60)) ) { counter = 0; }  // "esvazia" o counter para evitar overflow e preserva a lógica do módulo para o lab
+                   if(counter%60==0){
+                      timer_print_elapsed_time();
+                      time--;
+                   }
+                }
+              break;
+            default:
+              break; // do nothing 
+         }
+     } else {
+         // do nothing
+     }
+  }
+
+  if (timer_unsubscribe_int() != 0) return 1;
+  return 0;
 }
