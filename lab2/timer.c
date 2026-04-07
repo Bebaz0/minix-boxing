@@ -5,14 +5,15 @@
 
 #include "i8254.h"
 
-int (timer_set_frequency)(uint8_t timer, uint32_t freq) {
+int timer_set_frequency(uint8_t timer, uint32_t freq) {
   if (timer > 2) return 1;
   if (freq == 0) return 1;
 
+  uint32_t div = TIMER_FREQ / freq;
+  if (div > 0xFFFF) return 1; //(16 bits)
+
   uint8_t st;
   if (timer_get_conf(timer, &st) != 0) return 1;
-
-  uint16_t div = TIMER_FREQ / freq;
 
   uint8_t control = (timer << 6) | TIMER_LSB_MSB | (st & 0x0F);
 
