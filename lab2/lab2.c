@@ -1,12 +1,9 @@
 #include <lcom/lcf.h>
 #include <lcom/lab2.h>
-#include <lcom/utils.h>
 
 #include <stdbool.h>
 #include <stdint.h>
-#include "i8254.h"
 
-int util_sys_inb(int port, uint8_t *byte);
 
 int main(int argc, char *argv[]) {
   // sets the language of LCF messages (can be either EN-US or PT-PT)
@@ -22,7 +19,8 @@ int main(int argc, char *argv[]) {
 
   // handles control over to LCF
   // [LCF handles command line arguments and invokes the right function]
-  if (lcf_start(argc, argv))return 1;
+  if (lcf_start(argc, argv))
+    return 1;
 
   // LCF clean up tasks
   // [must be the last statement before return]
@@ -32,27 +30,56 @@ int main(int argc, char *argv[]) {
 }
 
 int(timer_test_read_config)(uint8_t timer, enum timer_status_field field) {
-  if (timer > 2) return 1;
-
   uint8_t st;
-  int ret = timer_get_conf(timer, &st);
-  if (ret != 0) return ret;
 
-  int ret2 = timer_display_conf(timer, st, field);
-  if (ret2 != 0) return ret2;
+  if (timer_get_conf(timer, &st) != 0)
+    return 1;
 
-  return 0;
+  return timer_display_conf(timer, st, field);
 }
 
 int(timer_test_time_base)(uint8_t timer, uint32_t freq) {
-  if (timer > 2 || freq == 0 || freq > TIMER_FREQ) return 1;
-
-  return timer_set_frequency(timer, freq);
+    return timer_set_frequency(timer, freq);
 }
 
+extern int counter;
 int(timer_test_int)(uint8_t time) {
-  /* To be implemented by the students */
-  printf("%s is not yet implemented!\n", __func__);
+  uint8_t bit_no;
+  int ipc_status, r;
+  message msg;
 
-  return 1;
+  if (timer_subscribe_int(&bit_no) != 0)
+    return 1;
+
+  uint32_t irq_set = BIT(bit_no);
+  int elapsed_seconds = 0;
+
+  while (elapsed_seconds < time) {
+    if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
+      printf("driver_receive failed with: %d\n", r);
+      continue;
+    }
+
+    if (is_ipc_notify(ipc_status)) {
+      switch (_ENDPOINT_P(msg.m_source)) {
+        case HARDWARE:
+          if (msg.m_notify.interrupts & irq_set) {
+            timer_int_handler();
+
+            if (counter % 60 == 0) {
+              elapsed_seconds++;
+              timer_print_elapsed_time();
+            }
+          }
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  if (timer_unsubscribe_int() != 0)
+    return 1;
+
+  return 0;
 }

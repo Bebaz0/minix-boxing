@@ -5,32 +5,33 @@
 
 #include "i8254.h"
 
-int (timer_set_frequency)(uint8_t timer, uint32_t freq) {
-    if (freq == 0 || freq > TIMER_FREQ) return 1;
+int timer_set_frequency(uint8_t timer, uint32_t freq) {
+  if (timer > 2) return 1;
+  if (freq == 0) return 1;
 
-    uint8_t status;
-    if (timer_get_conf(timer, &status) != OK) return 1;
+  uint32_t div = TIMER_FREQ / freq;
+  if (div > 0xFFFF) return 1; //(16 bits)
 
-    uint8_t control_word = (timer << 6) | 0x30 | (status & 0x0F);
+  uint8_t st;
+  if (timer_get_conf(timer, &st) != 0) return 1;
 
-    if (sys_outb(TIMER_CTRL, control_word) != OK) return 1;
+  uint8_t control = (timer << 6) | TIMER_LSB_MSB | (st & 0x0F);
 
-    uint16_t divider = TIMER_FREQ / freq;
+  if (sys_outb(TIMER_CTRL, control) != 0) return 1;
 
-    uint8_t lsb, msb;
-    util_get_LSB(divider, &lsb);
-    util_get_MSB(divider, &msb);
+  uint8_t lsb, msb;
+  if (util_get_LSB(div, &lsb) != 0) return 1;
+  if (util_get_MSB(div, &msb) != 0) return 1;
 
-    uint8_t timer_port = TIMER_0 + timer;
-    if (sys_outb(timer_port, lsb) != OK) return 1;
-    if (sys_outb(timer_port, msb) != OK) return 1;
+  if (sys_outb(TIMER_0 + timer, lsb) != 0) return 1;
+  if (sys_outb(TIMER_0 + timer, msb) != 0) return 1;
 
-    return 0;
+  return 0;
 }
 
 static int hook_id = 0;
 int (timer_subscribe_int)(uint8_t *bit_no) {
-    if (bit_no == NULL) return 1;
+  if (bit_no == NULL) return 1;
 
   *bit_no = hook_id;
 
@@ -38,7 +39,6 @@ int (timer_subscribe_int)(uint8_t *bit_no) {
     return 1;
 
   return 0;
-
 }
 
 int (timer_unsubscribe_int)() {
@@ -46,7 +46,6 @@ int (timer_unsubscribe_int)() {
     return 1;
 
   return 0;
-
 }
 
 int counter = 0;
@@ -55,35 +54,58 @@ void (timer_int_handler)() {
 }
 
 int (timer_get_conf)(uint8_t timer, uint8_t *st) {
-  if (timer>2 || st==NULL)return 1;
+    if (st == NULL) return 1;
+    if (timer > 2) return 1;
 
-  uint8_t cmd = TIMER_RB_CMD | TIMER_RB_COUNT_ | TIMER_RB_SEL(timer);
+    uint8_t rb_cmd = BIT(7) | BIT(6) | BIT(5) | BIT(timer + 1);
 
-   if(sys_outb(TIMER_CTRL, cmd)!=0)return 1;
+    if (sys_outb(TIMER_CTRL, rb_cmd) != 0) return 1;
+    if (util_sys_inb(TIMER_0 + timer, st) != 0) return 1;
 
-  if(util_sys_inb(TIMER_0 + timer,st)!=0)return 1;
-
-  return 0;
+    return 0;
 }
 
-int (timer_display_conf)(uint8_t timer, uint8_t st,enum timer_status_field field) {
-  union timer_status_field_val valor;
+int (timer_display_conf)(uint8_t timer, uint8_t st,
+                        enum timer_status_field field) {
+  union timer_status_field_val val;
 
-  switch (field){
+  switch (field) {
+    case tsf_all:
+      val.byte = st;
+      break;
 
-    case tsf_all: valor.byte=st;
-    break;
+    case tsf_initial:
+      switch ((st >> 4) & 0x03) {
+        case 1:
+          val.in_mode = LSB_only;
+          break;
+        case 2:
+          val.in_mode = MSB_only;
+          break;
+        case 3:
+          val.in_mode = MSB_after_LSB;
+          break;
+        default:
+          val.in_mode = INVAL_val;
+          break;
+      }
+      break;
 
-    case tsf_initial: valor.in_mode=(st & (BIT(4)|BIT(5)))>>4;
-    break;
+    case tsf_mode:
+      val.count_mode = (st >> 1) & 0x07;
+      if (val.count_mode == 6)
+        val.count_mode = 2;
+      else if (val.count_mode == 7)
+        val.count_mode = 3;
+      break;
 
-    case tsf_mode: valor.count_mode=(st & (BIT(1)|BIT(2)|BIT(3)))>>1;
-    break;
+    case tsf_base:
+      val.bcd = st & 0x01;
+      break;
 
-    case tsf_base: valor.bcd=(st & BIT(0));
-    break;
-  default:
-    return 1;
+    default:
+      return 1;
   }
-  return timer_print_config(timer,field,valor);
+
+  return timer_print_config(timer, field, val);
 }
