@@ -4,7 +4,9 @@
 #include <minix/sysutil.h>
 #include <lcom/lcf.h>
 #include "i8042.h"
-#include "KBC.h"
+#include "kbc.h"
+
+extern uint32_t counter_KBC;
 
 int (keyboard_subscribe_interrupts)(uint8_t *bit_no);
 
