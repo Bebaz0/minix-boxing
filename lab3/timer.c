@@ -5,17 +5,14 @@
 
 #include "i8254.h"
 
-int hook_id_TIMER = 0;
+int hook_id = 0;
 uint32_t counter_TIMER = 0;
 
 int (timer_set_frequency)(uint8_t timer, uint32_t freq) {
-
-  if (freq < 19 || freq > TIMER_FREQ) return 1;
+  if (freq > TIMER_FREQ || freq < 19) return 1;
 
   uint8_t controlWord;
-
-  if (timer_get_conf(timer, &controlWord) != 0)
-    return 1;
+  if (timer_get_conf(timer, &controlWord) != 0) return 1;
 
   controlWord = (controlWord & 0x0F) | TIMER_LSB_MSB; 
 
@@ -24,7 +21,7 @@ int (timer_set_frequency)(uint8_t timer, uint32_t freq) {
   util_get_MSB(initialValue, &MSB);
   util_get_LSB(initialValue, &LSB);
 
-  uint8_t selectedTimer;                                   
+  uint8_t selectedTimer;      
   switch (timer) {  
     case 0: 
       controlWord |= TIMER_SEL0;
@@ -38,23 +35,27 @@ int (timer_set_frequency)(uint8_t timer, uint32_t freq) {
       controlWord |= TIMER_SEL2;
       selectedTimer = TIMER_2;
       break;
+    default:
+      return 1;
   }
 
-  return sys_outb(TIMER_CTRL, controlWord) | sys_outb(selectedTimer, LSB) | sys_outb(selectedTimer, MSB);
+  if (sys_outb(TIMER_CTRL, controlWord) != 0) return 1;
+
+  if (sys_outb(selectedTimer, LSB) != 0) return 1;
+  if (sys_outb(selectedTimer, MSB) != 0) return 1;
+  return 0;
 }
 
-
 int (timer_subscribe_int)(uint8_t *bit_no) {
-  if(bit_no == NULL)
-    return 1;
-  
-  *bit_no = BIT(hook_id_TIMER);
-  
-  return sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE,&hook_id_TIMER);
+  if( bit_no == NULL) return 1; 
+  *bit_no = BIT(hook_id);
+  if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &hook_id) != 0) return 1;
+  return 0;
 }
 
 int (timer_unsubscribe_int)() {
-  return sys_irqrmpolicy(&hook_id_TIMER);
+  if (sys_irqrmpolicy(&hook_id) != 0) return 1; // turn off interrputs
+  return 0;
 }
 
 void (timer_int_handler)() {
@@ -62,48 +63,45 @@ void (timer_int_handler)() {
 }
 
 int (timer_get_conf)(uint8_t timer, uint8_t *st) {
+  if (st == NULL || timer > 2 || timer < 0) 
+    return 1;
 
-  if (st == NULL || timer > 2 || timer < 0) return 1;
+  uint8_t RBC = (TIMER_RB_CMD | TIMER_RB_COUNT_ | TIMER_RB_SEL(timer)); // RB command construction
+  if (sys_outb(TIMER_CTRL, RBC) != 0) 
+    return 1;
+  if (util_sys_inb(TIMER_0 + timer, st)) 
+    return 1;
 
-  uint8_t RBC = (TIMER_RB_CMD | TIMER_RB_COUNT_ | TIMER_RB_SEL(timer));
-  if(sys_outb(TIMER_CTRL, RBC))
-    return 1; 
-  return util_sys_inb(TIMER_0 + timer, st);
+  return 0;
 }
 
-int (timer_display_conf)(uint8_t timer, uint8_t st, enum timer_status_field field) {
+int (timer_display_conf)(uint8_t timer, uint8_t st,
+                          enum timer_status_field field) {
+  if (timer > 2)
+  return 1;
 
-  union timer_status_field_val data;
+  union timer_status_field_val val;
 
   switch (field) {
+    case tsf_all:
+      val.byte = st;
+      break;
 
-    case tsf_all: data.byte = st; break;
-    case tsf_initial:                                       
-      st = (st >> 4) & 0x03;
- 
-      if (st == 1) data.in_mode = LSB_only;
-      else if (st == 2) data.in_mode = MSB_only;
-      else if (st == 3) data.in_mode = MSB_after_LSB;
-      else data.in_mode = INVAL_val;
-      
+    case tsf_initial:
+      val.in_mode = (st >> 4) & 0x03;
       break;
 
     case tsf_mode:
-      st = (st >> 1) & 0x07;
-
-      if(st == 6) data.count_mode = 2;
-      else if(st == 7) data.count_mode = 3;
-      else data.count_mode = st;
-
+      val.count_mode = (st >> 1) & 0x07;
       break;
-    
+
     case tsf_base:
-      data.bcd = st & TIMER_BCD;
-      break;        
+      val.bcd = st & 0x01;
+      break;
 
     default:
-      return 1;
+    return 1;
   }
 
-  return timer_print_config(timer, field, data);
+  return timer_print_config(timer, field, val);
 }
