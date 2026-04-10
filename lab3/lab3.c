@@ -7,8 +7,8 @@
 #include "i8254.h"
 #include "i8042.h"
 #include "keyboard.h"
-#include "KBC.c"
-#include "timer.c"
+#include "kbc.h"
+#include "timer.h"
 
 extern uint32_t counter_KBC;
 extern uint32_t counter_TIMER;
@@ -47,7 +47,7 @@ int(kbd_test_scan)() {
 
     if(keyboard_subscribe_interrupts(&irq_set) != 0) return 1;
 
-    while(scancode != BREAK_ESC){ // a condição de paragem é obter um breakcode da tecla ESC
+    while(scancode != BREAK_ESC){ 
 
         if( driver_receive(ANY, &msg, &ipc_status) != 0 ){
             printf("Error");
@@ -58,7 +58,7 @@ int(kbd_test_scan)() {
             switch(_ENDPOINT_P(msg.m_source)){
                  case HARDWARE:
                     if (msg.m_notify.interrupts & irq_set) {
-                        kbc_ih(); // aumenta o contador interno
+                        kbc_ih(); 
                         kbd_print_scancode(!(scancode & MAKE_CODE), scancode == TWO_BYTES ? 2 : 1, &scancode);
                     }
             }
@@ -73,7 +73,7 @@ int(kbd_test_scan)() {
 
 int(kbd_test_poll)() {
   
-    while (scancode != BREAK_ESC) { // a condição de paragem é obter um breakcode da tecla ESC
+    while (scancode != BREAK_ESC) {
 
         if (read_KBC_output(KBC_OUT_CMD, &scancode, 0) == 0) {
             kbd_print_scancode(!(scancode & MAKE_CODE), scancode == TWO_BYTES ? 2 : 1, &scancode);
@@ -90,7 +90,7 @@ int(kbd_test_timed_scan)(uint8_t n) {
     uint8_t irq_set_TIMER, irq_set_KBC;
     message msg;
 
-    int seconds = 0;  // timer seconds
+    int seconds = 0; 
 
     if (timer_subscribe_int(&irq_set_TIMER) != 0) return 1;
     if (keyboard_subscribe_interrupts(&irq_set_KBC) != 0) return 1;
@@ -113,7 +113,6 @@ int(kbd_test_timed_scan)(uint8_t n) {
                     }
                     if (msg.m_notify.interrupts & irq_set_TIMER) {
                         timer_int_handler();
-                        //if (counter_TIMER == (UINT32_MAX - (UINT32_MAX % 60)) ) { counter_TIMER = 0; }  // "esvazia" o counter para evitar overflow e preserva a lógica do módulo para o lab
                         if (counter_TIMER % 60 == 0) seconds++;
                     }
             }
