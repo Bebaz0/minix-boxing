@@ -10,7 +10,7 @@
 #include "kbc.h"
 #include "timer.h"
 
-extern uint32_t counter_KBC;
+extern uint32_t counter_kbc;
 extern uint32_t counter_TIMER;
 extern uint8_t scancode;
 
@@ -66,7 +66,7 @@ int(kbd_test_scan)() {
     }
 
   if (keyboard_unsubscribe_interrupts() != 0) return 1;
-  if (kbd_print_no_sysinb(counter_KBC) != 0) return 1;
+  if (kbd_print_no_sysinb(counter_kbc) != 0) return 1;
 
   return 0;
 }
@@ -121,7 +121,7 @@ int(kbd_test_timed_scan)(uint8_t n) {
 
   if (timer_unsubscribe_int() != 0) return 1;
   if (keyboard_unsubscribe_interrupts() != 0) return 1;
-  if (kbd_print_no_sysinb(counter_KBC) != 0) return 1;
+  if (kbd_print_no_sysinb(counter_kbc) != 0) return 1;
 
   return 0;
 }
