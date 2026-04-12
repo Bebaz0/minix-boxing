@@ -2,6 +2,7 @@
 #define _TIMER_H_
 
 #include <stdint.h>
+
 #include "i8254.h"
 
 extern uint32_t counter_TIMER;
