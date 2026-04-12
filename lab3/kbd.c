@@ -1,17 +1,17 @@
-#include "keyboard.h"
+#include "kbd.h"
 
 uint8_t scancode = 0;
-int keyboard_hook_id = 1;
+int kbd_hook_id = 1;
 uint32_t counter_kbc = 0;
 
 int (keyboard_subscribe_interrupts)(uint8_t *bit_no) {
     if (bit_no == NULL) return 1;
-    *bit_no = BIT(keyboard_hook_id);
-    return sys_irqsetpolicy(IRQ_KEYBOARD, IRQ_REENABLE | IRQ_EXCLUSIVE, &keyboard_hook_id);
+    *bit_no = BIT(kbd_hook_id);
+    return sys_irqsetpolicy(IRQ_KEYBOARD, IRQ_REENABLE | IRQ_EXCLUSIVE, &kbd_hook_id);
 }
 
 int (keyboard_unsubscribe_interrupts)() {
-    return sys_irqrmpolicy(&keyboard_hook_id);
+    return sys_irqrmpolicy(&kbd_hook_id);
 }
 
 void (kbc_ih)() {
