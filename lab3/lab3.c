@@ -6,7 +6,7 @@
 
 #include "i8254.h"
 #include "i8042.h"
-#include "keyboard.h"
+#include "kbd.h"
 #include "kbc.h"
 #include "timer.h"
 
