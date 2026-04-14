@@ -3,10 +3,10 @@
 
 #include <lcom/lcf.h>
 
-/* Interrupt handler */
-void (kbc_ih)();
 
-/* Subscribe / Unsubscribe interrupts */
+void (kbc_ih)();
+int kbc_enable_int();
+
 int kbc_subscribe_int(uint8_t *bit_no);
 int kbc_unsubscribe_int();
 

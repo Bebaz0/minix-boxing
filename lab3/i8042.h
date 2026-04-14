@@ -23,4 +23,9 @@
 #define ESC_BREAK_CODE 0x81
 #define TWO_BYTE_CODE  0xE0
 
+#define KBC_READ_CMD   0x20
+#define KBC_WRITE_CMD  0x60
+
+#define KBC_INT BIT(0)
+
 #endif

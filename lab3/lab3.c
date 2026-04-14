@@ -8,6 +8,8 @@
 #include "i8042.h"
 #include "kbc.h"
 
+#define DELAY_US 20000
+
 
 int main(int argc, char *argv[]) {
   // sets the language of LCF messages (can be either EN-US or PT-PT)
@@ -108,10 +110,55 @@ int(kbd_test_scan)() {
 }
 
 int(kbd_test_poll)() {
-  /* To be completed by the students */
-  printf("%s is not yet implemented!\n", __func__);
+  uint8_t status, data;
+  uint8_t bytes[2];
+  uint8_t size = 0;
+  bool done = false;
 
-  return 1;
+  while (!done) {
+    if (util_sys_inb(KBC_ST_REG, &status) != 0)
+      return 1;
+
+    if (status & KBC_OBF) {
+      if (util_sys_inb(KBC_OUT_BUF, &data) != 0)
+        return 1;
+
+      if ((status & (KBC_PAR_ERR | KBC_TO_ERR)) == 0) {
+        if (data == TWO_BYTE_CODE) {
+          bytes[0] = data;
+          size = 2;
+        }
+        else {
+          if (size == 2) {
+            bytes[1] = data;
+            bool make = !(bytes[1] & BIT(7));
+            kbd_print_scancode(make, 2, bytes);
+
+            if (bytes[1] == ESC_BREAK_CODE)
+              done = true;
+
+            size = 0;
+          }
+          else {
+            bytes[0] = data;
+            bool make = !(bytes[0] & BIT(7));
+            kbd_print_scancode(make, 1, bytes);
+
+            if (bytes[0] == ESC_BREAK_CODE)
+              done = true;
+          }
+        }
+      }
+    }
+
+    tickdelay(micros_to_ticks(DELAY_US));
+  }
+
+  // reativar interrupções do teclado
+  if (kbc_enable_int() != 0)
+    return 1;
+
+  return 0;
 }
 
 int(kbd_test_timed_scan)(uint8_t n) {
