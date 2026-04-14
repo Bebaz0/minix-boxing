@@ -15,4 +15,8 @@ int (timer_get_conf)(uint8_t timer, uint8_t *st);
 int (timer_display_conf)(uint8_t timer, uint8_t conf, enum timer_status_field field);
 int (timer_set_frequency)(uint8_t timer, uint32_t freq);
 
+int (timer_get_counter)();
+void (timer_set_counter)(int value);
+
 #endif
+
