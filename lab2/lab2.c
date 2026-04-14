@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "timer.h"
+
 
 int main(int argc, char *argv[]) {
   // sets the language of LCF messages (can be either EN-US or PT-PT)
@@ -42,7 +44,6 @@ int(timer_test_time_base)(uint8_t timer, uint32_t freq) {
     return timer_set_frequency(timer, freq);
 }
 
-extern int counter;
 int(timer_test_int)(uint8_t time) {
   uint8_t bit_no;
   int ipc_status, r;
@@ -53,6 +54,8 @@ int(timer_test_int)(uint8_t time) {
 
   uint32_t irq_set = BIT(bit_no);
   int elapsed_seconds = 0;
+
+  timer_set_counter(0);
 
   while (elapsed_seconds < time) {
     if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
@@ -66,7 +69,7 @@ int(timer_test_int)(uint8_t time) {
           if (msg.m_notify.interrupts & irq_set) {
             timer_int_handler();
 
-            if (counter % 60 == 0) {
+            if (timer_get_counter() % 60 == 0) {
               elapsed_seconds++;
               timer_print_elapsed_time();
             }
