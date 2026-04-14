@@ -5,7 +5,7 @@
 
 #include "i8254.h"
 
-int timer_set_frequency(uint8_t timer, uint32_t freq) {
+int (timer_set_frequency)(uint8_t timer, uint32_t freq) {
   if (timer > 2) return 1;
   if (freq == 0) return 1;
 
