@@ -2,7 +2,6 @@
 
 uint8_t scancode = 0;
 int kbd_hook_id = 1;
-uint32_t counter_kbc = 0;
 
 int (keyboard_subscribe_interrupts)(uint8_t *bit_no) {
     if (bit_no == NULL) return 1;
@@ -16,7 +15,6 @@ int (keyboard_unsubscribe_interrupts)() {
 
 void (kbc_ih)() {
     if (read_KBC_output(KBC_OUT_CMD, &scancode, 0) != 0) printf("Error: Could not read scancode!\n");
-    counter_kbc++;
 }
 
 int (keyboard_restore)() {
