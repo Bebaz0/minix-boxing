@@ -21,6 +21,7 @@
 #define KBC_WRITE_CMD   0x60
 #define KBC_WRITE_TO_MOUSE 0xD4  
 #define MOUSE_ENABLE_DATA  0xF4  
+#define MOUSE_DISABLE_DATA 0xF5
 #define MOUSE_ACK          0xFA  
 #define MOUSE_BIT_CHECK    BIT(3)
 

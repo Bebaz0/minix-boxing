@@ -1,7 +1,11 @@
+#include <lcom/lcf.h>
 #include "mouse.h"
+#include "kbc.h"
+#include "i8042.h"
+#include "kbc.h"
 
-int mouse_hook_id = 12;
-uint8_t mouse_byte;
+int mouse_hook_id = 2;
+static uint8_t mouse_byte;
 
 int (mouse_subscribe_interrupts)(uint8_t *bit_no) {
     if (bit_no == NULL) return 1;
@@ -29,3 +33,35 @@ void (mouse_ih)() {
         printf("Erro ao ler byte do rato!\n");
     }
 }
+
+void (mouse_parse_packet)(uint8_t *packet_bytes, struct packet *p) {
+    for (int i = 0; i < 3; i++) {
+        p->bytes[i] = packet_bytes[i];
+    }
+
+    p->lb = (packet_bytes[0] & BIT(0)); 
+    p->rb = (packet_bytes[0] & BIT(1)); 
+    p->mb = (packet_bytes[0] & BIT(2)); 
+
+    p->x_ov = (packet_bytes[0] & BIT(6));
+    p->y_ov = (packet_bytes[0] & BIT(7));
+
+    if (packet_bytes[0] & BIT(4)) { 
+        
+        p->delta_x = 0xFF00 | packet_bytes[1];
+    } else {
+        p->delta_x = packet_bytes[1];
+    }
+
+    if (packet_bytes[0] & BIT(5)) {
+        
+        p->delta_y = 0xFF00 | packet_bytes[2];
+    } else {
+        p->delta_y = packet_bytes[2];
+    }
+}
+
+uint8_t get_mouse_byte() {
+    return mouse_byte;
+}
+

@@ -14,4 +14,9 @@ int (mouse_subscribe_interrupts)(uint8_t *bit_no);
 int (mouse_unsubscribe_interrupts)();
 
 void (mouse_ih)();
+
+void (mouse_parse_packet)(uint8_t *packet_bytes, struct packet *p);
+
+uint8_t get_mouse_byte();
 #endif
+
