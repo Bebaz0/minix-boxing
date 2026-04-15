@@ -21,22 +21,22 @@ int read_KBC_output(uint8_t port, uint8_t *output, uint8_t mouse) {
                 printf("Error: Could not read output!\n");
                 return 1;
             }
-            if((status & BIT(7)) != 0){                   
-                printf("Error: Parity error!\n");    
-                return 1;
+        if((status & BIT(7)) != 0){                   
+            printf("Error: Parity error!\n");    
+            return 1;
             }
-            if((status & BIT(6)) != 0){           
-                printf("Error: Timeout error!\n");      
-                return 1;
-            }
-            if (mouse && !(status & BIT(5))) {  
-                printf("Error: Mouse output not found\n"); 
-                return 1;
-            } 
-            if (!mouse && (status & BIT(5))) { 
-                printf("Error: Keyboard output not found\n");
-                return 1;
-            } 
+        if((status & BIT(6)) != 0){           
+            printf("Error: Timeout error!\n");      
+            return 1;
+        }
+        if (mouse && !(status & BIT(5))) {  
+            printf("Error: Mouse output not found\n"); 
+            return 1;
+        } 
+        if (!mouse && (status & BIT(5))) { 
+            printf("Error: Keyboard output not found\n");
+            return 1;
+        } 
             return 0;
         }
         tickdelay(micros_to_ticks(20000));
