@@ -5,7 +5,7 @@
 
 #include "i8254.h"
 
-int timer_set_frequency(uint8_t timer, uint32_t freq) {
+int (timer_set_frequency)(uint8_t timer, uint32_t freq) {
   if (timer > 2) return 1;
   if (freq == 0) return 1;
 
@@ -46,11 +46,6 @@ int (timer_unsubscribe_int)() {
     return 1;
 
   return 0;
-}
-
-int counter = 0;
-void (timer_int_handler)() {
-  counter++;
 }
 
 int (timer_get_conf)(uint8_t timer, uint8_t *st) {
@@ -108,4 +103,17 @@ int (timer_display_conf)(uint8_t timer, uint8_t st,
   }
 
   return timer_print_config(timer, field, val);
+}
+
+static int counter = 0;
+void (timer_int_handler)() {
+  counter++;
+}
+
+int (timer_get_counter)() {
+  return counter;
+}
+
+void (timer_set_counter)(int value) {
+  counter = value;
 }
