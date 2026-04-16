@@ -2,6 +2,7 @@
 #define _LCOM_I8042_H_
 
 #define IRQ_KEYBOARD    1
+#define IRQ_MOUSE       12
 
 #define BREAK_ESC       0x81
 #define MAKE_CODE       BIT(7)
@@ -18,6 +19,11 @@
 #define KBC_OUT_CMD     0x60
 #define KBC_READ_CMD    0x20
 #define KBC_WRITE_CMD   0x60
+#define KBC_WRITE_TO_MOUSE 0xD4  
+#define MOUSE_ENABLE_DATA  0xF4  
+#define MOUSE_DISABLE_DATA 0xF5
+#define MOUSE_ACK          0xFA  
+#define MOUSE_BIT_CHECK    BIT(3)
 
 #define WAIT_KBC        20000
 #define MAX_TRIES     10
