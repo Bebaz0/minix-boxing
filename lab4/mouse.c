@@ -4,7 +4,7 @@
 #include "i8042.h"
 #include "kbc.h"
 
-int mouse_hook_id = 2;
+static int mouse_hook_id = 2;
 static uint8_t mouse_byte;
 
 int (mouse_subscribe_interrupts)(uint8_t *bit_no) {
@@ -29,8 +29,14 @@ int (mouse_write_cmd)(uint8_t cmd) {
 }
 
 void (mouse_ih)() {
-    if (util_sys_inb(KBC_OUT_CMD, &mouse_byte) != 0) {
-        printf("Erro ao ler byte do rato!\n");
+    uint8_t status;
+    if (util_sys_inb(KBC_STATUS_REG, &status) != 0) return;
+
+    if (status & FULL_OUT_BUFFER) {
+
+        if (status & BIT(5)) { 
+            util_sys_inb(KBC_OUT_CMD, &mouse_byte);
+        }
     }
 }
 

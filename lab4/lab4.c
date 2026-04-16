@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "mouse.h"
+#include "timer.h"
 
 // Any header files included below this line should have been created by you
 
@@ -86,7 +87,60 @@ int (mouse_test_packet)(uint32_t cnt) {
 }
 
 int (mouse_test_async)(uint8_t idle_time) {
-    /* To be completed */
-    printf("%s(%u): under construction\n", __func__, idle_time);
-    return 1;
+  uint8_t m_bit, t_bit;
+  uint8_t packet_bytes[3];
+  int byte_index = 0;
+
+  if (mouse_subscribe_interrupts(&m_bit) != 0) return 1;
+  if (timer_subscribe_int(&t_bit) != 0) return 1;
+
+  if (mouse_write_cmd(MOUSE_ENABLE_DATA) != 0) return 1;
+
+  int ipc_status;
+  message msg;
+  int frequency = sys_hz();
+  timer_reset_counter();
+
+  while (timer_get_counter() < (idle_time * frequency)) {
+        
+      if (driver_receive(ANY, &msg, &ipc_status) != 0) continue;
+
+      if (is_ipc_notify(ipc_status)) {
+          switch (_ENDPOINT_P(msg.m_source)) {
+              case HARDWARE:
+                
+                  if (msg.m_notify.interrupts & t_bit) {
+                      timer_int_handler();
+                  }
+
+           
+                  if (msg.m_notify.interrupts & m_bit) {
+                      mouse_ih();
+                      uint8_t current_byte = get_mouse_byte();
+
+                      if (byte_index == 0 && !(current_byte & BIT(3))) continue;
+
+                      packet_bytes[byte_index] = current_byte;
+                      byte_index++;
+
+                        
+                      if (byte_index == 3) {
+                          struct packet p;
+                          mouse_parse_packet(packet_bytes, &p);
+                          mouse_print_packet(&p);
+                            
+                          byte_index = 0;
+                          timer_reset_counter(); 
+                      }
+                  }
+                  break;
+          }
+      }
+  }
+
+    mouse_write_cmd(MOUSE_DISABLE_DATA); 
+    mouse_unsubscribe_interrupts();
+    timer_unsubscribe_int();
+
+    return 0;
 }
