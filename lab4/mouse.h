@@ -17,4 +17,6 @@ int (mouse_write_cmd)(uint8_t cmd);
 
 uint8_t (mouse_get_byte)();
 
+void (mouse_parse_packet)(uint8_t *packet_bytes, struct packet *p);
+
 #endif
