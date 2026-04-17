@@ -13,6 +13,8 @@ int (mouse_unsubscribe_interrupts)();
 
 void (mouse_ih)();
 
-int (mouse_restore)();
+int (mouse_write_cmd)(uint8_t cmd);
+
+uint8_t (mouse_get_byte)();
 
 #endif
