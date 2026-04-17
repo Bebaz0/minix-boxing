@@ -26,3 +26,4 @@ int (util_sys_inb)(int port, uint8_t *value) {
     *value = (uint8_t) temp;
     return 0;
 }
+
