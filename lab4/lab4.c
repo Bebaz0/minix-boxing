@@ -99,7 +99,7 @@ int (mouse_test_async)(uint8_t idle_time) {
   int ipc_status;
   message msg;
   int frequency = sys_hz();
-  timer_reset_counter();
+  timer_set_counter(0);
 
   while (timer_get_counter() < (idle_time * frequency)) {
         
@@ -130,7 +130,7 @@ int (mouse_test_async)(uint8_t idle_time) {
                           mouse_print_packet(&p);
                             
                           byte_index = 0;
-                          timer_reset_counter(); 
+                          timer_set_counter(0); 
                       }
                   }
                   break;
