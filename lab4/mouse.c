@@ -70,4 +70,3 @@ void (mouse_parse_packet)(uint8_t *packet_bytes, struct packet *p) {
 uint8_t get_mouse_byte() {
     return mouse_byte;
 }
-
