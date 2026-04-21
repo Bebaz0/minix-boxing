@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "mouse.h"
-#include "timer.h"
+#include "../lab2/timer.h"
 
 // Any header files included below this line should have been created by you
 
@@ -99,7 +99,7 @@ int (mouse_test_async)(uint8_t idle_time) {
   int ipc_status;
   message msg;
   int frequency = sys_hz();
-  timer_reset_counter();
+
 
   while (timer_get_counter() < (idle_time * frequency)) {
         
@@ -130,7 +130,7 @@ int (mouse_test_async)(uint8_t idle_time) {
                           mouse_print_packet(&p);
                             
                           byte_index = 0;
-                          timer_reset_counter(); 
+
                       }
                   }
                   break;
