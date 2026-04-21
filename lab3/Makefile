@@ -1,16 +1,23 @@
 # name of the program (Minix service)
-PROG=lab3 
+PROG=lab3
 
 # source code files to be compiled
-SRCS = lab3.c kbc.c kbd.c timer.c utils.c
+SRCS = lab3.c
 
 # additional compilation flags
-# "-Wall -Wextra -Werror -I . -std=c11 -Wno-unused-parameter" are already set
-CFLAGS += -pedantic -DLAB3
+CFLAGS += -pedantic -DLAB3 -I../lab2
 
-# list of library dependencies (for Lab 2, only LCF library)
-DPADD += ${LIBLCF}
-LDADD += -llcf
+# list of library dependencies
+DPADD += ${LIB_NAME} ../lab2/libtimer.a ${LIBLCF}
+LDADD += -L. -lkbd -L../lab2 -ltimer -llcf
 
-# include LCOM's makefile that does all the "heavy lifting"
+LIB_NAME = libkbd.a
+LIB_SRCS = kbc.c utils.c
+LIB_OBJS = ${LIB_SRCS:.c=.o}
+CLEANFILES += ${LIB_NAME} ${LIB_OBJS}
+
+all: lib
+lib: ${LIB_OBJS}
+	ar rcs ${LIB_NAME} ${LIB_OBJS}
+
 .include <minix.lcom.mk>

@@ -5,81 +5,63 @@
 
 #include "i8254.h"
 
-int hook_id = 0;
-uint32_t counter = 0;
-
 int (timer_set_frequency)(uint8_t timer, uint32_t freq) {
-  if (freq > TIMER_FREQ || freq < 19) return 1;
+  if (timer > 2) return 1;
+  if (freq == 0) return 1;
 
-  uint8_t controlWord;
-  if (timer_get_conf(timer, &controlWord) != 0) return 1;
+  uint32_t div = TIMER_FREQ / freq;
+  if (div > 0xFFFF) return 1; //(16 bits)
 
-  controlWord = (controlWord & 0x0F) | TIMER_LSB_MSB; 
+  uint8_t st;
+  if (timer_get_conf(timer, &st) != 0) return 1;
 
-  uint32_t initialValue = TIMER_FREQ / freq;
-  uint8_t MSB, LSB;
-  util_get_MSB(initialValue, &MSB);
-  util_get_LSB(initialValue, &LSB);
+  uint8_t control = (timer << 6) | TIMER_LSB_MSB | (st & 0x0F);
 
-  uint8_t selectedTimer;      
-  switch (timer) {  
-    case 0: 
-      controlWord |= TIMER_SEL0;
-      selectedTimer = TIMER_0;
-      break;
-    case 1:
-      controlWord |= TIMER_SEL1;
-      selectedTimer = TIMER_1;
-      break;
-    case 2:
-      controlWord |= TIMER_SEL2;
-      selectedTimer = TIMER_2;
-      break;
-    default:
-      return 1;
-  }
+  if (sys_outb(TIMER_CTRL, control) != 0) return 1;
 
-  if (sys_outb(TIMER_CTRL, controlWord) != 0) return 1;
+  uint8_t lsb, msb;
+  if (util_get_LSB(div, &lsb) != 0) return 1;
+  if (util_get_MSB(div, &msb) != 0) return 1;
 
-  if (sys_outb(selectedTimer, LSB) != 0) return 1;
-  if (sys_outb(selectedTimer, MSB) != 0) return 1;
+  if (sys_outb(TIMER_0 + timer, lsb) != 0) return 1;
+  if (sys_outb(TIMER_0 + timer, msb) != 0) return 1;
+
   return 0;
 }
 
+static int hook_id = 0;
 int (timer_subscribe_int)(uint8_t *bit_no) {
-  if( bit_no == NULL) return 1; 
-  *bit_no = BIT(hook_id);
-  if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &hook_id) != 0) return 1;
+  if (bit_no == NULL) return 1;
+
+  *bit_no = hook_id;
+
+  if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &hook_id) != 0)
+    return 1;
+
   return 0;
 }
 
 int (timer_unsubscribe_int)() {
-  if (sys_irqrmpolicy(&hook_id) != 0) return 1; // turn off interrputs
-  return 0;
-}
+  if (sys_irqrmpolicy(&hook_id) != 0)
+    return 1;
 
-void (timer_int_handler)() {
-  counter++;
+  return 0;
 }
 
 int (timer_get_conf)(uint8_t timer, uint8_t *st) {
-  if (st == NULL || timer > 2 || timer < 0) 
-    return 1;
+    if (st == NULL) return 1;
+    if (timer > 2) return 1;
 
-  uint8_t RBC = (TIMER_RB_CMD | TIMER_RB_COUNT_ | TIMER_RB_SEL(timer)); // RB command construction
-  if (sys_outb(TIMER_CTRL, RBC) != 0) 
-    return 1;
-  if (util_sys_inb(TIMER_0 + timer, st)) 
-    return 1;
+    uint8_t rb_cmd = BIT(7) | BIT(6) | BIT(5) | BIT(timer + 1);
 
-  return 0;
+    if (sys_outb(TIMER_CTRL, rb_cmd) != 0) return 1;
+    if (util_sys_inb(TIMER_0 + timer, st) != 0) return 1;
+
+    return 0;
 }
 
 int (timer_display_conf)(uint8_t timer, uint8_t st,
-                          enum timer_status_field field) {
-  if (timer > 2)
-  return 1;
-
+                        enum timer_status_field field) {
   union timer_status_field_val val;
 
   switch (field) {
@@ -88,11 +70,28 @@ int (timer_display_conf)(uint8_t timer, uint8_t st,
       break;
 
     case tsf_initial:
-      val.in_mode = (st >> 4) & 0x03;
+      switch ((st >> 4) & 0x03) {
+        case 1:
+          val.in_mode = LSB_only;
+          break;
+        case 2:
+          val.in_mode = MSB_only;
+          break;
+        case 3:
+          val.in_mode = MSB_after_LSB;
+          break;
+        default:
+          val.in_mode = INVAL_val;
+          break;
+      }
       break;
 
     case tsf_mode:
       val.count_mode = (st >> 1) & 0x07;
+      if (val.count_mode == 6)
+        val.count_mode = 2;
+      else if (val.count_mode == 7)
+        val.count_mode = 3;
       break;
 
     case tsf_base:
@@ -100,8 +99,21 @@ int (timer_display_conf)(uint8_t timer, uint8_t st,
       break;
 
     default:
-    return 1;
+      return 1;
   }
 
   return timer_print_config(timer, field, val);
+}
+
+static int counter = 0;
+void (timer_int_handler)() {
+  counter++;
+}
+
+int (timer_get_counter)() {
+  return counter;
+}
+
+void (timer_set_counter)(int value) {
+  counter = value;
 }
