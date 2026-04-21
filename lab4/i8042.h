@@ -9,6 +9,7 @@
 #define TWO_BYTES       0xE0
 #define ENABLE_INT      BIT(0)
 
+
 #define TIMEOUT_ERROR   BIT(6)
 #define PARITY_ERROR    BIT(7)
 #define FULL_OUT_BUFFER BIT(0)

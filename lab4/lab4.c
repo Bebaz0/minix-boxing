@@ -39,9 +39,10 @@ int (mouse_test_packet)(uint32_t cnt) {
     uint8_t packet_bytes[3];
     int byte_index = 0;
 
+    if (mouse_enable_data_reporting() != 0) return 1; 
+
     if (mouse_subscribe_interrupts(&bit_no) != 0) return 1;
 
-    if (mouse_enable_data_reporting() != 0) return 1; 
 
     int ipc_status;
     message msg;
@@ -79,9 +80,9 @@ int (mouse_test_packet)(uint32_t cnt) {
             }
         }
     }
+    mouse_unsubscribe_interrupts();
 
     mouse_write_cmd(MOUSE_DISABLE_DATA);
-    mouse_unsubscribe_interrupts();
 
     return 0;
 }
@@ -91,10 +92,10 @@ int (mouse_test_async)(uint8_t idle_time) {
   uint8_t packet_bytes[3];
   int byte_index = 0;
 
+if (mouse_write_cmd(MOUSE_ENABLE_DATA) != 0) return 1;
   if (mouse_subscribe_interrupts(&m_bit) != 0) return 1;
   if (timer_subscribe_int(&t_bit) != 0) return 1;
 
-  if (mouse_write_cmd(MOUSE_ENABLE_DATA) != 0) return 1;
 
   int ipc_status;
   message msg;
@@ -138,9 +139,10 @@ int (mouse_test_async)(uint8_t idle_time) {
       }
   }
 
-    mouse_write_cmd(MOUSE_DISABLE_DATA); 
+
     mouse_unsubscribe_interrupts();
     timer_unsubscribe_int();
+    mouse_write_cmd(MOUSE_DISABLE_DATA); 
 
     return 0;
 }
