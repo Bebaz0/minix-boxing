@@ -64,3 +64,38 @@ void *(vg_init)(uint16_t mode) {
 
   return video_mem;
 }
+
+int(vg_draw_pixel)(uint16_t x, uint16_t y, uint32_t color) {
+  if (video_mem == NULL) {
+    return 1;
+  }
+
+  if (x >= vmi.XResolution || y >= vmi.YResolution) {
+    return 1;
+  }
+
+  unsigned int pixel_index = y * vmi.XResolution + x;
+  unsigned int pixel_offset = pixel_index * bytes_per_pixel;
+
+  memcpy(video_mem + pixel_offset, &color, bytes_per_pixel);
+
+  return 0;
+}
+
+int(vg_draw_hline)(uint16_t x, uint16_t y, uint16_t len, uint32_t color) {
+  if (y >= vmi.YResolution || x >= vmi.XResolution) {
+    return 1;
+  }
+
+  if ((uint32_t) x + len > vmi.XResolution) {
+    return 1;
+  }
+
+  for (uint16_t i = 0; i < len; i++) {
+    if (vg_draw_pixel(x + i, y, color) != 0) {
+      return 1;
+    }
+  }
+
+  return 0;
+}
