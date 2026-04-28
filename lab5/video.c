@@ -99,3 +99,28 @@ int(vg_draw_hline)(uint16_t x, uint16_t y, uint16_t len, uint32_t color) {
 
   return 0;
 }
+
+int(vg_draw_pixmap)(uint16_t x, uint16_t y, const xpm_image_t *img, const uint8_t *pixmap) {
+  if (img == NULL || pixmap == NULL || video_mem == NULL) {
+    return 1;
+  }
+
+  if (x >= vmi.XResolution || y >= vmi.YResolution) {
+    return 1;
+  }
+
+  if ((uint32_t) x + img->width > vmi.XResolution || (uint32_t) y + img->height > vmi.YResolution) {
+    return 1;
+  }
+
+  for (uint16_t row = 0; row < img->height; row++) {
+    for (uint16_t col = 0; col < img->width; col++) {
+      uint32_t color = pixmap[row * img->width + col];
+      if (vg_draw_pixel(x + col, y + row, color) != 0) {
+        return 1;
+      }
+    }
+  }
+
+  return 0;
+}

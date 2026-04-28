@@ -130,8 +130,72 @@ int(video_test_rectangle)(uint16_t mode, uint16_t x, uint16_t y,
 }
 
 int(video_test_xpm)(xpm_map_t xpm, uint16_t x, uint16_t y) {
-    /* To be completed */
-    printf("%s(%8p, %u, %u): under construction\n", __func__, xpm, x, y);
+    const uint16_t mode = 0x105;
+    if (vg_init(mode) == NULL) {
+        printf("%s: vg_init(0x%03X) failed\n", __func__, mode);
+        return 1;
+    }
 
-    return 1;
+    xpm_image_t img;
+    uint8_t *pixmap = xpm_load(xpm, XPM_INDEXED, &img);
+    if (pixmap == NULL) {
+        printf("%s: xpm_load() failed\n", __func__);
+        vg_exit();
+        return 1;
+    }
+
+    if (vg_draw_pixmap(x, y, &img, pixmap) != 0) {
+        printf("%s: vg_draw_pixmap() failed\n", __func__);
+        free(pixmap);
+        vg_exit();
+        return 1;
+    }
+
+    uint8_t bit_no = 1;
+    int hook_id = bit_no;
+    uint32_t irq_set = BIT(bit_no);
+
+    if (sys_irqsetpolicy(1, IRQ_REENABLE | IRQ_EXCLUSIVE, &hook_id) != 0) {
+        printf("%s: sys_irqsetpolicy() failed\n", __func__);
+        free(pixmap);
+        vg_exit();
+        return 1;
+    }
+
+    int ipc_status, r;
+    message msg;
+    bool done = false;
+
+    while (!done) {
+        if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
+            printf("driver_receive failed with: %d\n", r);
+            continue;
+        }
+
+        if (is_ipc_notify(ipc_status) && _ENDPOINT_P(msg.m_source) == HARDWARE) {
+            if (msg.m_notify.interrupts & irq_set) {
+                uint32_t status, data;
+                if (sys_inb(0x64, &status) == 0 && (status & BIT(0))) {
+                    if (sys_inb(0x60, &data) == 0 && (status & (BIT(7) | BIT(6))) == 0) {
+                        if (data == 0x81) {
+                            done = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (sys_irqrmpolicy(&hook_id) != 0) {
+        printf("%s: sys_irqrmpolicy() failed\n", __func__);
+    }
+
+    free(pixmap);
+
+    if (vg_exit() != 0) {
+        printf("%s: vg_exit() failed\n", __func__);
+        return 1;
+    }
+
+    return 0;
 }
