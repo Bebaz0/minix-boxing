@@ -20,4 +20,7 @@ all: lib
 lib: ${LIB_OBJS}
 	ar rcs ${LIB_NAME} ${LIB_OBJS}
 
+${TIMER_LIB}:
+	${MAKE} -C ../lab2 lib
+
 .include <minix.lcom.mk>
