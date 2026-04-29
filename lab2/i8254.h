@@ -54,7 +54,4 @@
 
 /**@}*/
 
-int (timer_get_counter)();
-void (timer_set_counter)(int value);
-
 #endif /* _LCOM_I8254_H */
