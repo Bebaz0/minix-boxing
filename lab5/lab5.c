@@ -6,8 +6,15 @@
 #include <unistd.h>
 #include <minix/syslib.h>
 #include <minix/sysutil.h>
+#include <stdbool.h>
+#include <string.h>
+#include "video.h"
+#include "kbc.h"
+#include "i8042.h"
 
 #include "video.h"
+
+extern uint8_t scancode;
 
 int main(int argc, char *argv[]) {
     // sets the language of LCF messages (can be either EN-US or PT-PT)
@@ -65,61 +72,78 @@ int(video_test_rectangle)(uint16_t mode, uint16_t x, uint16_t y,
         }
     }
 
-    uint8_t bit_no = 1;
-    int hook_id = bit_no;
-    uint32_t irq_set = BIT(bit_no);
+    uint8_t bit_no;
+    uint32_t irq_set;
+    int ipc_status, ret;
+    message msg;
 
-    if (sys_irqsetpolicy(1, IRQ_REENABLE | IRQ_EXCLUSIVE, &hook_id) != 0) {
-        printf("%s: sys_irqsetpolicy() failed\n", __func__);
+    scancode = 0;
+
+    if (kbc_subscribe_int(&bit_no) != 0) {
         vg_exit();
         return 1;
     }
 
-    int ipc_status, r;
-    message msg;
-    bool done = false;
+    irq_set = BIT(bit_no);
 
-    while (!done) {
-        if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
-            printf("driver_receive failed with: %d\n", r);
-            continue;
-        }
+    while (scancode != ESC_BREAK_CODE) {
+        if ((ret = driver_receive(ANY, &msg, &ipc_status)) != 0) continue;
 
-        if (is_ipc_notify(ipc_status) && _ENDPOINT_P(msg.m_source) == HARDWARE) {
-            if (msg.m_notify.interrupts & irq_set) {
-                uint32_t status, data;
-                if (sys_inb(0x64, &status) == 0 && (status & BIT(0))) {
-                    if (sys_inb(0x60, &data) == 0 && (status & (BIT(7) | BIT(6))) == 0) {
-                        if (data == 0x81) {
-                            done = true;
-                        }
-                    }
-                }
+        if (is_ipc_notify(ipc_status) && _ENDPOINT_P(msg.m_source) == HARDWARE && (msg.m_notify.interrupts & irq_set)) {
+                kbc_ih();
             }
         }
-    }
 
-    if (sys_irqrmpolicy(&hook_id) != 0) {
-        printf("%s: sys_irqrmpolicy() failed\n", __func__);
-    }
+        if (kbc_unsubscribe_int() != 0) {
+            vg_exit();
+            return 1;
+        }
 
-    if (vg_exit() != 0) {
-        printf("%s: vg_exit() failed\n", __func__);
-        return 1;
-    }
 
-    return 0;
+        if (vg_exit() != 0) {
+            printf("%s: vg_exit() failed\n", __func__);
+            return 1;
+        }
+
+        return 0;
 }
 
 int(video_test_xpm)(xpm_map_t xpm, uint16_t x, uint16_t y) {
+    if (vg_init(0x105) == NULL) return 1;
 
-  if (vg_init(0x105) == NULL) return 1;
+    if (draw_xpm(x, y, xpm) != 0) {
+        vg_exit();
+        return 1;
+    }
 
-  if (draw_xpm(x, y, xpm) != 0) return 1;
+    uint8_t bit_no;
+    uint32_t irq_set;
+    int ipc_status, ret;
+    message msg;
+    scancode = 0;
 
-  sleep(5);
+    if (kbc_subscribe_int(&bit_no) != 0) {
+        vg_exit();
+        return 1;
+    }
 
-  vg_exit();
+    irq_set = BIT(bit_no);
 
-  return 0;
+    while (scancode != ESC_BREAK_CODE) {
+
+        if ((ret = driver_receive(ANY, &msg, &ipc_status)) != 0)continue;
+
+        if (is_ipc_notify(ipc_status) && _ENDPOINT_P(msg.m_source) == HARDWARE && (msg.m_notify.interrupts & irq_set)) {
+            kbc_ih();
+        }
+    }
+
+    if (kbc_unsubscribe_int() != 0) {
+        vg_exit();
+        return 1;
+    }
+
+    if (vg_exit() != 0) return 1;
+    
+    return 0;
 }
