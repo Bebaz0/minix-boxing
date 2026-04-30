@@ -5,8 +5,7 @@ PROG=lab5
 SRCS = lab5.c -DLAB5
 
 # additional compilation flags
-# "-Wall -Wextra -Werror -I . -std=c11 -Wno-unused-parameter" are already set
-CFLAGS += -pedantic -
+CFLAGS += -pedantic
 
 # list of library dependencies
 DPADD += ${LIBLCF} ${LIB_NAME}

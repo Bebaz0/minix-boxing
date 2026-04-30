@@ -2,8 +2,7 @@
 PROG=lab4 
 
 # source code files to be compiled
-SRCS = lab4.c
-
+SRCS = lab4.c -DLAB4
 
 # "-Wall -Wextra -Werror -I . -std=c11 -Wno-unused-parameter" are already set
 CFLAGS += -pedantic -I../lab2
