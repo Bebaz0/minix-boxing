@@ -124,3 +124,23 @@ int(vg_draw_pixmap)(uint16_t x, uint16_t y, const xpm_image_t *img, const uint8_
 
   return 0;
 }
+
+int draw_xpm(uint16_t x, uint16_t y, xpm_map_t xpm) {
+
+  xpm_image_t img;
+  uint8_t *map = xpm_load(xpm, XPM_INDEXED, &img);
+
+  if (map == NULL) return 1;
+
+  for (uint16_t row = 0; row < img.height; row++) {
+    for (uint16_t col = 0; col < img.width; col++) {
+
+      uint32_t color = map[row * img.width + col];
+
+      if (vg_draw_pixel(x + col, y + row, color) != 0)
+        return 1;
+    }
+  }
+
+  return 0;
+}
