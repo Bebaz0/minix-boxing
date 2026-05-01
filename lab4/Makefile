@@ -4,7 +4,6 @@ PROG=lab4
 # source code files to be compiled
 SRCS = lab4.c
 
-
 # "-Wall -Wextra -Werror -I . -std=c11 -Wno-unused-parameter" are already set
 CFLAGS += -pedantic -I../lab2
 
@@ -27,3 +26,5 @@ ${TIMER_LIB}:
 
 # include LCOM's makefile that does all the "heavy lifting"
 .include <minix.lcom.mk>
+
+
