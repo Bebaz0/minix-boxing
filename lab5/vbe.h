@@ -18,7 +18,7 @@
 
 #define VBE_MODE_LINEAR_FRAME   BIT(14)  
 
-#define VBE_OK          0x004F   
+#define INDEXED_MODE 0x105
 
 #endif 
 
