@@ -3,6 +3,7 @@
 #include "vbe.h"
 
 int video_set_mode(uint16_t mode) {
+
     reg86_t reg;
     memset(&reg, 0, sizeof(reg));
 
@@ -18,3 +19,4 @@ int video_set_mode(uint16_t mode) {
 
     return 0;
 }
+

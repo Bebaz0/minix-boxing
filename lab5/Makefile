@@ -13,7 +13,7 @@ DPADD += ${LIBLCF} ${LIB_NAME} ${TIMER_LIB}
 LDADD += -llcf -L. -lvideo ${TIMER_LIB}
 
 LIB_NAME = libvideo.a
-LIB_SRCS = video.c utils.c
+LIB_SRCS = video.c
 LIB_OBJS = ${LIB_SRCS:.c=.o}
 CLEANFILES += ${LIB_NAME} ${LIB_OBJS}
 

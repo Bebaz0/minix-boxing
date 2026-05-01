@@ -16,11 +16,11 @@ int main(int argc, char *argv[]) {
 
     // enables to log function invocations that are being "wrapped" by LCF
     // [comment this out if you don't want/need it]
-    lcf_trace_calls("/home/lcom/labs/lab5/trace.txt");
+    //lcf_trace_calls("/home/lcom/labs/lab5/trace.txt");
 
     // enables to save the output of printf function calls on a file
     // [comment this out if you don't want/need it]
-    lcf_log_output("/home/lcom/labs/lab5/output.txt");
+    //lcf_log_output("/home/lcom/labs/lab5/output.txt");
 
     // handles control over to LCF
     // [LCF handles command line arguments and invokes the right function]
@@ -38,34 +38,7 @@ int(video_test_init)(uint16_t mode, uint8_t delay) {
     
     if (video_set_mode(mode) != 0) return 1;
 
-    uint8_t bit_no;
-    if (timer_subscribe_int(&bit_no) != 0) return 1;
-
-    uint32_t irq_set = BIT(bit_no);
-    int ipc_status;
-    message msg;
-    int r;
-
-    timer_set_counter(0);
-
-    while (timer_get_counter() < delay * sys_hz()) {
-
-        if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) continue;
-
-        if (is_ipc_notify(ipc_status)) {
-          switch (_ENDPOINT_P(msg.m_source)) {
-              case HARDWARE:
-
-                if (msg.m_notify.interrupts & irq_set) {
-                    timer_int_handler();
-                }
-
-                break;
-            }
-        }
-    }
-
-    if (timer_unsubscribe_int() != 0) return 1;
+   sleep(delay);
 
     if (vg_exit() != 0) return 1;
 
