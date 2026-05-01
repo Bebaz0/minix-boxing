@@ -100,7 +100,7 @@ if (mouse_write_cmd(MOUSE_ENABLE_DATA) != 0) return 1;
   int ipc_status;
   message msg;
   int frequency = sys_hz();
-  timer_reset_counter();
+  timer_set_counter(0);
 
   while (timer_get_counter() < (idle_time * frequency)) {
         
@@ -131,7 +131,7 @@ if (mouse_write_cmd(MOUSE_ENABLE_DATA) != 0) return 1;
                           mouse_print_packet(&p);
                             
                           byte_index = 0;
-                          timer_reset_counter(); 
+                          timer_set_counter(0); 
                       }
                   }
                   break;
