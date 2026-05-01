@@ -2,7 +2,52 @@
 #include "video.h"
 #include "vbe.h"
 
-int video_set_mode(uint16_t mode) {
+static char *video_mem;          
+static vbe_mode_info_t vmi;     
+static unsigned bytes_per_pixel;
+static unsigned vram_base;
+static unsigned vram_size;
+
+#include <lcom/lcf.h>
+#include "video.h"
+#include "vbe.h"
+
+void *(vg_init)(uint16_t mode) {
+
+    if (vbe_get_mode_info(mode, &vmi) != OK) {
+        panic("%hu: vbe_get_mode_info(0x03X) failed\n",mode);
+        return NULL;
+    }
+
+    if (video_set_mode(mode) != 0) {
+        panic("vg_init(): video_set_mode failed\n");
+        return NULL;
+    }
+
+    bytes_per_pixel = (vmi.BitsPerPixel + 7) / 8;
+    vram_base = vmi.PhysBasePtr;
+    vram_size = vmi.XResolution * vmi.YResolution * bytes_per_pixel;
+
+    int r;
+    struct minix_mem_range mr;
+    mr.mr_base = (phys_bytes) vmi.PhysBasePtr;
+    mr.mr_limit = mr.mr_base + vram_size;
+    if (OK != (r = sys_privctl(SELF, SYS_PRIV_ADD_MEM, &mr))){
+        panic("sys_privctl (ADD_MEM) failed: %d\n", r);
+        return NULL;
+    }
+
+    video_mem = vm_map_phys(SELF, (void *)mr.mr_base, vram_size);
+    if (video_mem == MAP_FAILED) {
+        panic("couldn't map video memory");
+        return NULL;
+    }
+
+    return video_mem;
+}
+
+
+int (video_set_mode)(uint16_t mode) {
 
     reg86_t reg;
     memset(&reg, 0, sizeof(reg));
@@ -17,6 +62,28 @@ int video_set_mode(uint16_t mode) {
     return 1;
   }
 
+    return 0;
+}
+
+int (vg_draw_pixel)(uint16_t x, uint16_t y, uint32_t color) {
+
+    if (x >= vmi.XResolution || y >= vmi.YResolution) return 1;
+
+    unsigned int pixel_i = y * vmi.XResolution + x;
+
+    char *pixel_addr = video_mem + pixel_i * bytes_per_pixel;
+
+    memcpy(pixel_addr, &color, bytes_per_pixel);
+
+    return 0;
+}
+
+int (vg_draw_hline)(uint16_t x, uint16_t y, uint16_t len, uint32_t color) {
+
+    for (uint16_t i = 0; i < len; i++) {
+        if (vg_draw_pixel(x + i, y, color) != 0)
+            return 1;
+    }
     return 0;
 }
 

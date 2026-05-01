@@ -5,8 +5,11 @@
 
 #include "video.h"
 #include "timer.h"
+#include "kbc.h"
 #include <stdint.h>
 #include <stdio.h>
+
+#define ESC 0x81
 
 // Any header files included below this line should have been created by you
 
@@ -45,13 +48,38 @@ int(video_test_init)(uint16_t mode, uint8_t delay) {
     return 0;
 }
 
-int(video_test_rectangle)(uint16_t mode, uint16_t x, uint16_t y,
-                          uint16_t width, uint16_t height, uint32_t color) {
-    /* To be completed */
-    printf("%s(0x%03X, %u, %u, %u, %u, 0x%08x): under construction\n",
-            __func__, mode, x, y, width, height, color);
+int(video_test_rectangle)(uint16_t mode, uint16_t x, uint16_t y,uint16_t width, uint16_t height, uint32_t color) {
 
-    return 1;
+    if (vg_init(mode) == NULL) return 1;
+
+    if (video_set_mode(mode) != 0) return 1;
+
+    for (uint16_t row = 0; row < height; row++) {
+        if (vg_draw_hline(x, y + row, width, color) != 0) return 1;
+    }
+
+    uint8_t bit_no;
+    if (kbc_subscribe_int(&bit_no) != 0) return 1;
+    uint32_t irq_set = BIT(bit_no);
+
+    int ipc_status;
+    message msg;
+
+    while (scancode != ESC) {  
+        if (driver_receive(ANY, &msg, &ipc_status) != 0) continue;
+
+        if (is_ipc_notify(ipc_status)) {
+            if (msg.m_notify.interrupts & irq_set) {
+                kbc_ih();
+            }
+        }
+    }
+
+    if (kbc_unsubscribe_int() != 0) return 1;
+
+
+    if (vg_exit() != 0) return 1;
+    return 0;
 }
 
 int(video_test_xpm)(xpm_map_t xpm, uint16_t x, uint16_t y) {
