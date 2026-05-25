@@ -24,42 +24,57 @@ Reduce your opponent's HP to zero before your own HP reaches zero.
 ## Core Loop
 
 Both players act simultaneously in a continuous fight:
-1. Player 1 sees keys appear on screen and must press them; Player 2 sees bubbles appear and must click them.
-2. Each player must hit their elements with the best timing possible.
-3. Players who **fail** their challenge take damage to themselves.
-4. Players who **succeed** their challenge perfectly fill a combo bar that when full deals big damage to the other player (Not yet sure if this will be implemented)
-5. This happens until one of them dies
+1. **Timing events** spawn continuously and independently for each player — key prompts for Player 1, bubbles for Player 2.
+2. Multiple timing events can be active at the same time (e.g. two bubbles on screen while Player 1 has two key prompts to press).
+3. Each event has a response window; the player must act before it closes.
+4. Early hits are **perfect**; late hits are **normal**; no hit before the window closes is a **failure**.
+5. Players who **fail** a timing event take damage to themselves.
+6. Players who land a **perfect hit** fill their combo bar; a full combo bar deals big damage to the opponent.
+7. This continues until one player's HP reaches 0 or the round timer runs out.
 
 ---
 
-## Player 1 — Keyboard (Q W E R)
+## Player 1 — Keyboard (Q W E R) — Key Prompts
 
-- Keys (Q, W, E, R) appear on screen and Player 1 must press them before time runs out.
-- **Success:** : If hit doesnt take health, if perfect fills combo bar
-- **Failure:** Player 1 takes damage to their own HP.
-- Keys in the sequence: _[Q,W,E,R]_
-- Key Sequence: Random
-- Timing: _[To be Defined]_ But harder than player 2
+- Key prompts appear on screen each showing one key from {Q, W, E, R}.
+- Multiple key prompts can be active at the same time; Player 1 must press each before its window closes.
+- New key prompts spawn on a timer — independently of whether previous ones were resolved.
+- **Perfect hit** (early in the window): fills combo bar.
+- **Normal hit** (late in the window): no damage, no combo.
+- **Failure** (window expires without the key being pressed): Player 1 takes damage to their own HP.
+- Key assignment: Random per prompt
+- Response window: _[To be Defined]_ — harder than Player 2's window
+- Simultaneous prompts: _[To be Defined]_ max active at once
 
 ---
 
 ## Player 2 — Mouse (Bubbles)
 
-- Bubbles (highlighted zones) appear on screen at random positions.
-- Player 2 must click each bubble before time runs out.
-- **Success:**: If hit doesnt take health, if perfect fills combo bar
-- **Failure:** Player 2 takes damage to their own HP.
-- Zone layout: Randomized
-- Timing: _[To be Defined]_
+- Bubble timing events appear at random positions on screen.
+- Multiple bubbles can be active at the same time; Player 2 must click each one before its window closes.
+- New bubbles spawn on a timer — independently of whether previous ones were resolved.
+- **Perfect hit** (early in the window): fills combo bar.
+- **Normal hit** (late in the window): no damage, no combo.
+- **Failure** (window expires without a click): Player 2 takes damage to their own HP.
+- Position: Randomized
+- Response window: _[To be Defined]_
+- Simultaneous bubbles: _[To be Defined]_ max active at once
 
 ---
 
 ## Rounds
 
-- Each Round has a countdown timer visible to the players.
-- Rounds are infinite if no plyer dies
-- The time window **decreases as the fight progresses**, raising difficulty over time.
-- Time window: _[to be Defined]_
+- Each round has a **countdown timer** visible to both players.
+- A round ends when the timer hits 0 or a player dies — whichever comes first.
+- After a round ends there is a 3-second break before the next round starts.
+- There is no limit on the number of rounds — the match continues until someone dies.
+- Round duration: _[To be Defined]_
+
+### Difficulty Progression (per round)
+
+- The **response window** (time per challenge) decreases at the start of each new round.
+- The challenges themselves remain continuous — only the window to respond shrinks.
+- Minimum response window: _[To be Defined]_ (floor to avoid zero-time challenges)
 
 ---
 
@@ -112,7 +127,9 @@ Both players act simultaneously in a continuous fight:
 
 ## Difficulty Progression
 
-- The time window shrinks over rounds
+- At the start of each new round the response window for both players shrinks by a fixed amount.
+- The challenges themselves are always continuous — difficulty comes purely from having less time to react.
+- Decrease per round: _[To be Defined]_
 
 ---
 
@@ -122,6 +139,6 @@ Both players act simultaneously in a continuous fight:
 |---|---|
 | **Main Menu** | _[to be filled]_ |
 | **Round Start** | 3 second countdown before the round begins |
-| **Active** | Both players act simultaneously — keys appear for P1, bubbles appear for P2 |
+| **Active** | Timing events spawn continuously — key prompts for P1, bubbles for P2; multiple can be active at once |
 | **Round End** | 3 Second wait until next Round|
 | **Game Over** | Winner displayed, option to rematch or quit |
