@@ -1,30 +1,42 @@
 #include "player.h"
 
 void player_init(Player *p) {
-    /* TODO: Inicializar hp=PLAYER_MAX_HP, combo=0, anim=ANIM_IDLE. */
+    p->hp    = PLAYER_MAX_HP;
+    p->combo = 0;
+    p->anim  = ANIM_IDLE;
 }
 
 void player_take_damage(Player *p, int dmg) {
-    /* TODO: Subtrair dmg ao hp.
-       Garantir que hp não fica abaixo de 0.
-       Atualizar anim para ANIM_HIT. */
+    p->hp -= dmg;
+    if (p->hp < 0)
+        p->hp = 0;
+    p->anim = ANIM_HIT;
 }
 
 void player_add_combo(Player *p, int pts) {
-    /* TODO: Adicionar pts ao combo.
-       Limitar o combo a PLAYER_MAX_COMBO. */
+    p->combo += pts;
+    if (p->combo > PLAYER_MAX_COMBO)
+        p->combo = PLAYER_MAX_COMBO;
 }
 
 void player_reset_combo(Player *p) {
-    /* TODO: Repor combo a 0. */
+    p->combo = 0;
 }
 
 bool player_is_dead(const Player *p) {
-    /* TODO: Devolver true se hp <= 0. */
+    if (p->hp <= 0)
+    {
+        return true;
+    }
+    
     return false;
 }
 
 bool player_combo_full(const Player *p) {
-    /* TODO: Devolver true se combo >= PLAYER_MAX_COMBO. */
+    if (p->combo >= PLAYER_MAX_COMBO)
+    {
+        return true;
+    }
+    
     return false;
 }
