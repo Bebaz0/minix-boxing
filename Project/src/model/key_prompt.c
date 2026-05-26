@@ -1,29 +1,40 @@
 #include "key_prompt.h"
 
 void key_prompt_spawn(KeyPrompt *kp, char key, int response_window_ms) {
-    /* TODO*/
+    kp->key                = key;
+    kp->response_window_ms = response_window_ms;
+    kp->elapsed_ms         = 0;
+    kp->active             = true;
+    kp->hit                = false;
+    kp->perfect            = false;
 }
 
 bool key_prompt_press(KeyPrompt *kp, char key) {
-    /* TODO: Se kp->active e kp->key == key:
-         kp->hit = true
-         kp->perfect = (kp->elapsed_ms < kp->response_window_ms / 2)  -- TODO: afinar threshold
-         kp->active = false
-         devolver true.
-       Caso contrário devolver false (tecla não corresponde a este slot). */
-    return false;
+    if (!kp->active || kp->key != key)
+        return false;
+
+    if (kp->elapsed_ms < kp->response_window_ms / 2) {
+        kp->hit     = false;
+        kp->perfect = true;
+    } else {
+        kp->hit     = true;
+        kp->perfect = false;
+    }
+    kp->active  = false;
+
+    return true;
 }
 
 void key_prompt_tick(KeyPrompt *kp, int delta_ms) {
-    /* TODO: Se !kp->active, não fazer nada.
-       Incrementar kp->elapsed_ms += delta_ms.
-       Se elapsed_ms >= response_window_ms: kp->active = false (expirou sem ser pressionado). */
-    (void)kp; (void)delta_ms;
+    if (!kp->active)
+        return;
+
+    kp->elapsed_ms += delta_ms;
+
+    if (kp->elapsed_ms >= kp->response_window_ms)
+        kp->active = false;
 }
 
 bool key_prompt_failed(const KeyPrompt *kp) {
-    /* TODO: Devolver true se !kp->active && !kp->hit
-       (slot desativado por timeout, não por acerto). */
-    (void)kp;
-    return false;
+    return !kp->active && !kp->hit && !kp->perfect;
 }

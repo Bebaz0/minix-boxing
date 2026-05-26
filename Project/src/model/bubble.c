@@ -23,8 +23,14 @@ bool bubble_on_click(BubbleEvent *ev, int mx, int my, MouseButton button) {
     if (dx * dx + dy * dy > ev->radius * ev->radius)
         return false;
 
-    ev->hit = true;
-    ev->perfect = ev->elapsed_ms < ev->response_window_ms / 2;
+    if (ev->elapsed_ms < ev->response_window_ms / 2){
+    ev->hit = false;
+    ev->perfect = true;
+    }else{
+        ev->hit = true;
+        ev->perfect = false;
+    }
+
     ev->active = false;
 
     return true;
@@ -41,5 +47,5 @@ void bubble_tick(BubbleEvent *ev, int delta_ms) {
 }
 
 bool bubble_failed(const BubbleEvent *ev) {
-    return !ev->active && !ev->hit;
+    return !ev->active && !ev->hit && !ev->perfect;
 }
