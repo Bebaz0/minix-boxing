@@ -4,8 +4,14 @@
 #include <stdbool.h>
 #include "config.h"
 
+typedef enum {
+    MOUSE_BUTTON_LEFT,
+    MOUSE_BUTTON_RIGHT
+} MouseButton;
+
 typedef struct {
     int  x, y, radius;
+    MouseButton button;
     int  response_window_ms;
     int  elapsed_ms;
     bool active;            /* slot em uso */
@@ -13,8 +19,8 @@ typedef struct {
     bool perfect;           /* hit antes do threshold de perfeição */
 } BubbleEvent;
 
-void bubble_spawn(BubbleEvent *ev, int x, int y, int radius, int response_window_ms);
-bool bubble_on_click(BubbleEvent *ev, int mx, int my); /* true se a bubble foi clicada */
+void bubble_spawn(BubbleEvent *ev, int x, int y, int radius, MouseButton button, int response_window_ms);
+bool bubble_on_click(BubbleEvent *ev, int mx, int my, MouseButton button); /* true se a bubble foi clicada */
 void bubble_tick(BubbleEvent *ev, int delta_ms);       /* desativa se o tempo expirar */
 bool bubble_failed(const BubbleEvent *ev);             /* inativo por timeout, não por acerto */
 
