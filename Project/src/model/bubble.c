@@ -1,12 +1,14 @@
 #include <stdlib.h>
 #include "bubble.h"
 
-void bubble_spawn(BubbleEvent *ev, int x, int y, int radius, int response_window_ms) {
+void bubble_spawn(BubbleEvent *ev, int x, int y, int radius, MouseButton button, int response_window_ms) {
     /* TODO*/
+    (void)ev; (void)x; (void)y; (void)radius; (void)button; (void)response_window_ms;
 }
 
-bool bubble_on_click(BubbleEvent *ev, int mx, int my) {
+bool bubble_on_click(BubbleEvent *ev, int mx, int my, MouseButton button) {
     /* TODO */
+    (void)ev; (void)mx; (void)my; (void)button;
     return false;
 }
 

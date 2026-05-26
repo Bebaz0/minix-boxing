@@ -1,6 +1,6 @@
 PROG = game
 
-VPATH = src
+VPATH = src:src/model:src/view:src/controller
 
 SRCS = main.c \
        game.c \
@@ -8,9 +8,10 @@ SRCS = main.c \
        key_prompt.c \
        bubble.c \
        combat.c \
-       render.c
+       render.c \
+       controller.c
 
-CFLAGS += -pedantic -Isrc -Iinclude -I../lab2 -I../lab3 -I../lab4 -I../lab5
+CFLAGS += -pedantic -Isrc -Isrc/model -Isrc/view -Isrc/controller -Iinclude -I../lab2 -I../lab3 -I../lab4 -I../lab5
 
 VIDEO_LIB = ../lab5/libvideo.a
 MOUSE_LIB = ../lab4/libmouse.a

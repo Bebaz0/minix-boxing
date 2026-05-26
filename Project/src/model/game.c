@@ -14,8 +14,9 @@ void game_handle_key(Game *g, char key) {
     /*TODO*/
 }
 
-void game_handle_click(Game *g, int mx, int my) {
+void game_handle_click(Game *g, int mx, int my, MouseButton button) {
     /*TODO*/
+    (void)button;
    
 }
 
