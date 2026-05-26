@@ -3,7 +3,8 @@
 #include "combat.h"
 
 void game_init(Game *g) {
-    /*TODO*/
+    memset(g, 0, sizeof(*g));
+    g->state = GS_ACTIVE;
 }
 
 void game_update(Game *g, int delta_ms) {

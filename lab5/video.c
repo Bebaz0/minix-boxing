@@ -2,8 +2,9 @@
 #include "video.h"
 #include "vbe.h"
 
-static char *video_mem;          
-static vbe_mode_info_t vmi;     
+static char *video_mem;
+static char *back_buffer;
+static vbe_mode_info_t vmi;
 static unsigned bytes_per_pixel;
 static unsigned vram_base;
 static unsigned vram_size;
@@ -43,6 +44,13 @@ void *(vg_init)(uint16_t mode) {
         return NULL;
     }
 
+    back_buffer = malloc(vram_size);
+    if (back_buffer == NULL) {
+        panic("couldn't allocate back buffer");
+        return NULL;
+    }
+    memset(back_buffer, 0, vram_size);
+
     return video_mem;
 }
 
@@ -71,7 +79,7 @@ int (vg_draw_pixel)(uint16_t x, uint16_t y, uint32_t color) {
 
     unsigned int pixel_i = y * vmi.XResolution + x;
 
-    char *pixel_addr = video_mem + pixel_i * bytes_per_pixel;
+    char *pixel_addr = back_buffer + pixel_i * bytes_per_pixel;
 
     memcpy(pixel_addr, &color, bytes_per_pixel);
 
@@ -85,5 +93,9 @@ int (vg_draw_hline)(uint16_t x, uint16_t y, uint16_t len, uint32_t color) {
             return 1;
     }
     return 0;
+}
+
+void (vg_flip)(void) {
+    memcpy(video_mem, back_buffer, vram_size);
 }
 

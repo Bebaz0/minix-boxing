@@ -1,4 +1,4 @@
-PROG = game
+PROG = proj
 
 VPATH = src:src/model:src/view:src/controller
 
@@ -9,6 +9,7 @@ SRCS = main.c \
        bubble.c \
        combat.c \
        render.c \
+       sprites.c \
        controller.c
 
 CFLAGS += -pedantic -Isrc -Isrc/model -Isrc/view -Isrc/controller -Iinclude -I../lab2 -I../lab3 -I../lab4 -I../lab5
@@ -19,7 +20,7 @@ KBD_LIB   = ../lab3/libkbd.a
 TIMER_LIB = ../lab2/libtimer.a
 
 DPADD += ${LIBLCF} ${VIDEO_LIB} ${MOUSE_LIB} ${KBD_LIB} ${TIMER_LIB}
-LDADD += -llcf -L../lab5 -lvideo -L../lab4 -lmouse -L../lab3 -lkbd -L../lab2 -ltimer
+LDADD += -llcf -L../lab5 -lvideo -L../lab4 -lmouse -L../lab3 -lkbd ../lab2/timer.o
 
 ${VIDEO_LIB}:
 	${MAKE} -C ../lab5 lib

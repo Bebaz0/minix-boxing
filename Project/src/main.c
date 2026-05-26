@@ -11,13 +11,15 @@
 #include "render.h"
 #include "controller.h"
 
-
 int main(int argc, char *argv[]) {
     lcf_set_language("EN-US");
+    lcf_start(argc, argv);
+    lcf_cleanup();
+    return 0;
+}
 
-    if (lcf_start(argc, argv))
-        return 1;
-
+int(proj_main_loop)(int argc, char *argv[]) {
+    (void)argc; (void)argv;
 
     uint8_t timer_bit, kbd_bit, mse_bit;
 
@@ -30,16 +32,13 @@ int main(int argc, char *argv[]) {
     int kbd_irq   = BIT(kbd_bit);
     int mse_irq   = BIT(mse_bit);
 
-
     if (vg_init(VIDEO_MODE) == NULL) return 1;
-
 
     Game g;
     Controller ctrl;
 
     game_init(&g);
     controller_init(&ctrl);
-
 
     int     ipc_status;
     message msg;
@@ -74,13 +73,10 @@ int main(int argc, char *argv[]) {
         }
     }
 
-
     timer_unsubscribe_int();
     kbc_unsubscribe_int();
     mouse_unsubscribe_interrupts();
 
     vg_exit();
-
-    lcf_cleanup();
     return 0;
 }

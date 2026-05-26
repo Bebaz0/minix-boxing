@@ -1,32 +1,40 @@
-#include "video.h"
 #include "render.h"
+#include "sprites.h"
 #include "game.h"
+#include "config.h"
+#include "video.h"
+#include "../assets/fighter.h"
+
+/* Dark-grey arena background in RGB565 */
+#define BG_COLOR   0x9904u
+
+/* Fighter vertical baseline (pixels from top of screen) */
+#define FIGHTER_Y  300u
+
+/* Horizontal inset from screen edges */
+#define FIGHTER_INSET 100u
+
+static void draw_background(void) {
+    for (uint16_t row = 0; row < SCREEN_HEIGHT; row++)
+        vg_draw_hline(0, row, SCREEN_WIDTH, BG_COLOR);
+}
 
 void render_frame(const Game *g) {
-    /* TODO: Limpar o ecrã (vg_draw_hline em toda a área com cor de fundo).
+    switch (g->state) {
+        case GS_ACTIVE:
+            draw_background();
+            draw_sprite(fighter_xpm, FIGHTER_INSET, FIGHTER_Y);
+            draw_sprite_mirrored(fighter_xpm,
+                                 SCREEN_WIDTH - FIGHTER_INSET - FIGHTER_W,
+                                 FIGHTER_Y);
+            break;
 
-       Conforme g->state:
-
-       GS_MENU
-         — TODO: Desenhar ecrã de menu com opção de iniciar jogo.
-
-       GS_ROUND_START
-         — TODO: Desenhar contagem decrescente (3, 2, 1) antes do round começar.
-
-       GS_ACTIVE
-         — TODO: Desenhar fundo da arena.
-         — TODO: Desenhar personagens (sprites de p1 e p2 conforme anim).
-         — TODO: Percorrer g->arrows[]: desenhar cada slot com active==true.
-         — TODO: Percorrer g->bubbles[]: desenhar cada slot com active==true.
-         — TODO: Desenhar barras de HP de p1 e p2.
-         — TODO: Desenhar barras de combo de p1 e p2.
-         — TODO: Desenhar temporizador da ronda (round_elapsed_ms / round_duration_ms).
-
-       GS_ROUND_END
-         — TODO: Desenhar ecrã de pausa entre rondas com número da ronda seguinte.
-
-       GS_GAME_OVER
-         — TODO: Desenhar ecrã de fim de jogo com o vencedor (g->winner).
-                 Opções: revanche ou sair. */
-    (void)g;
+        case GS_MENU:
+        case GS_ROUND_START:
+        case GS_ROUND_END:
+        case GS_GAME_OVER:
+            draw_background();
+            break;
+    }
+    vg_flip();
 }
