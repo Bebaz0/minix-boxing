@@ -13,8 +13,13 @@ bool key_prompt_press(KeyPrompt *kp, char key) {
     if (!kp->active || kp->key != key)
         return false;
 
-    kp->hit     = true;
-    kp->perfect = kp->elapsed_ms < kp->response_window_ms / 2;
+    if (kp->elapsed_ms < kp->response_window_ms / 2) {
+        kp->hit     = false;
+        kp->perfect = true;
+    } else {
+        kp->hit     = true;
+        kp->perfect = false;
+    }
     kp->active  = false;
 
     return true;
@@ -31,5 +36,5 @@ void key_prompt_tick(KeyPrompt *kp, int delta_ms) {
 }
 
 bool key_prompt_failed(const KeyPrompt *kp) {
-    return !kp->active && !kp->hit;
+    return !kp->active && !kp->hit && !kp->perfect;
 }
