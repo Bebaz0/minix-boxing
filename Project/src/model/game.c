@@ -2,13 +2,24 @@
 #include "game.h"
 #include "combat.h"
 
+#define ANIM_FRAME_DURATION_MS 60
+
+static void tick_anim(Player *p, int delta_ms) {
+    p->anim_timer_ms += delta_ms;
+    if (p->anim_timer_ms >= ANIM_FRAME_DURATION_MS) {
+        p->anim_timer_ms -= ANIM_FRAME_DURATION_MS;
+        p->anim_frame = (p->anim_frame + 1) % FIGHTER_IDLE_FRAME_COUNT;
+    }
+}
+
 void game_init(Game *g) {
     memset(g, 0, sizeof(*g));
     g->state = GS_ACTIVE;
 }
 
 void game_update(Game *g, int delta_ms) {
-    /*TODO*/
+    tick_anim(&g->p1, delta_ms);
+    tick_anim(&g->p2, delta_ms);
 }
 
 void game_handle_key(Game *g, char key) {

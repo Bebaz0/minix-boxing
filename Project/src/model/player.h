@@ -16,6 +16,8 @@ typedef struct {
     int       hp;
     int       combo;
     AnimState anim;
+    int       anim_frame;       // 0 or 1
+    int       anim_timer_ms;    // counts up
 } Player;
 
 void player_init(Player *p);
