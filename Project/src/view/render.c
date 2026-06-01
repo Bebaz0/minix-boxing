@@ -29,6 +29,7 @@ void render_frame(const Game *g) {
                                  FIGHTER_Y);
             break;
 
+        case GS_PAUSE:
         case GS_MENU:
         case GS_ROUND_START:
         case GS_ROUND_END:
