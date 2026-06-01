@@ -8,7 +8,7 @@ static void tick_anim(Player *p, int delta_ms) {
     p->anim_timer_ms += delta_ms;
     if (p->anim_timer_ms >= ANIM_FRAME_DURATION_MS) {
         p->anim_timer_ms -= ANIM_FRAME_DURATION_MS;
-        p->anim_frame ^= 1;  // flip between 0 and 1
+        p->anim_frame = (p->anim_frame + 1) % FIGHTER_IDLE_FRAME_COUNT;
     }
 }
 

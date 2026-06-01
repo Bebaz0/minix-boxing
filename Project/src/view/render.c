@@ -19,7 +19,7 @@ static void draw_background(void) {
         vg_draw_hline(0, row, SCREEN_WIDTH, BG_COLOR);
 }
 static const char **get_idle_frame(int frame_index) {
-    return frame_index == 0 ? fighter_idle0_xpm : fighter_idle1_xpm;
+    return fighter_idle_frames[frame_index];
 }
 
 void render_frame(const Game *g) {

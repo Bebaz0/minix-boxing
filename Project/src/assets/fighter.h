@@ -1,6 +1,7 @@
 #ifndef FIGHTER_H
 #define FIGHTER_H
 
+#include "config.h"
 #include <lcom/lcf.h>
 
 /* Placeholder 64x128 fighter sprite (XPM_5_6_5 compatible).
@@ -752,6 +753,11 @@ static const char *fighter_idle1_xpm[] = {
   "                                                                                                                                                                                                                                                ",
   "                                                                                                                                                                                                                                                ",
   "                                                                                                                                                                                                                                                "
+};
+
+static const char **fighter_idle_frames[FIGHTER_IDLE_FRAME_COUNT] = {
+  fighter_idle0_xpm,
+  fighter_idle1_xpm
 };
 
 

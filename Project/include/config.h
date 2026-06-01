@@ -47,6 +47,9 @@
 #define KEY_PROMPT_SPAWN_INTERVAL_MS  1500
 #define BUBBLE_SPAWN_INTERVAL_MS      1500
 
+/* Animação */
+#define FIGHTER_IDLE_FRAME_COUNT  2   /* aumentar quando adicionar mais frames ao fighter.h */
+
 /* Teclas do Jogador 1 */
 #define KEY_PROMPT_KEYS "QWER"
 
