@@ -2,7 +2,7 @@
 #include "game.h"
 #include "combat.h"
 
-#define ANIM_FRAME_DURATION_MS 60
+#define ANIM_FRAME_DURATION_MS 50
 
 static void tick_anim(Player *p, int delta_ms) {
     p->anim_timer_ms += delta_ms;
