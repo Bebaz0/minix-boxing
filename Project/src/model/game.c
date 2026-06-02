@@ -14,10 +14,19 @@ static void tick_anim(Player *p, int delta_ms) {
 
 void game_init(Game *g) {
     memset(g, 0, sizeof(*g));
-    g->state = GS_ACTIVE;
+    g->state = GS_MENU;
+    player_init(&g->p1);
+    player_init(&g->p2);
+    menu_init(&g->menu);
+    g->response_window_ms = INITIAL_RESPONSE_WINDOW_MS;
+    g->round_duration_ms = ROUND_DURATION_MS;
+    g->round_number = 1;
 }
 
 void game_update(Game *g, int delta_ms) {
+    if (g->state != GS_ACTIVE)
+        return;
+
     tick_anim(&g->p1, delta_ms);
     tick_anim(&g->p2, delta_ms);
 }
@@ -33,7 +42,5 @@ void game_handle_click(Game *g, int mx, int my, MouseButton button) {
 }
 
 bool game_is_over(const Game *g) {
-    /* TODO: Devolver true se g->state == GS_GAME_OVER. */
-    (void)g;
-    return false;
+    return g->state == GS_GAME_OVER;
 }
