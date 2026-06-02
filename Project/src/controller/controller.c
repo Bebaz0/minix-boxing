@@ -31,6 +31,11 @@ void controller_handle_keyboard(Controller *ctrl, Game *g) {
     if (kbc_error)
         return;
 
+    if (scancode == 0x01) {   /* ESC — sair do jogo em qualquer estado */
+        g->state = GS_GAME_OVER;
+        return;
+    }
+
     switch (g->state) {
         case GS_MENU:        menu_ctrl_handle_keyboard(ctrl, g);        break;
         case GS_ROUND_START: round_start_ctrl_handle_keyboard(ctrl, g); break;
