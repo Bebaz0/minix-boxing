@@ -4,6 +4,8 @@ void player_init(Player *p) {
     p->hp    = PLAYER_MAX_HP;
     p->combo = 0;
     p->anim  = ANIM_IDLE;
+    p->anim_frame = 0;
+    p->anim_timer_ms = 0;
 }
 
 void player_take_damage(Player *p, int dmg) {

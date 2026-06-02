@@ -25,7 +25,7 @@
 
 /* Duração de cada ronda (ms) — quando o contador chega a 0 a ronda termina */
 /* TODO: Definir duração total de cada ronda */
-#define ROUND_DURATION_MS             60000
+#define ROUND_DURATION_MS             1000   /* 10 s at 60 Hz (600 ticks × 16 ms) */
 
 /* Pausa entre rondas (ms) */
 #define INTER_ROUND_MS                3000

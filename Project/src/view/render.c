@@ -6,7 +6,9 @@
 #include "../assets/fighter.h"
 
 /* Dark-grey arena background in RGB565 */
-#define BG_COLOR   0x9904u
+#define BG_COLOR       0x9904u
+/* Bright red — temporary debug marker for GS_ROUND_END */
+#define ROUND_END_COLOR 0xF800u
 
 /* Fighter vertical baseline (pixels from top of screen) */
 #define FIGHTER_Y  300u
@@ -30,11 +32,18 @@ void render_frame(const Game *g) {
             draw_sprite_mirrored(get_idle_frame(g->p2.anim_frame),
                                 SCREEN_WIDTH - FIGHTER_INSET - FIGHTER_W, FIGHTER_Y);
             break;
-            
+
+        case GS_ROUND_END:
+            for (uint16_t row = 0; row < SCREEN_HEIGHT; row++)
+                vg_draw_hline(0, row, SCREEN_WIDTH, ROUND_END_COLOR);
+            draw_sprite(get_idle_frame(g->p1.anim_frame), FIGHTER_INSET, FIGHTER_Y);
+            draw_sprite_mirrored(get_idle_frame(g->p2.anim_frame),
+                                SCREEN_WIDTH - FIGHTER_INSET - FIGHTER_W, FIGHTER_Y);
+            break;
+
         case GS_PAUSE:
         case GS_MENU:
         case GS_ROUND_START:
-        case GS_ROUND_END:
         case GS_GAME_OVER:
             draw_background();
             break;

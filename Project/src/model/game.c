@@ -3,7 +3,7 @@
 #include "game.h"
 #include "combat.h"
 
-#define ANIM_FRAME_DURATION_MS 50
+#define ANIM_FRAME_DURATION_MS 40
 
 static void tick_anim(Player *p, int delta_ms) {
     p->anim_timer_ms += delta_ms;
@@ -91,7 +91,7 @@ void game_update(Game *g, int delta_ms) {
                     combat_resolve(&g->p2, &g->p1, false, false);
             }
 
-        
+            {
             bool p1_dead = player_is_dead(&g->p1);
             bool p2_dead = player_is_dead(&g->p2);
             bool time_up = (g->round_elapsed_ms >= g->round_duration_ms);
@@ -105,7 +105,7 @@ void game_update(Game *g, int delta_ms) {
                 g->state          = GS_ROUND_END;
                 g->state_timer_ms = INTER_ROUND_MS;
             }
-        
+            }
             break;
         }
 
