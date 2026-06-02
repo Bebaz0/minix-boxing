@@ -1,10 +1,13 @@
 #include "menu_view.h"
 #include "font.h"
+#include "sprites.h"
 #include "config.h"
 #include "view_utils.h"
+#include "../assets/logo_menu.xpm"
 
 #define MENU_BUTTON_COLOR   0xC618u
 #define MENU_SELECTED_COLOR 0xFFE0u
+#define LOGO_Y              40u
 
 static font_t *get_menu_font(void) {
     static font_t *font = NULL;
@@ -17,14 +20,18 @@ static font_t *get_menu_font(void) {
     return font;
 }
 
+static sprite_t *get_logo_sprite(void) {
+    static sprite_t *logo_sprite = NULL;
+
+    if (logo_sprite == NULL)
+        logo_sprite = sprite_create(logo_menu);
+
+    return logo_sprite;
+}
+
 static void draw_menu_text(font_t *font, const char *text, uint16_t x, uint16_t y) {
     if (font != NULL)
         font_draw_string(font, text, x, y);
-}
-
-static void draw_centered_menu_text(font_t *font, const char *text, uint16_t y) {
-    uint16_t width = font_string_width(font, text);
-    draw_menu_text(font, text, (SCREEN_WIDTH - width) / 2, y);
 }
 
 static void draw_menu_button(const Game *g, font_t *font, MenuOption option, const char *label, uint16_t y) {
@@ -40,9 +47,12 @@ static void draw_menu_button(const Game *g, font_t *font, MenuOption option, con
 
 void menu_view_draw(const Game *g) {
     font_t *font = get_menu_font();
+    sprite_t *logo = get_logo_sprite();
 
     view_draw_background();
-    draw_centered_menu_text(font, "FIGHT", 180);
+    if (logo != NULL)
+        sprite_draw(logo, (SCREEN_WIDTH - logo->width) / 2, LOGO_Y);
+
     draw_menu_button(g, font, MENU_OPTION_START, "START", MENU_START_Y);
     draw_menu_button(g, font, MENU_OPTION_EXIT, "EXIT", MENU_EXIT_Y);
 }
