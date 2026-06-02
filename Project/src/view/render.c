@@ -1,51 +1,25 @@
 #include "render.h"
-#include "sprites.h"
+#include "menu_view.h"
+#include "active_view.h"
+#include "view_utils.h"
 #include "game.h"
-#include "config.h"
 #include "video.h"
-#include "../assets/fighter.h"
-
-/* Dark-grey arena background in RGB565 */
-#define BG_COLOR       0x9904u
-/* Bright red — temporary debug marker for GS_ROUND_END */
-#define ROUND_END_COLOR 0xF800u
-
-/* Fighter vertical baseline (pixels from top of screen) */
-#define FIGHTER_Y  300u
-
-/* Horizontal inset from screen edges */
-#define FIGHTER_INSET 100u
-
-static void draw_background(void) {
-    for (uint16_t row = 0; row < SCREEN_HEIGHT; row++)
-        vg_draw_hline(0, row, SCREEN_WIDTH, BG_COLOR);
-}
-static const char **get_idle_frame(int frame_index) {
-    return fighter_idle_frames[frame_index];
-}
 
 void render_frame(const Game *g) {
     switch (g->state) {
         case GS_ACTIVE:
-            draw_background();
-            draw_sprite(get_idle_frame(g->p1.anim_frame), FIGHTER_INSET, FIGHTER_Y);
-            draw_sprite_mirrored(get_idle_frame(g->p2.anim_frame),
-                                SCREEN_WIDTH - FIGHTER_INSET - FIGHTER_W, FIGHTER_Y);
+        case GS_ROUND_END:
+            active_view_draw(g);
             break;
 
-        case GS_ROUND_END:
-            for (uint16_t row = 0; row < SCREEN_HEIGHT; row++)
-                vg_draw_hline(0, row, SCREEN_WIDTH, ROUND_END_COLOR);
-            draw_sprite(get_idle_frame(g->p1.anim_frame), FIGHTER_INSET, FIGHTER_Y);
-            draw_sprite_mirrored(get_idle_frame(g->p2.anim_frame),
-                                SCREEN_WIDTH - FIGHTER_INSET - FIGHTER_W, FIGHTER_Y);
+        case GS_MENU:
+            menu_view_draw(g);
             break;
 
         case GS_PAUSE:
-        case GS_MENU:
         case GS_ROUND_START:
         case GS_GAME_OVER:
-            draw_background();
+            view_draw_background();
             break;
     }
     vg_flip();

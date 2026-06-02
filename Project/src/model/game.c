@@ -15,7 +15,8 @@ static void tick_anim(Player *p, int delta_ms) {
 
 void game_init(Game *g) {
     memset(g, 0, sizeof(*g));
-    g->state              = GS_ROUND_START; /* change to GS_MENU when menu is ready */
+    menu_init(&g->menu);
+    g->state              = GS_MENU;
     player_init(&g->p1);
     player_init(&g->p2);
     g->response_window_ms = INITIAL_RESPONSE_WINDOW_MS;
