@@ -1,0 +1,15 @@
+/* XPM */
+static const char * const glyph_42[] = {
+/* columns rows colors chars-per-pixel */
+"10 7 2 1 ",
+"  c None",
+". c #FFFFFF",
+/* pixels */
+"          ",
+"  ..  ..  ",
+"   ....   ",
+" ........ ",
+"   ....   ",
+"  ..  ..  ",
+"          "
+};
