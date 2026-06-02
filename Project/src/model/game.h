@@ -6,6 +6,7 @@
 #include "player.h"
 #include "key_prompt.h"
 #include "bubble.h"
+#include "menu.h"
 
 typedef enum {
     GS_MENU,
@@ -20,6 +21,7 @@ typedef struct Game {
     GameState  state;
     Player     p1;                               /* Jogador 1 — teclado */
     Player     p2;                               /* Jogador 2 — rato    */
+    Menu       menu;
     KeyPrompt  key_prompts[MAX_KEY_PROMPTS];     /* timing events do P1 */
     BubbleEvent bubbles[MAX_BUBBLES];            /* timing events do P2 */
     int        key_prompt_spawn_timer_ms;
