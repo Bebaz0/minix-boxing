@@ -30,6 +30,8 @@ void render_frame(const Game *g) {
             draw_sprite_mirrored(get_idle_frame(g->p2.anim_frame),
                                 SCREEN_WIDTH - FIGHTER_INSET - FIGHTER_W, FIGHTER_Y);
             break;
+            
+        case GS_PAUSE:
         case GS_MENU:
         case GS_ROUND_START:
         case GS_ROUND_END:

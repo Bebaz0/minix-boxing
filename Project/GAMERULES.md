@@ -53,6 +53,7 @@ Both players act simultaneously in a continuous fight:
 - Bubble timing events appear at random positions on screen.
 - Multiple bubbles can be active at the same time; Player 2 must click each one before its window closes.
 - New bubbles spawn on a timer — independently of whether previous ones were resolved.
+- Player can 
 - **Perfect hit** (early in the window): fills combo bar.
 - **Normal hit** (late in the window): no damage, no combo.
 - **Failure** (window expires without a click): Player 2 takes damage to their own HP.
