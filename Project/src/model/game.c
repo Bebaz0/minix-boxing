@@ -3,7 +3,7 @@
 #include "game.h"
 #include "combat.h"
 
-#define ANIM_FRAME_DURATION_MS 60
+#define ANIM_FRAME_DURATION_MS 120
 
 static void tick_anim(Player *p, int delta_ms) {
     p->anim_timer_ms += delta_ms;
@@ -23,6 +23,20 @@ void game_init(Game *g) {
     g->round_duration_ms  = ROUND_DURATION_MS;
     g->round_number       = 1;
     g->state_timer_ms     = INTER_ROUND_MS;
+}
+
+void game_reset_round(Game *g) {
+    player_init(&g->p1);
+    player_init(&g->p2);
+    memset(g->key_prompts, 0, sizeof(g->key_prompts));
+    memset(g->bubbles, 0, sizeof(g->bubbles));
+    g->key_prompt_spawn_timer_ms = 0;
+    g->bubble_spawn_timer_ms     = 0;
+    g->round_elapsed_ms          = 0;
+    g->round_number++;
+    g->round_end_selected        = 0;
+    g->state                     = GS_ROUND_START;
+    g->state_timer_ms            = INTER_ROUND_MS;
 }
 
 void game_update(Game *g, int delta_ms) {
@@ -111,7 +125,6 @@ void game_update(Game *g, int delta_ms) {
         }
 
         case GS_ROUND_END:
-            /* animations frozen — wait for a future end-round screen */
             break;
     }
 }

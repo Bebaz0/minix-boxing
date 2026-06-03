@@ -41,7 +41,7 @@ void controller_handle_keyboard(Controller *ctrl, Game *g) {
         case GS_ROUND_START: round_start_ctrl_handle_keyboard(ctrl, g); break;
         case GS_ACTIVE:      active_ctrl_handle_keyboard(ctrl, g);      break;
         case GS_PAUSE:       pause_ctrl_handle_keyboard(ctrl, g);       break;
-        case GS_ROUND_END:   round_start_ctrl_handle_keyboard(ctrl, g); break;
+        case GS_ROUND_END:   game_over_ctrl_handle_keyboard(ctrl, g);   break;
         case GS_GAME_OVER:   game_over_ctrl_handle_keyboard(ctrl, g);   break;
     }
 }
@@ -77,7 +77,7 @@ void controller_handle_mouse(Controller *ctrl, Game *g) {
         case GS_ROUND_START: round_start_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked); break;
         case GS_ACTIVE:      active_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);      break;
         case GS_PAUSE:       pause_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);       break;
-        case GS_ROUND_END:   round_start_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked); break;
+        case GS_ROUND_END:   game_over_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);   break;
         case GS_GAME_OVER:   game_over_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);   break;
     }
 }
