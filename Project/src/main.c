@@ -43,7 +43,7 @@ int(proj_main_loop)(int argc, char *argv[]) {
     int     ipc_status;
     message msg;
 
-    while (!game_is_over(&g)) {
+    while (!game_quit(&g)) {
 
         if (driver_receive(ANY, &msg, &ipc_status) != 0)
             continue;

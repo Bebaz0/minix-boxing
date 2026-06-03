@@ -149,6 +149,6 @@ void game_handle_click(Game *g, int mx, int my, MouseButton button) {
     }
 }
 
-bool game_is_over(const Game *g) {
+bool game_quit(const Game *g) {
     return g->state == GS_QUIT;
 }

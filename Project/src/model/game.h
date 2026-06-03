@@ -41,6 +41,6 @@ void game_reset_round(Game *g);
 void game_update(Game *g, int delta_ms);
 void game_handle_key(Game *g, char key);
 void game_handle_click(Game *g, int mx, int my, MouseButton button);
-bool game_is_over(const Game *g);
+bool game_quit(const Game *g);
 
 #endif /* GAME_H */
