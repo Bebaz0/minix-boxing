@@ -53,4 +53,7 @@
 /* Teclas do Jogador 1 */
 #define KEY_PROMPT_KEYS "QWER"
 
+/* Raio das bubbles (px) */
+#define BUBBLE_RADIUS  40
+
 #endif /* CONFIG_H */

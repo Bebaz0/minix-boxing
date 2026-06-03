@@ -12,8 +12,8 @@
 static void menu_apply_selected(Game *g) {
     switch (g->menu.selected) {
         case MENU_OPTION_START:
-            g->state = GS_ACTIVE;
-            g->state_timer_ms = 0;
+            g->state = GS_ROUND_START;
+            g->state_timer_ms = INTER_ROUND_MS;
             break;
         case MENU_OPTION_EXIT:
             g->state = GS_GAME_OVER;

@@ -10,6 +10,10 @@ SRCS = main.c \
        bubble.c \
        combat.c \
        render.c \
+       menu_view.c \
+       active_view.c \
+       font.c \
+       view_utils.c \
        sprites.c \
        controller.c \
        menu_controller.c \
