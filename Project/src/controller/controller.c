@@ -31,8 +31,15 @@ void controller_handle_keyboard(Controller *ctrl, Game *g) {
     if (kbc_error)
         return;
 
-    if (scancode == 0x01) {   /* ESC — sair do jogo em qualquer estado */
-        g->state = GS_GAME_OVER;
+    if (scancode == 0x01) {
+        if (g->state == GS_ACTIVE) {
+            g->pause_selected = 0;
+            g->state = GS_PAUSE;
+        } else if (g->state == GS_PAUSE) {
+            g->state = GS_ACTIVE;
+        } else {
+            g->state = GS_QUIT;
+        }
         return;
     }
 
@@ -42,7 +49,7 @@ void controller_handle_keyboard(Controller *ctrl, Game *g) {
         case GS_ACTIVE:      active_ctrl_handle_keyboard(ctrl, g);      break;
         case GS_PAUSE:       pause_ctrl_handle_keyboard(ctrl, g);       break;
         case GS_ROUND_END:   game_over_ctrl_handle_keyboard(ctrl, g);   break;
-        case GS_GAME_OVER:   game_over_ctrl_handle_keyboard(ctrl, g);   break;
+        case GS_QUIT:        game_over_ctrl_handle_keyboard(ctrl, g);   break;
     }
 }
 
@@ -78,6 +85,6 @@ void controller_handle_mouse(Controller *ctrl, Game *g) {
         case GS_ACTIVE:      active_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);      break;
         case GS_PAUSE:       pause_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);       break;
         case GS_ROUND_END:   game_over_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);   break;
-        case GS_GAME_OVER:   game_over_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);   break;
+        case GS_QUIT:        game_over_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);   break;
     }
 }

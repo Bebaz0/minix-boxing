@@ -14,7 +14,7 @@ typedef enum {
     GS_ACTIVE,
     GS_PAUSE,
     GS_ROUND_END,
-    GS_GAME_OVER
+    GS_QUIT
 } GameState;
 
 typedef struct Game {
@@ -33,6 +33,7 @@ typedef struct Game {
     int        round_number;                     /* começa em 1         */
     int        winner;                           /* 1, 2, ou 0 em empate */
     int        round_end_selected;               /* 0 = RESTART, 1 = MENU */
+    int        pause_selected;                   /* 0 = RESUME,  1 = EXIT */
 } Game;
 
 void game_init(Game *g);

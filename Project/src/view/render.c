@@ -3,6 +3,7 @@
 #include "menu_view.h"
 #include "round_start_view.h"
 #include "game_over_view.h"
+#include "pause_view.h"
 #include "view_utils.h"
 #include "video.h"
 
@@ -25,7 +26,10 @@ void render_frame(const Game *g) {
             break;
 
         case GS_PAUSE:
-        case GS_GAME_OVER:
+            pause_view_draw(g);
+            break;
+
+        case GS_QUIT:
             view_draw_background(BG_COLOR);
             break;
     }
