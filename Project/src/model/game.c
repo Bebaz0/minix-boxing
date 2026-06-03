@@ -3,7 +3,7 @@
 #include "game.h"
 #include "combat.h"
 
-#define ANIM_FRAME_DURATION_MS 40
+#define ANIM_FRAME_DURATION_MS 60
 
 static void tick_anim(Player *p, int delta_ms) {
     p->anim_timer_ms += delta_ms;
@@ -111,9 +111,7 @@ void game_update(Game *g, int delta_ms) {
         }
 
         case GS_ROUND_END:
-            g->state_timer_ms -= delta_ms;
-            if (g->state_timer_ms <= 0)
-                g->state = GS_GAME_OVER;
+            /* animations frozen — wait for a future end-round screen */
             break;
     }
 }

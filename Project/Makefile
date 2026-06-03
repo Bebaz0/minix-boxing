@@ -12,6 +12,7 @@ SRCS = main.c \
        render.c \
        menu_view.c \
        active_view.c \
+       round_start_view.c \
        font.c \
        view_utils.c \
        sprites.c \

@@ -41,7 +41,7 @@ static void draw_menu_button(const Game *g, font_t *font, MenuOption option, con
 void menu_view_draw(const Game *g) {
     font_t *font = get_menu_font();
 
-    view_draw_background();
+    view_draw_background(BG_COLOR);
     draw_centered_menu_text(font, "FIGHT", 180);
     draw_menu_button(g, font, MENU_OPTION_START, "START", MENU_START_Y);
     draw_menu_button(g, font, MENU_OPTION_EXIT, "EXIT", MENU_EXIT_Y);
