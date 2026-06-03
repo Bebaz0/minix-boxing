@@ -1,0 +1,23 @@
+/* XPM */
+static const char * const cursor_xpm[] = {
+  "12 16 3 1 ",
+  "  c None",
+  "B c #000000",
+  "W c #FFFFFF",
+  "B           ",
+  "BB          ",
+  "BWB         ",
+  "BWWB        ",
+  "BWWWB       ",
+  "BWWWWB      ",
+  "BWWWWWB     ",
+  "BWWWWWWB    ",
+  "BWWWWWWWB   ",
+  "BWWWWWWWWB  ",
+  "BWWWWWBBBBB ",
+  "BWWWWB      ",
+  "BWWWB       ",
+  "BWWB        ",
+  "BWB         ",
+  "B           "
+};

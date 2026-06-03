@@ -6,6 +6,17 @@
 #include "pause_view.h"
 #include "view_utils.h"
 #include "video.h"
+#include "sprites.h"
+#include "../assets/cursor.xpm"
+
+static void draw_cursor(const Game *g) {
+    static sprite_t *cursor = NULL;
+    if (cursor == NULL)
+        cursor = sprite_create((xpm_map_t)cursor_xpm);
+    if (cursor == NULL)
+        return;
+    sprite_draw(cursor, (uint16_t)g->mouse_x, (uint16_t)g->mouse_y);
+}
 
 void render_frame(const Game *g) {
     switch (g->state) {
@@ -34,5 +45,6 @@ void render_frame(const Game *g) {
             break;
     }
 
+    draw_cursor(g);
     vg_flip();
 }

@@ -8,5 +8,6 @@
 
 void view_draw_background(uint32_t color);
 void view_draw_rect(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint32_t color);
+void view_draw_filled_circle(int cx, int cy, int r, uint32_t color);
 
 #endif /* VIEW_UTILS_H */
