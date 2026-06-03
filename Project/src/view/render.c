@@ -4,14 +4,14 @@
 #include "view_utils.h"
 #include "video.h"
 
-void render_frame(const Game *g) {
+void render_frame(const Game *g, int mouse_x, int mouse_y) {
     switch (g->state) {
         case GS_ACTIVE:
             active_view_draw(g);
             break;
 
         case GS_MENU:
-            menu_view_draw(g);
+            menu_view_draw(g, mouse_x, mouse_y);
             break;
 
         case GS_PAUSE:

@@ -26,6 +26,7 @@ int(proj_main_loop)(int argc, char *argv[]) {
     if (timer_subscribe_int(&timer_bit) != 0) return 1;
     if (timer_set_frequency(0, TIMER_FREQ) != 0) return 1;
     if (kbc_subscribe_int(&kbd_bit) != 0) return 1;
+    if (mouse_write_cmd(MOUSE_ENABLE_DATA) != 0) return 1;
     if (mouse_subscribe_interrupts(&mse_bit) != 0) return 1;
 
     int timer_irq = BIT(timer_bit);
@@ -57,7 +58,7 @@ int(proj_main_loop)(int argc, char *argv[]) {
                 if (msg.m_notify.interrupts & timer_irq) {
                     timer_int_handler();
                     game_update(&g, 1000 / TIMER_FREQ);
-                    render_frame(&g);
+                    render_frame(&g, ctrl.mouse_x, ctrl.mouse_y);
                 }
 
                 if (msg.m_notify.interrupts & kbd_irq) {
@@ -76,6 +77,7 @@ int(proj_main_loop)(int argc, char *argv[]) {
     timer_unsubscribe_int();
     kbc_unsubscribe_int();
     mouse_unsubscribe_interrupts();
+    mouse_write_cmd(MOUSE_DISABLE_DATA);
 
     vg_exit();
     return 0;
