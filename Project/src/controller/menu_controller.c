@@ -15,6 +15,8 @@ static void menu_apply_selected(Game *g) {
             g->state = GS_ROUND_START;
             g->state_timer_ms = INTER_ROUND_MS;
             break;
+        case MENU_OPTION_INSTRUCTIONS:
+            break;
         case MENU_OPTION_EXIT:
             g->state = GS_GAME_OVER;
             break;
