@@ -5,6 +5,7 @@ VPATH = src:src/model:src/view:src/controller
 SRCS = main.c \
        game.c \
        menu.c \
+       char_select.c \
        player.c \
        key_prompt.c \
        bubble.c \

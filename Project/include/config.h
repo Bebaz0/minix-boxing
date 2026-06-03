@@ -47,6 +47,9 @@
 #define KEY_PROMPT_SPAWN_INTERVAL_MS  1500
 #define BUBBLE_SPAWN_INTERVAL_MS      1500
 
+/* Escolha de Personagens */
+#define CHAR_COUNT  10   /* número de personagens disponíveis para seleção */
+
 /* Animação */
 #define FIGHTER_IDLE_FRAME_COUNT  4   /* aumentar quando adicionar mais frames ao fighter.h */
 
