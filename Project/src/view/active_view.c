@@ -10,6 +10,15 @@
 #define FIGHTER_INSET 100u
 #define TIMER_Y       10u
 
+#define WASD_KEY_SIZE  50u
+#define WASD_GAP        4u
+#define WASD_X         50u
+#define WASD_Y        660u
+
+#define WASD_COLOR_PRESSED   0xFFE0u  // yellow
+#define WASD_COLOR_UNPRESSED 0x2104u  // dark
+#define WASD_COLOR_OUTLINE   0x7BEFu  // grey
+
 static sprite_t *get_idle_frame(int frame_index) {
     static sprite_t *idle_sprites[FIGHTER_IDLE_FRAME_COUNT] = {0};
 
@@ -31,6 +40,30 @@ static font_t *get_hud_font(void) {
     }
 
     return font;
+}
+
+static void draw_wasd_keys(const Game *g) {
+    font_t *font = get_hud_font();
+    if (font == NULL)
+        return;
+
+    static const char labels[4]  = {'W', 'A', 'S', 'D'};
+    uint16_t kx[4], ky[4];
+    kx[0] = WASD_X + WASD_KEY_SIZE + WASD_GAP;  ky[0] = WASD_Y;
+    kx[1] = WASD_X;                              ky[1] = WASD_Y + WASD_KEY_SIZE + WASD_GAP;
+    kx[2] = WASD_X + WASD_KEY_SIZE + WASD_GAP;  ky[2] = WASD_Y + WASD_KEY_SIZE + WASD_GAP;
+    kx[3] = WASD_X + 2*(WASD_KEY_SIZE + WASD_GAP); ky[3] = WASD_Y + WASD_KEY_SIZE + WASD_GAP;
+
+    for (int i = 0; i < 4; i++) {
+        uint32_t fill = g->wasd_held[i] ? WASD_COLOR_PRESSED : WASD_COLOR_UNPRESSED;
+        view_draw_rect(kx[i], ky[i], WASD_KEY_SIZE, WASD_KEY_SIZE, WASD_COLOR_OUTLINE);
+        view_draw_rect(kx[i] + 2, ky[i] + 2, WASD_KEY_SIZE - 4, WASD_KEY_SIZE - 4, fill);
+
+        char label[2] = {labels[i], '\0'};
+        uint16_t lx = kx[i] + (WASD_KEY_SIZE - font_string_width(font, label)) / 2;
+        uint16_t ly = ky[i] + (WASD_KEY_SIZE - font_line_height(font)) / 2;
+        font_draw_string(font, label, lx, ly);
+    }
 }
 
 static void draw_round_timer(const Game *g) {
@@ -55,4 +88,5 @@ void active_view_draw(const Game *g) {
     sprite_draw_mirrored(get_idle_frame(g->p2.anim_frame),
                          SCREEN_WIDTH - FIGHTER_INSET - FIGHTER_W, FIGHTER_Y);
     draw_round_timer(g);
+    draw_wasd_keys(g);
 }
