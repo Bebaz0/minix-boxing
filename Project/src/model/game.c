@@ -18,6 +18,7 @@ void game_init(Game *g) {
     player_init(&g->p1);
     player_init(&g->p2);
     menu_init(&g->menu);
+    char_select_init(&g->char_select);
     g->response_window_ms = INITIAL_RESPONSE_WINDOW_MS;
     g->round_duration_ms = ROUND_DURATION_MS;
     g->round_number = 1;

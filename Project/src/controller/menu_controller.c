@@ -1,18 +1,10 @@
 #include "menu_controller.h"
 #include "kbc.h"
 
-#define SCANCODE_ESC        0x01
-#define SCANCODE_ENTER      0x1C
-#define SCANCODE_W          0x11
-#define SCANCODE_S          0x1F
-#define SCANCODE_UP         0x48
-#define SCANCODE_DOWN       0x50
-#define SCANCODE_BREAK_MASK 0x80
-
 static void menu_apply_selected(Game *g) {
     switch (g->menu.selected) {
         case MENU_OPTION_START:
-            g->state = GS_ACTIVE;
+            g->state = GS_CHAR_SELECT;
             g->state_timer_ms = 0;
             break;
         case MENU_OPTION_EXIT:

@@ -14,6 +14,7 @@ SRCS = main.c \
        sprites.c \
        controller.c \
        menu_controller.c \
+       char_select_controller.c \
        active_controller.c \
        pause_controller.c \
        round_start_controller.c \
