@@ -44,7 +44,7 @@ void game_update(Game *g, int delta_ms) {
 
         case GS_MENU:
         case GS_PAUSE:
-        case GS_GAME_OVER:
+        case GS_QUIT:
             break;
 
         case GS_ROUND_START:
@@ -150,5 +150,5 @@ void game_handle_click(Game *g, int mx, int my, MouseButton button) {
 }
 
 bool game_is_over(const Game *g) {
-    return g->state == GS_GAME_OVER;
+    return g->state == GS_QUIT;
 }
