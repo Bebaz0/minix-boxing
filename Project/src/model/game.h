@@ -35,6 +35,8 @@ typedef struct Game {
     int        round_end_selected;               /* 0 = RESTART, 1 = MENU */
     int        pause_selected;                   /* 0 = RESUME,  1 = EXIT */
     bool       wasd_held[4];                     /* W A S D held state (visual feedback) */
+    bool       mouse_held[2];                    /* [0]=left [1]=right held state (visual feedback) */
+    int        mouse_x, mouse_y;                 /* cursor position in screen coords */
 } Game;
 
 void game_init(Game *g);

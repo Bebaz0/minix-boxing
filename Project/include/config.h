@@ -53,6 +53,9 @@
 /* Teclas do Jogador 1 */
 #define KEY_PROMPT_KEYS "QWER"
 
+/* Sensibilidade do Rato do Jogador 2 */
+#define MOUSE_SENSITIVITY 1
+
 /* Raio das bubbles (px) */
 #define BUBBLE_RADIUS  40
 
