@@ -28,6 +28,8 @@
 #define ROUND_DURATION_MS             10000   /* 10 s at 60 Hz (600 ticks × 16 ms) */
 
 /* Pausa entre rondas (ms) */
+#define ROUND_START_MS                4000
+#define ROUND_SPLASH_MS               1000
 #define INTER_ROUND_MS                3000
 
 /* TODO: Ajustar conforme o design do jogo */

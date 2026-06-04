@@ -57,7 +57,7 @@ int(proj_main_loop)(int argc, char *argv[]) {
             case HARDWARE:
                 if (msg.m_notify.interrupts & timer_irq) {
                     timer_int_handler();
-                    game_update(&g,2 * (1000 / TIMER_FREQ));
+                    game_update(&g, 1000 / TIMER_FREQ);
                     render_frame(&g);
                 }
 
