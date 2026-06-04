@@ -48,7 +48,8 @@
 #define BUBBLE_SPAWN_INTERVAL_MS      1500
 
 /* Escolha de Personagens */
-#define CHAR_COUNT  10   /* número de personagens disponíveis para seleção */
+#define CHAR_COUNT       10   /* número de personagens disponíveis para seleção */
+#define CHAR_SELECT_COLS  5   /* colunas na grelha (linhas = CHAR_COUNT / CHAR_SELECT_COLS) */
 
 /* Animação */
 #define FIGHTER_IDLE_FRAME_COUNT  5   /* aumentar quando adicionar mais frames ao fighter.h */

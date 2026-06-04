@@ -18,6 +18,16 @@
               char_select_p1_next(&g->char_select);
               g->char_select.p1_ready = false;
               break;
+          case SCANCODE_UP:
+          case SCANCODE_W:
+              char_select_p1_up(&g->char_select);
+              g->char_select.p1_ready = false;
+              break;
+          case SCANCODE_DOWN:
+          case SCANCODE_S:
+              char_select_p1_down(&g->char_select);
+              g->char_select.p1_ready = false;
+              break;
           case SCANCODE_ENTER:
               g->char_select.p1_ready = !g->char_select.p1_ready;
               break;

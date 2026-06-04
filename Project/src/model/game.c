@@ -46,9 +46,13 @@ void game_update(Game *g, int delta_ms) {
     switch (g->state) {
 
         case GS_MENU:
-        case GS_CHAR_SELECT:
         case GS_PAUSE:
         case GS_QUIT:
+            break;
+
+        case GS_CHAR_SELECT:
+            tick_anim(&g->p1, delta_ms);
+            tick_anim(&g->p2, delta_ms);
             break;
 
         case GS_ROUND_START:
