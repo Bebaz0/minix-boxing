@@ -44,14 +44,23 @@
 
 /* Intervalo entre spawn de novos timing events (ms) */
 /* TODO: Definir ritmo de spawn e como varia com a dificuldade */
-#define KEY_PROMPT_SPAWN_INTERVAL_MS  1500
-#define BUBBLE_SPAWN_INTERVAL_MS      1500
+/* Intervalo aleatório entre MIN e MAX (sensação menos mecânica) */
+#define KEY_PROMPT_SPAWN_MIN_MS        600
+#define KEY_PROMPT_SPAWN_MAX_MS       1600
+#define BUBBLE_SPAWN_MIN_MS            600
+#define BUBBLE_SPAWN_MAX_MS           1600
 
 /* Animação */
 #define FIGHTER_IDLE_FRAME_COUNT  5   /* aumentar quando adicionar mais frames ao fighter.h */
 
 /* Teclas do Jogador 1 */
 #define KEY_PROMPT_KEYS "QWER"
+
+#define KEY_LANE_COUNT          4
+#define KEY_LANE_TOP            60   /* y onde os tiles nascem*/
+#define KEY_HIT_ZONE_Y         600   /* y do alvo estático (acima do HUD WASD @660) */
+/* Últimos % da janela = perfect (tile alinhado com o alvo); espelha RING_PERFECT_WINDOW_PCT */
+#define KEY_PERFECT_WINDOW_PCT  35
 
 /* Sensibilidade do Rato do Jogador 2 */
 #define MOUSE_SENSITIVITY 2
