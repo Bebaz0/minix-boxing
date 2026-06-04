@@ -81,21 +81,38 @@ int (vg_draw_pixel)(uint16_t x, uint16_t y, uint32_t color) {
 
     char *pixel_addr = back_buffer + pixel_i * bytes_per_pixel;
 
-    memcpy(pixel_addr, &color, bytes_per_pixel);
+    if (bytes_per_pixel == 2)
+        *((uint16_t *)pixel_addr) = (uint16_t)color;
+    else
+        memcpy(pixel_addr, &color, bytes_per_pixel);
 
     return 0;
 }
 
 int (vg_draw_hline)(uint16_t x, uint16_t y, uint16_t len, uint32_t color) {
 
-    for (uint16_t i = 0; i < len; i++) {
-        if (vg_draw_pixel(x + i, y, color) != 0)
-            return 1;
+    if (y >= vmi.YResolution || x >= vmi.XResolution)
+        return 1;
+
+    if (x + len > vmi.XResolution)
+        len = vmi.XResolution - x;
+
+    char *line = back_buffer + (y * vmi.XResolution + x) * bytes_per_pixel;
+
+    if (bytes_per_pixel == 2) {
+        uint16_t *pixels = (uint16_t *)line;
+        uint16_t c = (uint16_t)color;
+        for (uint16_t i = 0; i < len; i++)
+            pixels[i] = c;
     }
+    else {
+        for (uint16_t i = 0; i < len; i++)
+            memcpy(line + i * bytes_per_pixel, &color, bytes_per_pixel);
+    }
+
     return 0;
 }
 
 void (vg_flip)(void) {
     memcpy(video_mem, back_buffer, vram_size);
 }
-

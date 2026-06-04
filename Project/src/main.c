@@ -43,6 +43,7 @@ int(proj_main_loop)(int argc, char *argv[]) {
 
     int     ipc_status;
     message msg;
+    int     timer_ms_remainder = 0;
 
     while (!game_quit(&g)) {
 
@@ -57,7 +58,10 @@ int(proj_main_loop)(int argc, char *argv[]) {
             case HARDWARE:
                 if (msg.m_notify.interrupts & timer_irq) {
                     timer_int_handler();
-                    game_update(&g, 1000 / TIMER_FREQ);
+                    timer_ms_remainder += 1000;
+                    int delta_ms = timer_ms_remainder / TIMER_FREQ;
+                    timer_ms_remainder %= TIMER_FREQ;
+                    game_update(&g, delta_ms);
                     render_frame(&g);
                 }
 

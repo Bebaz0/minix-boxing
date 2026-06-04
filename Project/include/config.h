@@ -13,7 +13,7 @@
 #ifdef TIMER_FREQ
 #undef TIMER_FREQ
 #endif
-#define TIMER_FREQ     60      /* ticks por segundo */
+#define TIMER_FREQ     30      /* ticks por segundo */
 
 /* Jogador */
 #define PLAYER_MAX_HP       100
