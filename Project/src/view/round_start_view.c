@@ -3,6 +3,7 @@
 #include "config.h"
 #include "view_utils.h"
 #include "sprites.h"
+#include "active_view.h"
 #include "../assets/round_1.xpm"
 #include "../assets/round_2.xpm"
 #include "../assets/round_3.xpm"
@@ -65,7 +66,7 @@ static void draw_round_splash(const Game *g) {
 }
 
 void round_start_view_draw(const Game *g) {
-    view_draw_background(BG_COLOR);
+    active_view_draw_background();
 
     if (g->state_timer_ms <= ROUND_SPLASH_MS) {
         draw_round_splash(g);

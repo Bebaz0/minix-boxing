@@ -92,6 +92,13 @@ int sprite_draw(const sprite_t *sprite, uint16_t x, uint16_t y) {
     return 0;
 }
 
+int sprite_draw_opaque(const sprite_t *sprite, uint16_t x, uint16_t y) {
+    if (sprite == NULL || sprite->pixels == NULL)
+        return 1;
+
+    return vg_draw_image(x, y, sprite->width, sprite->height, (uint16_t *)sprite->pixels);
+}
+
 int sprite_draw_region(const sprite_t *sprite, int src_x, int src_y, uint16_t w, uint16_t h,
                        int dst_x, int dst_y) {
     if (sprite == NULL || sprite->pixels == NULL)

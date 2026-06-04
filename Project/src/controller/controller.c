@@ -54,6 +54,9 @@ void controller_handle_keyboard(Controller *ctrl, Game *g) {
 }
 
 void controller_handle_mouse(Controller *ctrl, Game *g) {
+    if (!mouse_has_byte())
+        return;
+
     uint8_t byte = get_mouse_byte();
 
     if (ctrl->mouse_index == 0 && !(byte & BIT(3)))

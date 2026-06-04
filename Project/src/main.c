@@ -73,21 +73,15 @@ int(proj_main_loop)(int argc, char *argv[]) {
                 if (msg.m_notify.interrupts & mse_irq) {
                     mouse_ih();
                     controller_handle_mouse(&ctrl, &g);
-                    uint8_t stat;
-                    while (util_sys_inb(KBC_STATUS_REG, &stat) == 0 &&
-                           (stat & FULL_OUT_BUFFER) && (stat & BIT(5))) {
-                        mouse_ih();
-                        controller_handle_mouse(&ctrl, &g);
-                    }
                 }
                 break;
         }
     }
 
-    timer_unsubscribe_int();
-    kbc_unsubscribe_int();
+    mouse_disable_data_reporting();
     mouse_unsubscribe_interrupts();
-    mouse_write_cmd(MOUSE_DISABLE_DATA);
+    kbc_unsubscribe_int();
+    timer_unsubscribe_int();
 
     vg_exit();
     return 0;

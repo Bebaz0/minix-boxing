@@ -113,6 +113,34 @@ int (vg_draw_hline)(uint16_t x, uint16_t y, uint16_t len, uint32_t color) {
     return 0;
 }
 
+int (vg_draw_image)(uint16_t x, uint16_t y, uint16_t width, uint16_t height, const uint16_t *pixels) {
+    if (pixels == NULL || x >= vmi.XResolution || y >= vmi.YResolution)
+        return 1;
+
+    uint16_t src_width = width;
+
+    if (x + width > vmi.XResolution)
+        width = vmi.XResolution - x;
+    if (y + height > vmi.YResolution)
+        height = vmi.YResolution - y;
+
+    if (bytes_per_pixel == 2) {
+        for (uint16_t row = 0; row < height; row++) {
+            char *dst = back_buffer + ((y + row) * vmi.XResolution + x) * bytes_per_pixel;
+            const uint16_t *src = pixels + row * src_width;
+            memcpy(dst, src, width * sizeof(uint16_t));
+        }
+    }
+    else {
+        for (uint16_t row = 0; row < height; row++) {
+            for (uint16_t col = 0; col < width; col++)
+                vg_draw_pixel(x + col, y + row, pixels[row * src_width + col]);
+        }
+    }
+
+    return 0;
+}
+
 void (vg_flip)(void) {
     memcpy(video_mem, back_buffer, vram_size);
 }
