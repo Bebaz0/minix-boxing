@@ -25,7 +25,7 @@
 
 /* Duração de cada ronda (ms) — quando o contador chega a 0 a ronda termina */
 /* TODO: Definir duração total de cada ronda */
-#define ROUND_DURATION_MS             10000   /* 10 s at 60 Hz (600 ticks × 16 ms) */
+#define ROUND_DURATION_MS             60000  /* 60 s safety net — match ends when someone dies */
 
 /* Pausa entre rondas (ms) */
 #define INTER_ROUND_MS                3000
@@ -58,9 +58,13 @@
 #define KEY_PROMPT_KEYS "QWER"
 
 /* Sensibilidade do Rato do Jogador 2 */
-#define MOUSE_SENSITIVITY 1
+#define MOUSE_SENSITIVITY 2
 
 /* Raio das bubbles (px) */
 #define BUBBLE_RADIUS  40
+
+/* Anel de aproximação (ring) das bubbles */
+#define RING_START_SCALE_PCT    240  /* arranca a 2.4× o diâmetro da bubble */
+#define RING_PERFECT_WINDOW_PCT  35  /* últimos 35% da janela: ring alinhado = perfect */
 
 #endif /* CONFIG_H */

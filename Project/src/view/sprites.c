@@ -120,6 +120,25 @@ int sprite_draw_region(const sprite_t *sprite, int src_x, int src_y, uint16_t w,
     return 0;
 }
 
+int sprite_draw_to_size(const sprite_t *sprite, int x, int y, uint16_t dst_w, uint16_t dst_h) {
+    if (sprite == NULL || sprite->pixels == NULL || dst_w == 0 || dst_h == 0)
+        return 1;
+
+    uint16_t *pixels = (uint16_t *)sprite->pixels;
+
+    for (uint16_t row = 0; row < dst_h; row++) {
+        uint16_t src_row = (uint16_t)((uint32_t)row * sprite->height / dst_h);
+        for (uint16_t col = 0; col < dst_w; col++) {
+            uint16_t src_col = (uint16_t)((uint32_t)col * sprite->width / dst_w);
+            uint32_t color = pixels[src_row * sprite->width + src_col];
+            if (color == sprite->transparent_color) continue;
+            vg_draw_pixel((uint16_t)(x + col), (uint16_t)(y + row), color);
+        }
+    }
+
+    return 0;
+}
+
 int sprite_draw_mirrored(const sprite_t *sprite, uint16_t x, uint16_t y) {
     if (sprite == NULL || sprite->pixels == NULL)
         return 1;
