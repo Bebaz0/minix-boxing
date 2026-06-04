@@ -38,7 +38,7 @@ LDADD += -llcf -L../lab5 -lvideo -L../lab4 -lmouse -L../lab3 -lkbd ../lab2/timer
 ${VIDEO_LIB}:
 	${MAKE} -C ../lab5 lib
 
-${MOUSE_LIB}:
+${MOUSE_LIB}: ../lab4/mouse.c ../lab4/kbc.c ../lab4/utils.c ../lab4/mouse.h ../lab4/kbc.h ../lab4/i8042.h
 	${MAKE} -C ../lab4 lib
 
 ${KBD_LIB}:

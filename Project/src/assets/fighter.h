@@ -4,8 +4,6 @@
 #include "config.h"
 #include <lcom/lcf.h>
 
-/* Placeholder 64x128 fighter sprite (XPM_5_6_5 compatible).
-   ' ' = chroma-key green (transparent), 'H' = skin, 'X' = body. */
 #define FIGHTER_W 192
 #define FIGHTER_H_PX 383
 

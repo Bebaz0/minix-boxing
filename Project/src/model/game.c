@@ -23,6 +23,8 @@ void game_init(Game *g) {
     g->round_duration_ms  = ROUND_DURATION_MS;
     g->round_number       = 1;
     g->state_timer_ms     = INTER_ROUND_MS;
+    g->mouse_x            = SCREEN_WIDTH / 2;
+    g->mouse_y            = SCREEN_HEIGHT / 2;
 }
 
 void game_reset_round(Game *g) {

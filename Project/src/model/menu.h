@@ -3,6 +3,7 @@
 
 typedef enum {
     MENU_OPTION_START,
+    MENU_OPTION_INSTRUCTIONS,
     MENU_OPTION_EXIT,
     MENU_OPTION_COUNT
 } MenuOption;
@@ -11,11 +12,12 @@ typedef struct {
     MenuOption selected;
 } Menu;
 
-#define MENU_BUTTON_X 392
-#define MENU_BUTTON_W 240
-#define MENU_BUTTON_H 56
-#define MENU_START_Y 316
-#define MENU_EXIT_Y  396
+#define MENU_BUTTON_X 347
+#define MENU_BUTTON_W 330
+#define MENU_BUTTON_H 82
+#define MENU_START_Y 405
+#define MENU_INSTRUCTIONS_Y 489
+#define MENU_EXIT_Y  577
 
 void menu_init(Menu *menu);
 void menu_select_next(Menu *menu);

@@ -15,6 +15,8 @@ sprite_t *sprite_create(xpm_map_t xpm);
 sprite_t *sprite_create_scaled(const sprite_t *source, uint16_t scale);
 void sprite_destroy(sprite_t *sprite);
 int sprite_draw(const sprite_t *sprite, uint16_t x, uint16_t y);
+int sprite_draw_region(const sprite_t *sprite, int src_x, int src_y, uint16_t w, uint16_t h,
+                       int dst_x, int dst_y);
 int sprite_draw_mirrored(const sprite_t *sprite, uint16_t x, uint16_t y);
 
 #endif /* PROJECT_SPRITES_H */
