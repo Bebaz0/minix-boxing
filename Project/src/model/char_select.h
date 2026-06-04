@@ -18,3 +18,4 @@
  bool (char_select_both_ready)(const CharSelect *cs);
 
 #endif
+

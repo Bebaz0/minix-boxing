@@ -9,6 +9,7 @@
 #include "pause_controller.h"
 #include "round_start_controller.h"
 #include "game_over_controller.h"
+#include "char_select_controller.h"
 
 static int clamp_int(int value, int min, int max) {
     if (value < min) return min;
@@ -37,7 +38,9 @@ void controller_handle_keyboard(Controller *ctrl, Game *g) {
             g->state = GS_PAUSE;
         } else if (g->state == GS_PAUSE) {
             g->state = GS_ACTIVE;
-        } else {
+        } else if (g->state == GS_CHAR_SELECT){
+            g->state = GS_MENU;
+        }else {
             g->state = GS_QUIT;
         }
         return;
@@ -50,6 +53,7 @@ void controller_handle_keyboard(Controller *ctrl, Game *g) {
         case GS_PAUSE:       pause_ctrl_handle_keyboard(ctrl, g);       break;
         case GS_ROUND_END:   game_over_ctrl_handle_keyboard(ctrl, g);   break;
         case GS_QUIT:        game_over_ctrl_handle_keyboard(ctrl, g);   break;
+        case GS_CHAR_SELECT: char_select_ctrl_handle_keyboard(ctrl,g);  break;
     }
 }
 
@@ -94,5 +98,6 @@ void controller_handle_mouse(Controller *ctrl, Game *g) {
         case GS_PAUSE:       pause_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);       break;
         case GS_ROUND_END:   game_over_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);   break;
         case GS_QUIT:        game_over_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);   break;
+        case GS_CHAR_SELECT: char_select_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked); break;
     }
 }

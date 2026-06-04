@@ -4,6 +4,7 @@
 #include "round_start_view.h"
 #include "game_over_view.h"
 #include "pause_view.h"
+#include "char_select_view.h"
 #include "view_utils.h"
 #include "video.h"
 #include "sprites.h"
@@ -72,6 +73,10 @@ void render_frame(const Game *g) {
 
         case GS_PAUSE:
             pause_view_draw(g);
+            break;
+
+        case GS_CHAR_SELECT:
+            char_select_view_draw(g);
             break;
 
         case GS_QUIT:
