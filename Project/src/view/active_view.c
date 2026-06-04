@@ -51,11 +51,11 @@ static sprite_t *get_bubble_sprite(MouseButton btn) {
 
     if (btn == MOUSE_BUTTON_LEFT) {
         if (bubble_left == NULL)
-            bubble_left = sprite_create((xpm_map_t)bubble_L_xpm);
+            bubble_left = sprite_create((xpm_map_t)bubble_L);
         return bubble_left;
     }
     if (bubble_right == NULL)
-        bubble_right = sprite_create((xpm_map_t)bubble_R_xpm);
+        bubble_right = sprite_create((xpm_map_t)bubble_R);
     return bubble_right;
 }
 
@@ -65,11 +65,11 @@ static sprite_t *get_ring_sprite(MouseButton btn) {
 
     if (btn == MOUSE_BUTTON_LEFT) {
         if (ring_left == NULL)
-            ring_left = sprite_create((xpm_map_t)ring_L_xpm);
+            ring_left = sprite_create((xpm_map_t)ring_L);
         return ring_left;
     }
     if (ring_right == NULL)
-        ring_right = sprite_create((xpm_map_t)ring_R_xpm);
+        ring_right = sprite_create((xpm_map_t)ring_R);
     return ring_right;
 }
 
