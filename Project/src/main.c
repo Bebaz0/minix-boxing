@@ -31,7 +31,7 @@ int(proj_main_loop)(int argc, char *argv[]) {
 
     int timer_irq = BIT(timer_bit);
     int kbd_irq   = BIT(kbd_bit);
-    int mse_irq   = BIT(mse_bit);
+    int mse_irq   = mse_bit;        /* mouse_subscribe_interrupts already returns BIT(hook_id) */
 
     if (vg_init(VIDEO_MODE) == NULL) return 1;
 
@@ -44,7 +44,7 @@ int(proj_main_loop)(int argc, char *argv[]) {
     int     ipc_status;
     message msg;
 
-    while (!game_is_over(&g)) {
+    while (!game_quit(&g)) {
 
         if (driver_receive(ANY, &msg, &ipc_status) != 0)
             continue;
@@ -57,8 +57,8 @@ int(proj_main_loop)(int argc, char *argv[]) {
             case HARDWARE:
                 if (msg.m_notify.interrupts & timer_irq) {
                     timer_int_handler();
-                    game_update(&g, 1000 / TIMER_FREQ);
-                    render_frame(&g, ctrl.mouse_x, ctrl.mouse_y);
+                    game_update(&g,2 * (1000 / TIMER_FREQ));
+                    render_frame(&g);
                 }
 
                 if (msg.m_notify.interrupts & kbd_irq) {
@@ -69,6 +69,12 @@ int(proj_main_loop)(int argc, char *argv[]) {
                 if (msg.m_notify.interrupts & mse_irq) {
                     mouse_ih();
                     controller_handle_mouse(&ctrl, &g);
+                    uint8_t stat;
+                    while (util_sys_inb(KBC_STATUS_REG, &stat) == 0 &&
+                           (stat & FULL_OUT_BUFFER) && (stat & BIT(5))) {
+                        mouse_ih();
+                        controller_handle_mouse(&ctrl, &g);
+                    }
                 }
                 break;
         }

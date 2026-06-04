@@ -1,7 +1,6 @@
 #include "menu_view.h"
 #include "sprites.h"
 #include "config.h"
-#include "view_utils.h"
 #include "../assets/menu_button_exit.xpm"
 #include "../assets/menu_button_exit_selected.xpm"
 #include "../assets/menu_button_instructions.xpm"
@@ -9,9 +8,6 @@
 #include "../assets/menu_button_start.xpm"
 #include "../assets/menu_button_start_selected.xpm"
 #include "../assets/menu_background.xpm"
-
-#define CURSOR_COLOR        0xFFFFu
-#define CURSOR_SHADOW       0x0000u
 
 static sprite_t *get_menu_background_sprite(void) {
     static sprite_t *sprite = NULL;
@@ -44,33 +40,26 @@ static void draw_menu_button(const Game *g, MenuOption option, uint16_t y) {
     sprite_draw(get_menu_button_sprite(option, g->menu.selected == option), MENU_BUTTON_X, y);
 }
 
-static void draw_cursor_pixel(int x, int y, uint32_t color) {
-    if (x < 0 || y < 0 || x >= SCREEN_WIDTH || y >= SCREEN_HEIGHT)
-        return;
-
-    view_draw_rect((uint16_t)x, (uint16_t)y, 1, 1, color);
+static bool rects_intersect(int ax, int ay, int aw, int ah, int bx, int by, int bw, int bh) {
+    return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
 }
 
-static void draw_mouse_cursor(int x, int y) {
-    for (uint16_t i = 0; i < 16; i++) {
-        for (uint16_t j = 0; j <= i; j++)
-            draw_cursor_pixel(x + j, y + i, CURSOR_SHADOW);
-
-        draw_cursor_pixel(x, y + i, CURSOR_COLOR);
-        draw_cursor_pixel(x + i, y + i, CURSOR_COLOR);
-    }
-
-    for (uint16_t i = 0; i < 20; i++)
-        draw_cursor_pixel(x, y + i, CURSOR_COLOR);
-
-    for (uint16_t i = 0; i < 12; i++)
-        draw_cursor_pixel(x + i, y, CURSOR_COLOR);
+static void restore_button_if_needed(const Game *g, MenuOption option, uint16_t y,
+                                     int x, int restore_y, uint16_t w, uint16_t h) {
+    if (rects_intersect(x, restore_y, w, h, MENU_BUTTON_X, y, MENU_BUTTON_W, MENU_BUTTON_H))
+        draw_menu_button(g, option, y);
 }
 
-void menu_view_draw(const Game *g, int mouse_x, int mouse_y) {
+void menu_view_draw(const Game *g) {
     sprite_draw(get_menu_background_sprite(), 0, 0);
     draw_menu_button(g, MENU_OPTION_START, MENU_START_Y);
     draw_menu_button(g, MENU_OPTION_INSTRUCTIONS, MENU_INSTRUCTIONS_Y);
     draw_menu_button(g, MENU_OPTION_EXIT, MENU_EXIT_Y);
-    draw_mouse_cursor(mouse_x, mouse_y);
+}
+
+void menu_view_restore_region(const Game *g, int x, int y, uint16_t w, uint16_t h) {
+    sprite_draw_region(get_menu_background_sprite(), x, y, w, h, x, y);
+    restore_button_if_needed(g, MENU_OPTION_START, MENU_START_Y, x, y, w, h);
+    restore_button_if_needed(g, MENU_OPTION_INSTRUCTIONS, MENU_INSTRUCTIONS_Y, x, y, w, h);
+    restore_button_if_needed(g, MENU_OPTION_EXIT, MENU_EXIT_Y, x, y, w, h);
 }

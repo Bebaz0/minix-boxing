@@ -16,8 +16,8 @@ typedef struct {
 #define MENU_BUTTON_W 330
 #define MENU_BUTTON_H 82
 #define MENU_START_Y 405
-#define MENU_INSTRUCTIONS_Y 493
-#define MENU_EXIT_Y  581
+#define MENU_INSTRUCTIONS_Y 489
+#define MENU_EXIT_Y  577
 
 void menu_init(Menu *menu);
 void menu_select_next(Menu *menu);

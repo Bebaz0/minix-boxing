@@ -12,6 +12,7 @@ SRCS = main.c \
        render.c \
        menu_view.c \
        active_view.c \
+       round_start_view.c \
        font.c \
        view_utils.c \
        sprites.c \
@@ -20,7 +21,9 @@ SRCS = main.c \
        active_controller.c \
        pause_controller.c \
        round_start_controller.c \
-       game_over_controller.c
+       game_over_controller.c \
+       game_over_view.c \
+       pause_view.c
 
 CFLAGS += -pedantic -Isrc -Isrc/model -Isrc/view -Isrc/controller -Iinclude -I../lab2 -I../lab3 -I../lab4 -I../lab5
 

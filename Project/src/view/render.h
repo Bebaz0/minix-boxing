@@ -3,6 +3,6 @@
 
 #include "game.h"
 
-void render_frame(const Game *g, int mouse_x, int mouse_y);
+void render_frame(const Game *g);
 
 #endif /* RENDER_H */
