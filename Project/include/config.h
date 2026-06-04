@@ -58,9 +58,17 @@
 
 #define KEY_LANE_COUNT          4
 #define KEY_LANE_TOP            60   /* y onde os tiles nascem*/
-#define KEY_HIT_ZONE_Y         600   /* y do alvo estático (acima do HUD WASD @660) */
-/* Últimos % da janela = perfect (tile alinhado com o alvo); espelha RING_PERFECT_WINDOW_PCT */
-#define KEY_PERFECT_WINDOW_PCT  35
+#define KEY_HIT_ZONE_Y         600   /* y do alvo estático */
+/* Janelas de timing,
+     - dentro de PERFECT_WINDOW_PCT do alvo  -> perfect (combo)
+     - dentro de HIT_WINDOW_PCT do alvo      -> hit normal (seguro, sem combo)
+     - fora disso (cedo demais OU já passou)  -> MISS (carregaste, mas falhaste)
+*/
+#define KEY_PERFECT_WINDOW_PCT  15
+#define KEY_HIT_WINDOW_PCT      35
+/* Após o alvo, o tile continua a cair por +EXTRA% da janela antes de desaparecer
+   (quase a sair do ecrã).*/
+#define KEY_DESPAWN_EXTRA_PCT   40
 
 /* Sensibilidade do Rato do Jogador 2 */
 #define MOUSE_SENSITIVITY 2

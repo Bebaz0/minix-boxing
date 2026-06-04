@@ -152,8 +152,6 @@ void game_update(Game *g, int delta_ms) {
 }
 
 void game_handle_key(Game *g, char key) {
-    /* Resolve o tile da MESMA tecla mais à frente (maior elapsed_ms = mais perto
-       do alvo), não o primeiro do array — os slots são reutilizados fora de ordem. */
     int best = -1;
     for (int i = 0; i < MAX_KEY_PROMPTS; i++) {
         if (!g->key_prompts[i].active || g->key_prompts[i].key != key)
@@ -161,8 +159,11 @@ void game_handle_key(Game *g, char key) {
         if (best < 0 || g->key_prompts[i].elapsed_ms > g->key_prompts[best].elapsed_ms)
             best = i;
     }
-    if (best >= 0 && key_prompt_press(&g->key_prompts[best], key))
-        combat_resolve(&g->p1, &g->p2, true, g->key_prompts[best].perfect);
+    if (best >= 0 && key_prompt_press(&g->key_prompts[best], key)) {
+        const KeyPrompt *kp = &g->key_prompts[best];
+        bool landed = kp->hit || kp->perfect;
+        combat_resolve(&g->p1, &g->p2, landed, kp->perfect);
+    }
 }
 
 void game_handle_click(Game *g, int mx, int my, MouseButton button) {
