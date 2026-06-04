@@ -23,12 +23,15 @@ bool bubble_on_click(BubbleEvent *ev, int mx, int my, MouseButton button) {
     if (dx * dx + dy * dy > ev->radius * ev->radius)
         return false;
 
-    if (ev->elapsed_ms < ev->response_window_ms / 2){
-    ev->hit = false;
-    ev->perfect = true;
-    }else{
-        ev->hit = true;
+    /* O ring de aproximação encolhe e fica alinhado com a bubble nos últimos
+       RING_PERFECT_WINDOW_PCT% da janela. Clicar nessa fase = perfect. */
+    int align_ms = ev->response_window_ms * (100 - RING_PERFECT_WINDOW_PCT) / 100;
+    if (ev->elapsed_ms >= align_ms) {
+        ev->perfect = true;
+        ev->hit = false;
+    } else {
         ev->perfect = false;
+        ev->hit = true;
     }
 
     ev->active = false;
