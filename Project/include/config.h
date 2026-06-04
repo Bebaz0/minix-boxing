@@ -48,10 +48,13 @@
 #define BUBBLE_SPAWN_INTERVAL_MS      1500
 
 /* Animação */
-#define FIGHTER_IDLE_FRAME_COUNT  4   /* aumentar quando adicionar mais frames ao fighter.h */
+#define FIGHTER_IDLE_FRAME_COUNT  5   /* aumentar quando adicionar mais frames ao fighter.h */
 
 /* Teclas do Jogador 1 */
 #define KEY_PROMPT_KEYS "QWER"
+
+/* Sensibilidade do Rato do Jogador 2 */
+#define MOUSE_SENSITIVITY 2
 
 /* Raio das bubbles (px) */
 #define BUBBLE_RADIUS  40

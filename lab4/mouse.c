@@ -32,12 +32,13 @@ void (mouse_ih)() {
     uint8_t status;
     if (util_sys_inb(KBC_STATUS_REG, &status) != 0) return;
 
-    if (status & FULL_OUT_BUFFER) {
+    if (!(status & FULL_OUT_BUFFER)) return;
 
-        if (status & BIT(5)) { 
-            util_sys_inb(KBC_OUT_CMD, &mouse_byte);
-        }
-    }
+    uint8_t byte;
+    if (util_sys_inb(KBC_OUT_CMD, &byte) != 0) return;
+
+    if (status & BIT(5))   /* auxiliary (mouse) data */
+        mouse_byte = byte;
 }
 
 void (mouse_parse_packet)(uint8_t *packet_bytes, struct packet *p) {

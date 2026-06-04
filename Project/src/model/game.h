@@ -14,7 +14,7 @@ typedef enum {
     GS_ACTIVE,
     GS_PAUSE,
     GS_ROUND_END,
-    GS_GAME_OVER
+    GS_QUIT
 } GameState;
 
 typedef struct Game {
@@ -32,12 +32,18 @@ typedef struct Game {
     int        state_timer_ms;                   /* conta ROUND_START / ROUND_END */
     int        round_number;                     /* começa em 1         */
     int        winner;                           /* 1, 2, ou 0 em empate */
+    int        round_end_selected;               /* 0 = RESTART, 1 = MENU */
+    int        pause_selected;                   /* 0 = RESUME,  1 = EXIT */
+    bool       wasd_held[4];                     /* W A S D held state (visual feedback) */
+    bool       mouse_held[2];                    /* [0]=left [1]=right held state (visual feedback) */
+    int        mouse_x, mouse_y;                 /* cursor position in screen coords */
 } Game;
 
 void game_init(Game *g);
+void game_reset_round(Game *g);
 void game_update(Game *g, int delta_ms);
 void game_handle_key(Game *g, char key);
 void game_handle_click(Game *g, int mx, int my, MouseButton button);
-bool game_is_over(const Game *g);
+bool game_quit(const Game *g);
 
 #endif /* GAME_H */

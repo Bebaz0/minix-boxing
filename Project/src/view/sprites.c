@@ -1,5 +1,6 @@
 #include "sprites.h"
 #include "video.h"
+#include "config.h"
 
 #include <stdlib.h>
 
@@ -79,10 +80,40 @@ int sprite_draw(const sprite_t *sprite, uint16_t x, uint16_t y) {
     uint16_t *pixels = (uint16_t *)sprite->pixels;
 
     for (uint16_t row = 0; row < sprite->height; row++) {
+        if (y + row >= SCREEN_HEIGHT) break;
         for (uint16_t col = 0; col < sprite->width; col++) {
+            if (x + col >= SCREEN_WIDTH) break;
             uint32_t color = pixels[row * sprite->width + col];
             if (color == sprite->transparent_color) continue;
             vg_draw_pixel(x + col, y + row, color);
+        }
+    }
+
+    return 0;
+}
+
+int sprite_draw_region(const sprite_t *sprite, int src_x, int src_y, uint16_t w, uint16_t h,
+                       int dst_x, int dst_y) {
+    if (sprite == NULL || sprite->pixels == NULL)
+        return 1;
+
+    uint16_t *pixels = (uint16_t *)sprite->pixels;
+
+    for (uint16_t row = 0; row < h; row++) {
+        int sy = src_y + row;
+        int dy = dst_y + row;
+        if (sy < 0 || sy >= (int)sprite->height || dy < 0 || dy >= SCREEN_HEIGHT)
+            continue;
+
+        for (uint16_t col = 0; col < w; col++) {
+            int sx = src_x + col;
+            int dx = dst_x + col;
+            if (sx < 0 || sx >= (int)sprite->width || dx < 0 || dx >= SCREEN_WIDTH)
+                continue;
+
+            uint32_t color = pixels[sy * sprite->width + sx];
+            if (color == sprite->transparent_color) continue;
+            vg_draw_pixel((uint16_t)dx, (uint16_t)dy, color);
         }
     }
 
@@ -96,7 +127,9 @@ int sprite_draw_mirrored(const sprite_t *sprite, uint16_t x, uint16_t y) {
     uint16_t *pixels = (uint16_t *)sprite->pixels;
 
     for (uint16_t row = 0; row < sprite->height; row++) {
+        if (y + row >= SCREEN_HEIGHT) break;
         for (uint16_t col = 0; col < sprite->width; col++) {
+            if (x + col >= SCREEN_WIDTH) break;
             uint32_t color = pixels[row * sprite->width + (sprite->width - 1 - col)];
             if (color == sprite->transparent_color) continue;
             vg_draw_pixel(x + col, y + row, color);

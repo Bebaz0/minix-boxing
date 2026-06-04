@@ -31,8 +31,15 @@ void controller_handle_keyboard(Controller *ctrl, Game *g) {
     if (kbc_error)
         return;
 
-    if (scancode == 0x01) {   /* ESC — sair do jogo em qualquer estado */
-        g->state = GS_GAME_OVER;
+    if (scancode == 0x01) {
+        if (g->state == GS_ACTIVE) {
+            g->pause_selected = 0;
+            g->state = GS_PAUSE;
+        } else if (g->state == GS_PAUSE) {
+            g->state = GS_ACTIVE;
+        } else {
+            g->state = GS_QUIT;
+        }
         return;
     }
 
@@ -41,8 +48,8 @@ void controller_handle_keyboard(Controller *ctrl, Game *g) {
         case GS_ROUND_START: round_start_ctrl_handle_keyboard(ctrl, g); break;
         case GS_ACTIVE:      active_ctrl_handle_keyboard(ctrl, g);      break;
         case GS_PAUSE:       pause_ctrl_handle_keyboard(ctrl, g);       break;
-        case GS_ROUND_END:   round_start_ctrl_handle_keyboard(ctrl, g); break;
-        case GS_GAME_OVER:   game_over_ctrl_handle_keyboard(ctrl, g);   break;
+        case GS_ROUND_END:   game_over_ctrl_handle_keyboard(ctrl, g);   break;
+        case GS_QUIT:        game_over_ctrl_handle_keyboard(ctrl, g);   break;
     }
 }
 
@@ -61,8 +68,11 @@ void controller_handle_mouse(Controller *ctrl, Game *g) {
     mouse_parse_packet(ctrl->mouse_bytes, &pkt);
     ctrl->mouse_index = 0;
 
-    ctrl->mouse_x += pkt.delta_x;
-    ctrl->mouse_y -= pkt.delta_y;
+    if (pkt.x_ov || pkt.y_ov)
+        return;
+
+    ctrl->mouse_x += pkt.delta_x * MOUSE_SENSITIVITY;
+    ctrl->mouse_y -= pkt.delta_y * MOUSE_SENSITIVITY;
     ctrl->mouse_x = clamp_int(ctrl->mouse_x, 0, SCREEN_WIDTH - 1);
     ctrl->mouse_y = clamp_int(ctrl->mouse_y, 0, SCREEN_HEIGHT - 1);
 
@@ -72,12 +82,17 @@ void controller_handle_mouse(Controller *ctrl, Game *g) {
     ctrl->mouse_left_down  = pkt.lb;
     ctrl->mouse_right_down = pkt.rb;
 
+    g->mouse_x = ctrl->mouse_x;
+    g->mouse_y = ctrl->mouse_y;
+    g->mouse_held[0] = pkt.lb;
+    g->mouse_held[1] = pkt.rb;
+
     switch (g->state) {
         case GS_MENU:        menu_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);        break;
         case GS_ROUND_START: round_start_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked); break;
         case GS_ACTIVE:      active_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);      break;
         case GS_PAUSE:       pause_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);       break;
-        case GS_ROUND_END:   round_start_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked); break;
-        case GS_GAME_OVER:   game_over_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);   break;
+        case GS_ROUND_END:   game_over_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);   break;
+        case GS_QUIT:        game_over_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);   break;
     }
 }
