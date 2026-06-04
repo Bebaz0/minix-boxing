@@ -25,6 +25,9 @@ MenuOption menu_option_at(int x, int y) {
     if (inside_x && y >= MENU_START_Y && y < MENU_START_Y + MENU_BUTTON_H)
         return MENU_OPTION_START;
 
+    if (inside_x && y >= MENU_INSTRUCTIONS_Y && y < MENU_INSTRUCTIONS_Y + MENU_BUTTON_H)
+        return MENU_OPTION_INSTRUCTIONS;
+
     if (inside_x && y >= MENU_EXIT_Y && y < MENU_EXIT_Y + MENU_BUTTON_H)
         return MENU_OPTION_EXIT;
 

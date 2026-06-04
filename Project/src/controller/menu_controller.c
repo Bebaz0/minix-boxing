@@ -7,8 +7,10 @@ static void menu_apply_selected(Game *g) {
             g->state = GS_CHAR_SELECT;
             g->state_timer_ms = 0;
             break;
+        case MENU_OPTION_INSTRUCTIONS:
+            break;
         case MENU_OPTION_EXIT:
-            g->state = GS_GAME_OVER;
+            g->state = GS_QUIT;
             break;
         case MENU_OPTION_COUNT:
             break;
@@ -34,7 +36,7 @@ void menu_ctrl_handle_keyboard(Controller *ctrl, Game *g) {
             menu_apply_selected(g);
             break;
         case SCANCODE_ESC:
-            g->state = GS_GAME_OVER;
+            g->state = GS_QUIT;
             break;
         default:
             break;

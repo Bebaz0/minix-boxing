@@ -25,7 +25,7 @@
 
 /* Duração de cada ronda (ms) — quando o contador chega a 0 a ronda termina */
 /* TODO: Definir duração total de cada ronda */
-#define ROUND_DURATION_MS             60000
+#define ROUND_DURATION_MS             10000   /* 10 s at 60 Hz (600 ticks × 16 ms) */
 
 /* Pausa entre rondas (ms) */
 #define INTER_ROUND_MS                3000
@@ -51,9 +51,15 @@
 #define CHAR_COUNT  10   /* número de personagens disponíveis para seleção */
 
 /* Animação */
-#define FIGHTER_IDLE_FRAME_COUNT  4   /* aumentar quando adicionar mais frames ao fighter.h */
+#define FIGHTER_IDLE_FRAME_COUNT  5   /* aumentar quando adicionar mais frames ao fighter.h */
 
 /* Teclas do Jogador 1 */
 #define KEY_PROMPT_KEYS "QWER"
+
+/* Sensibilidade do Rato do Jogador 2 */
+#define MOUSE_SENSITIVITY 1
+
+/* Raio das bubbles (px) */
+#define BUBBLE_RADIUS  40
 
 #endif /* CONFIG_H */
