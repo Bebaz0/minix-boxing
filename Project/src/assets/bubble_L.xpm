@@ -2,12 +2,13 @@
 static char *bubble_L[] = {
 /* columns rows colors chars-per-pixel */
 "80 80 5 1 ",
-"  c #16386E",
-". c green",
+"  c None",
+". c None",
 "X c #2F6FD0",
 "o c #7EB2EC",
-"O c white",
+"O c #FFFFFF",
 /* pixels */
+"................................................................................",
 "................................................................................",
 "................................................................................",
 "................................................................................",
@@ -31,7 +32,7 @@ static char *bubble_L[] = {
 ".........    ooooXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXoooo    .........",
 "........     oooXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXooo     ........",
 ".......     ooooXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXoooo     .......",
-".......    ooooXXXXXXXXXXXXXOOOOOXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXoooo    .......",
+".......    ooooXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXoooo    .......",
 "......     oooXXXXXXXXXXXXXXOOOOOXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXooo     ......",
 "......    ooooXXXXXXXXXXXXXXOOOOOXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXoooo    ......",
 "......    oooXXXXXXXXXXXXXXXOOOOOXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXooo    ......",
@@ -43,7 +44,6 @@ static char *bubble_L[] = {
 "....    oooXXXXXXXXXXXXXXXXXOOOOOXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXooo    ....",
 "....    oooXXXXXXXXXXXXXXXXXOOOOOXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXooo    ....",
 "...    ooooXXXXXXXXXXXXXXXXXOOOOOXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXoooo    ...",
-"...    oooXXXXXXXXXXXXXXXXXXOOOOOXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXooo    ...",
 "...    oooXXXXXXXXXXXXXXXXXXOOOOOXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXooo    ...",
 "...    oooXXXXXXXXXXXXXXXXXXOOOOOXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXooo    ...",
 "...    oooXXXXXXXXXXXXXXXXXXOOOOOXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXooo    ...",

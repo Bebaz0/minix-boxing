@@ -8,19 +8,14 @@
 #include "../assets/bubble_sprites.h"
 #include "../assets/ring_sprites.h"
 #include "../assets/game_background.xpm"
+#include "../assets/key_sprites.h"
 
 #define FIGHTER_Y     300u
 #define FIGHTER_INSET 100u
 #define TIMER_Y       10u
 
-#define WASD_KEY_SIZE  50u
-#define WASD_GAP        4u
-#define WASD_X         50u
-#define WASD_Y        660u
-
-#define WASD_COLOR_PRESSED   0xFFE0u  // yellow
-#define WASD_COLOR_UNPRESSED 0x2104u  // dark
-#define WASD_COLOR_OUTLINE   0x7BEFu  // grey
+/* Centros (x) das 4 lanes, distribuídos pela metade esquerda (512px). */
+static const uint16_t key_lane_cx[KEY_LANE_COUNT] = {64u, 192u, 320u, 448u};
 
 static sprite_t *get_idle_frame(int frame_index) {
     static sprite_t *idle_sprites[FIGHTER_IDLE_FRAME_COUNT] = {0};
@@ -58,11 +53,11 @@ static sprite_t *get_bubble_sprite(MouseButton btn) {
 
     if (btn == MOUSE_BUTTON_LEFT) {
         if (bubble_left == NULL)
-            bubble_left = sprite_create((xpm_map_t)bubble_L_xpm);
+            bubble_left = sprite_create((xpm_map_t)bubble_L);
         return bubble_left;
     }
     if (bubble_right == NULL)
-        bubble_right = sprite_create((xpm_map_t)bubble_R_xpm);
+        bubble_right = sprite_create((xpm_map_t)bubble_R);
     return bubble_right;
 }
 
@@ -72,11 +67,11 @@ static sprite_t *get_ring_sprite(MouseButton btn) {
 
     if (btn == MOUSE_BUTTON_LEFT) {
         if (ring_left == NULL)
-            ring_left = sprite_create((xpm_map_t)ring_L_xpm);
+            ring_left = sprite_create((xpm_map_t)ring_L);
         return ring_left;
     }
     if (ring_right == NULL)
-        ring_right = sprite_create((xpm_map_t)ring_R_xpm);
+        ring_right = sprite_create((xpm_map_t)ring_R);
     return ring_right;
 }
 
@@ -105,30 +100,6 @@ static font_t *get_hud_font(void) {
     return font;
 }
 
-static void draw_wasd_keys(const Game *g) {
-    font_t *font = get_hud_font();
-    if (font == NULL)
-        return;
-
-    static const char labels[4]  = {'W', 'A', 'S', 'D'};
-    uint16_t kx[4], ky[4];
-    kx[0] = WASD_X + WASD_KEY_SIZE + WASD_GAP;  ky[0] = WASD_Y;
-    kx[1] = WASD_X;                              ky[1] = WASD_Y + WASD_KEY_SIZE + WASD_GAP;
-    kx[2] = WASD_X + WASD_KEY_SIZE + WASD_GAP;  ky[2] = WASD_Y + WASD_KEY_SIZE + WASD_GAP;
-    kx[3] = WASD_X + 2*(WASD_KEY_SIZE + WASD_GAP); ky[3] = WASD_Y + WASD_KEY_SIZE + WASD_GAP;
-
-    for (int i = 0; i < 4; i++) {
-        uint32_t fill = g->wasd_held[i] ? WASD_COLOR_PRESSED : WASD_COLOR_UNPRESSED;
-        view_draw_rect(kx[i], ky[i], WASD_KEY_SIZE, WASD_KEY_SIZE, WASD_COLOR_OUTLINE);
-        view_draw_rect(kx[i] + 2, ky[i] + 2, WASD_KEY_SIZE - 4, WASD_KEY_SIZE - 4, fill);
-
-        char label[2] = {labels[i], '\0'};
-        uint16_t lx = kx[i] + (WASD_KEY_SIZE - font_string_width(font, label)) / 2;
-        uint16_t ly = ky[i] + (WASD_KEY_SIZE - font_line_height(font)) / 2;
-        font_draw_string(font, label, lx, ly);
-    }
-}
-
 static void draw_round_timer(const Game *g) {
     font_t *font = get_hud_font();
     if (font == NULL)
@@ -142,6 +113,76 @@ static void draw_round_timer(const Game *g) {
 
     uint16_t x = (SCREEN_WIDTH - font_string_width(font, buf)) / 2;
     font_draw_string(font, buf, x, TIMER_Y);
+}
+
+static int key_lane_index(char key) {
+    const char *keys = KEY_PROMPT_KEYS;
+    for (int i = 0; keys[i] != '\0'; i++)
+        if (keys[i] == key)
+            return i;
+    return -1;
+}
+
+static sprite_t *get_key_sprite(int lane) {
+    static sprite_t *tiles[KEY_LANE_COUNT] = {0};
+
+    if (lane < 0 || lane >= KEY_LANE_COUNT)
+        return NULL;
+
+    if (tiles[lane] == NULL) {
+        switch (lane) {
+            case 0: tiles[0] = sprite_create((xpm_map_t)key_title_Q); break;
+            case 1: tiles[1] = sprite_create((xpm_map_t)key_title_W); break;
+            case 2: tiles[2] = sprite_create((xpm_map_t)key_title_E); break;
+            case 3: tiles[3] = sprite_create((xpm_map_t)key_title_R); break;
+        }
+    }
+
+    return tiles[lane];
+}
+
+static sprite_t *get_key_target_sprite(void) {
+    static sprite_t *target = NULL;
+
+    if (target == NULL)
+        target = sprite_create((xpm_map_t)key_target);
+
+    return target;
+}
+
+static void draw_key_prompts(const Game *g) {
+    sprite_t *target = get_key_target_sprite();
+    int travel = KEY_HIT_ZONE_Y - KEY_LANE_TOP;
+
+    if (target != NULL) {
+        for (int lane = 0; lane < KEY_LANE_COUNT; lane++)
+            sprite_draw(target, (uint16_t)(key_lane_cx[lane] - target->width / 2),
+                        (uint16_t)((int)KEY_HIT_ZONE_Y - target->height / 2));
+    }
+
+    for (int i = 0; i < MAX_KEY_PROMPTS; i++) {
+        const KeyPrompt *kp = &g->key_prompts[i];
+        if (!kp->active)
+            continue;
+
+        int lane = key_lane_index(kp->key);
+        if (lane < 0)
+            continue;
+        uint16_t cx = key_lane_cx[lane];
+
+        /* O tile cai a velocidade constante e continua para lá do alvo durante a
+           grace (até quase sair do ecrã) antes do prompt desaparecer. */
+        int center_y = KEY_LANE_TOP;
+        if (kp->response_window_ms > 0)
+            center_y += travel * kp->elapsed_ms / kp->response_window_ms;
+        if (center_y > SCREEN_HEIGHT)
+            center_y = SCREEN_HEIGHT;
+
+        sprite_t *tile = get_key_sprite(lane);
+        if (tile != NULL)
+            sprite_draw(tile, (uint16_t)(cx - tile->width / 2),
+                        (uint16_t)(center_y - tile->height / 2));
+    }
 }
 
 void active_view_draw(const Game *g) {
@@ -164,6 +205,6 @@ void active_view_draw(const Game *g) {
                     (uint16_t)(b->x - b->radius),
                     (uint16_t)(b->y - b->radius));
     }
+    draw_key_prompts(g);
     draw_round_timer(g);
-    draw_wasd_keys(g);
 }

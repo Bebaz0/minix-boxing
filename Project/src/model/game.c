@@ -5,6 +5,16 @@
 
 #define ANIM_FRAME_DURATION_MS 120
 
+/* Inteiro aleatório em [lo, hi] usando os bits ALTOS do rand().
+   Os bits baixos do rand() desta libc são fracos (ver comentário no spawn das
+   bubbles), por isso rand() % n ficava enviesado — daí a divisão. */
+static int rand_range(int lo, int hi) {
+    if (hi <= lo)
+        return lo;
+    int span = hi - lo + 1;
+    return lo + rand() / (RAND_MAX / span + 1);
+}
+
 static void tick_anim(Player *p, int delta_ms) {
     p->anim_timer_ms += delta_ms;
     if (p->anim_timer_ms >= ANIM_FRAME_DURATION_MS) {
@@ -23,6 +33,9 @@ void game_init(Game *g) {
     g->round_duration_ms  = ROUND_DURATION_MS;
     g->round_number       = 1;
     g->state_timer_ms     = ROUND_START_MS;
+    g->state_timer_ms     = INTER_ROUND_MS;
+    g->key_prompt_next_spawn_ms = rand_range(KEY_PROMPT_SPAWN_MIN_MS, KEY_PROMPT_SPAWN_MAX_MS);
+    g->bubble_next_spawn_ms     = rand_range(BUBBLE_SPAWN_MIN_MS, BUBBLE_SPAWN_MAX_MS);
     g->mouse_x            = SCREEN_WIDTH / 2;
     g->mouse_y            = SCREEN_HEIGHT / 2;
 }
@@ -55,7 +68,11 @@ void game_update(Game *g, int delta_ms) {
                 g->state                     = GS_ACTIVE;
                 g->round_elapsed_ms          = 0;
                 g->key_prompt_spawn_timer_ms = 0;
+                g->key_prompt_next_spawn_ms  =
+                    rand_range(KEY_PROMPT_SPAWN_MIN_MS, KEY_PROMPT_SPAWN_MAX_MS);
                 g->bubble_spawn_timer_ms     = 0;
+                g->bubble_next_spawn_ms      =
+                    rand_range(BUBBLE_SPAWN_MIN_MS, BUBBLE_SPAWN_MAX_MS);
             }
             break;
 
@@ -66,11 +83,13 @@ void game_update(Game *g, int delta_ms) {
             g->round_elapsed_ms += delta_ms;
 
             g->key_prompt_spawn_timer_ms += delta_ms;
-            if (g->key_prompt_spawn_timer_ms >= KEY_PROMPT_SPAWN_INTERVAL_MS) {
-                g->key_prompt_spawn_timer_ms -= KEY_PROMPT_SPAWN_INTERVAL_MS;
+            if (g->key_prompt_spawn_timer_ms >= g->key_prompt_next_spawn_ms) {
+                g->key_prompt_spawn_timer_ms = 0;
+                g->key_prompt_next_spawn_ms  =
+                    rand_range(KEY_PROMPT_SPAWN_MIN_MS, KEY_PROMPT_SPAWN_MAX_MS);
                 for (int i = 0; i < MAX_KEY_PROMPTS; i++) {
                     if (!g->key_prompts[i].active) {
-                        char key = KEY_PROMPT_KEYS[rand() % 4];
+                        char key = KEY_PROMPT_KEYS[rand_range(0, 3)];
                         key_prompt_spawn(&g->key_prompts[i], key, g->response_window_ms);
                         break;
                     }
@@ -78,16 +97,17 @@ void game_update(Game *g, int delta_ms) {
             }
 
             g->bubble_spawn_timer_ms += delta_ms;
-            if (g->bubble_spawn_timer_ms >= BUBBLE_SPAWN_INTERVAL_MS) {
-                g->bubble_spawn_timer_ms -= BUBBLE_SPAWN_INTERVAL_MS;
+            if (g->bubble_spawn_timer_ms >= g->bubble_next_spawn_ms) {
+                g->bubble_spawn_timer_ms = 0;
+                g->bubble_next_spawn_ms  =
+                    rand_range(BUBBLE_SPAWN_MIN_MS, BUBBLE_SPAWN_MAX_MS);
                 for (int i = 0; i < MAX_BUBBLES; i++) {
                     if (!g->bubbles[i].active) {
-                        int x = SCREEN_WIDTH / 2 + BUBBLE_RADIUS +
-                                rand() % (SCREEN_WIDTH / 2 - 2 * BUBBLE_RADIUS);
-                        int y = BUBBLE_RADIUS +
-                                rand() % (SCREEN_HEIGHT - 2 * BUBBLE_RADIUS);
-                        //Conta da Net porque usar só o rand estava a dar muito button left (algo a ver com os bits)
-                        MouseButton btn = (rand() > RAND_MAX / 2) ? MOUSE_BUTTON_LEFT : MOUSE_BUTTON_RIGHT;
+                        int x = rand_range(SCREEN_WIDTH / 2 + BUBBLE_RADIUS,
+                                           SCREEN_WIDTH - BUBBLE_RADIUS);
+                        int y = rand_range(BUBBLE_RADIUS, SCREEN_HEIGHT - BUBBLE_RADIUS);
+                        MouseButton btn = rand_range(0, 1) == 0 ? MOUSE_BUTTON_LEFT
+                                                               : MOUSE_BUTTON_RIGHT;
                         bubble_spawn(&g->bubbles[i], x, y, BUBBLE_RADIUS, btn,
                                      g->response_window_ms);
                         break;
@@ -133,12 +153,17 @@ void game_update(Game *g, int delta_ms) {
 }
 
 void game_handle_key(Game *g, char key) {
+    int best = -1;
     for (int i = 0; i < MAX_KEY_PROMPTS; i++) {
-        if (!g->key_prompts[i].active) continue;
-        if (key_prompt_press(&g->key_prompts[i], key)) {
-            combat_resolve(&g->p1, &g->p2, true, g->key_prompts[i].perfect);
-            return;
-        }
+        if (!g->key_prompts[i].active || g->key_prompts[i].key != key)
+            continue;
+        if (best < 0 || g->key_prompts[i].elapsed_ms > g->key_prompts[best].elapsed_ms)
+            best = i;
+    }
+    if (best >= 0 && key_prompt_press(&g->key_prompts[best], key)) {
+        const KeyPrompt *kp = &g->key_prompts[best];
+        bool landed = kp->hit || kp->perfect;
+        combat_resolve(&g->p1, &g->p2, landed, kp->perfect);
     }
 }
 

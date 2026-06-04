@@ -13,12 +13,24 @@ bool key_prompt_press(KeyPrompt *kp, char key) {
     if (!kp->active || kp->key != key)
         return false;
 
-    if (kp->elapsed_ms < kp->response_window_ms / 2) {
-        kp->hit     = false;
+    /* O tile cai do topo da lane até ao alvo ao longo da janela e continua a cair (grace) 
+    antes de desaparecer.*/
+    int dist = kp->elapsed_ms - kp->response_window_ms;
+    if (dist < 0)
+        dist = -dist;
+    int perfect_band = kp->response_window_ms * KEY_PERFECT_WINDOW_PCT / 100;
+    int hit_band     = kp->response_window_ms * KEY_HIT_WINDOW_PCT / 100;
+
+    if (dist <= perfect_band) {
         kp->perfect = true;
-    } else {
-        kp->hit     = true;
+        kp->hit     = false;
+    } else if (dist <= hit_band) {
         kp->perfect = false;
+        kp->hit     = true;
+    } else {
+        /* Demasiado cedo ou já passou o alvo:*/
+        kp->perfect = false;
+        kp->hit     = false;
     }
     kp->active  = false;
 
@@ -31,7 +43,8 @@ void key_prompt_tick(KeyPrompt *kp, int delta_ms) {
 
     kp->elapsed_ms += delta_ms;
 
-    if (kp->elapsed_ms >= kp->response_window_ms)
+    int despawn_ms = kp->response_window_ms * (100 + KEY_DESPAWN_EXTRA_PCT) / 100;
+    if (kp->elapsed_ms >= despawn_ms)
         kp->active = false;
 }
 

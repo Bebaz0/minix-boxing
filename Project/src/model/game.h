@@ -25,7 +25,9 @@ typedef struct Game {
     KeyPrompt  key_prompts[MAX_KEY_PROMPTS];     /* timing events do P1 */
     BubbleEvent bubbles[MAX_BUBBLES];            /* timing events do P2 */
     int        key_prompt_spawn_timer_ms;
+    int        key_prompt_next_spawn_ms;        /* limiar aleatório para o próximo spawn */
     int        bubble_spawn_timer_ms;
+    int        bubble_next_spawn_ms;            /* limiar aleatório para o próximo spawn */
     int        response_window_ms;               /* diminui por ronda   */
     int        round_elapsed_ms;
     int        round_duration_ms;
@@ -34,7 +36,6 @@ typedef struct Game {
     int        winner;                           /* 1, 2, ou 0 em empate */
     int        round_end_selected;               /* 0 = RESTART, 1 = MENU */
     int        pause_selected;                   /* 0 = RESUME,  1 = EXIT */
-    bool       wasd_held[4];                     /* W A S D held state (visual feedback) */
     bool       mouse_held[2];                    /* [0]=left [1]=right held state (visual feedback) */
     int        mouse_x, mouse_y;                 /* cursor position in screen coords */
 } Game;

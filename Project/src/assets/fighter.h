@@ -7,11 +7,11 @@
 #define FIGHTER_W 192
 #define FIGHTER_H_PX 383
 
-#include "fighter_idle0.xpm"
-#include "fighter_idle1.xpm"
-#include "fighter_idle2.xpm"
-#include "fighter_idle3.xpm"
-#include "fighter_idle4.xpm"
+#include "fighters/default/fighter_idle0.xpm"
+#include "fighters/default/fighter_idle1.xpm"
+#include "fighters/default/fighter_idle2.xpm"
+#include "fighters/default/fighter_idle3.xpm"
+#include "fighters/default/fighter_idle4.xpm"
 
 static const char * const *fighter_idle_frames[FIGHTER_IDLE_FRAME_COUNT] = {
   fighter_idle0_xpm,
