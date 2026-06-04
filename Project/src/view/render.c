@@ -97,7 +97,7 @@ void render_frame(const Game *g) {
             break;
 
         case GS_QUIT:
-            view_draw_background(BG_COLOR);
+            return;
             break;
     }
 

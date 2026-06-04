@@ -33,5 +33,6 @@ uint16_t font_string_width(const font_t *font, const char *text);
 uint16_t font_line_height(const font_t *font);
 int font_draw_char(const font_t *font, char character, uint16_t x, uint16_t y);
 int font_draw_string(const font_t *font, const char *text, uint16_t x, uint16_t y);
+int font_draw_string_color(const font_t *font, const char *text, uint16_t x, uint16_t y, uint32_t color);
 
 #endif /* FONT_H */

@@ -77,6 +77,22 @@ int sprite_draw(const sprite_t *sprite, uint16_t x, uint16_t y) {
     if (sprite == NULL || sprite->pixels == NULL)
         return 1;
 
+    return vg_draw_transparent_image(x, y, sprite->width, sprite->height,
+                                     (uint16_t *)sprite->pixels,
+                                     (uint16_t)sprite->transparent_color);
+}
+
+int sprite_draw_opaque(const sprite_t *sprite, uint16_t x, uint16_t y) {
+    if (sprite == NULL || sprite->pixels == NULL)
+        return 1;
+
+    return vg_draw_image(x, y, sprite->width, sprite->height, (uint16_t *)sprite->pixels);
+}
+
+int sprite_draw_tinted(const sprite_t *sprite, uint16_t x, uint16_t y, uint32_t tint) {
+    if (sprite == NULL || sprite->pixels == NULL)
+        return 1;
+
     uint16_t *pixels = (uint16_t *)sprite->pixels;
 
     for (uint16_t row = 0; row < sprite->height; row++) {
@@ -85,18 +101,11 @@ int sprite_draw(const sprite_t *sprite, uint16_t x, uint16_t y) {
             if (x + col >= SCREEN_WIDTH) break;
             uint32_t color = pixels[row * sprite->width + col];
             if (color == sprite->transparent_color) continue;
-            vg_draw_pixel(x + col, y + row, color);
+            vg_draw_pixel(x + col, y + row, tint);
         }
     }
 
     return 0;
-}
-
-int sprite_draw_opaque(const sprite_t *sprite, uint16_t x, uint16_t y) {
-    if (sprite == NULL || sprite->pixels == NULL)
-        return 1;
-
-    return vg_draw_image(x, y, sprite->width, sprite->height, (uint16_t *)sprite->pixels);
 }
 
 int sprite_draw_region(const sprite_t *sprite, int src_x, int src_y, uint16_t w, uint16_t h,

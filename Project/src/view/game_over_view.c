@@ -3,24 +3,31 @@
 #include "font.h"
 #include "config.h"
 #include "view_utils.h"
+#include "sprites.h"
+#include "../assets/pause_rectangle.xpm"
 
-#define END_BOX_COLOR     0x7BEFu  /* mid grey outline */
-#define END_BG_COLOR      0x0000u  /* black popup fill */
-#define END_BTN_COLOR     0xC618u
-#define END_BTN_SEL_COLOR 0xFFE0u
+#define TEXT_WHITE  0xFFFFu
+#define TEXT_YELLOW 0xFFE0u
+#define TEXT_BLUE   0x001Fu
+#define TEXT_RED    0xF800u
 
-#define POPUP_W      500
-#define POPUP_H      250
-#define POPUP_X      ((SCREEN_WIDTH  - POPUP_W) / 2)   /* 262 */
-#define POPUP_Y      ((SCREEN_HEIGHT - POPUP_H) / 2)   /* 259 */
-#define POPUP_BORDER 4
+#define POPUP_W      620
+#define POPUP_H      401
+#define POPUP_X      ((SCREEN_WIDTH  - POPUP_W) / 2)
+#define POPUP_Y      ((SCREEN_HEIGHT - POPUP_H) / 2)
 
-#define END_BTN_W     440
-#define END_BTN_H     56
-#define END_BTN_X     ((SCREEN_WIDTH - END_BTN_W) / 2) /* 292 */
-#define END_TITLE_Y   (POPUP_Y + 24)                   /* 283 */
-#define END_RESTART_Y (POPUP_Y + 96)                   /* 355 */
-#define END_MENU_Y    (POPUP_Y + 168)                  /* 427 */
+#define END_TITLE_Y   (POPUP_Y + 82)
+#define END_RESTART_Y (POPUP_Y + 175)
+#define END_MENU_Y    (POPUP_Y + 245)
+
+static sprite_t *get_end_panel(void) {
+    static sprite_t *panel = NULL;
+
+    if (panel == NULL)
+        panel = sprite_create((xpm_map_t)pause_rectangle_xpm);
+
+    return panel;
+}
 
 static font_t *get_end_font(void) {
     static font_t *font = NULL;
@@ -33,48 +40,52 @@ static font_t *get_end_font(void) {
     return font;
 }
 
-static void draw_end_text(font_t *font, const char *text, uint16_t x, uint16_t y) {
+static void draw_end_text(font_t *font, const char *text, uint16_t x, uint16_t y, uint32_t color) {
     if (font != NULL)
-        font_draw_string(font, text, x, y);
+        font_draw_string_color(font, text, x, y, color);
 }
 
-static void draw_centered_end_text(font_t *font, const char *text, uint16_t y) {
+static void draw_centered_end_text(font_t *font, const char *text, uint16_t y, uint32_t color) {
     uint16_t width = font_string_width(font, text);
-    draw_end_text(font, text, (SCREEN_WIDTH - width) / 2, y);
+    draw_end_text(font, text, (SCREEN_WIDTH - width) / 2, y, color);
 }
 
 static void draw_end_button(const Game *g, font_t *font, int option_idx,
                             const char *label, uint16_t y) {
-    uint32_t color = (g->round_end_selected == option_idx)
-                     ? END_BTN_SEL_COLOR : END_BTN_COLOR;
+    uint32_t color = (g->round_end_selected == option_idx) ? TEXT_YELLOW : TEXT_WHITE;
     uint16_t text_width = font_string_width(font, label);
 
-    view_draw_rect(END_BTN_X, y, END_BTN_W, END_BTN_H, color);
-    draw_end_text(font,
-                  label,
-                  END_BTN_X + (END_BTN_W - text_width) / 2,
-                  y + (END_BTN_H - font_line_height(font)) / 2);
+    draw_end_text(font, label, (SCREEN_WIDTH - text_width) / 2, y, color);
 }
 
 void game_over_view_draw(const Game *g) {
     active_view_draw(g);
 
     font_t *font = get_end_font();
+    sprite_t *panel = get_end_panel();
 
-    view_draw_rect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, END_BOX_COLOR);
-    view_draw_rect(POPUP_X + POPUP_BORDER, POPUP_Y + POPUP_BORDER,
-                   POPUP_W - 2 * POPUP_BORDER, POPUP_H - 2 * POPUP_BORDER,
-                   END_BG_COLOR);
+    if (panel != NULL)
+        sprite_draw(panel, POPUP_X, POPUP_Y);
 
     if (font == NULL)
         return;
 
     const char *title;
-    if      (g->winner == 1) title = "PLAYER 1 WINS!";
-    else if (g->winner == 2) title = "PLAYER 2 WINS!";
-    else                     title = "DRAW!";
+    uint32_t title_color;
+    if (g->winner == 1) {
+        title = "PLAYER 1 WINS!";
+        title_color = TEXT_BLUE;
+    }
+    else if (g->winner == 2) {
+        title = "PLAYER 2 WINS!";
+        title_color = TEXT_RED;
+    }
+    else {
+        title = "DRAW!";
+        title_color = TEXT_WHITE;
+    }
 
-    draw_centered_end_text(font, title, END_TITLE_Y);
+    draw_centered_end_text(font, title, END_TITLE_Y, title_color);
     draw_end_button(g, font, 0, "RESTART ROUND", END_RESTART_Y);
     draw_end_button(g, font, 1, "MENU", END_MENU_Y);
 }

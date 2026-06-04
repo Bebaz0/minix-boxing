@@ -141,6 +141,43 @@ int (vg_draw_image)(uint16_t x, uint16_t y, uint16_t width, uint16_t height, con
     return 0;
 }
 
+int (vg_draw_transparent_image)(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
+                                const uint16_t *pixels, uint16_t transparent_color) {
+    if (pixels == NULL || x >= vmi.XResolution || y >= vmi.YResolution)
+        return 1;
+
+    uint16_t src_width = width;
+
+    if (x + width > vmi.XResolution)
+        width = vmi.XResolution - x;
+    if (y + height > vmi.YResolution)
+        height = vmi.YResolution - y;
+
+    if (bytes_per_pixel == 2) {
+        for (uint16_t row = 0; row < height; row++) {
+            uint16_t *dst = (uint16_t *)(back_buffer + ((y + row) * vmi.XResolution + x) * bytes_per_pixel);
+            const uint16_t *src = pixels + row * src_width;
+
+            for (uint16_t col = 0; col < width; col++) {
+                uint16_t color = src[col];
+                if (color != transparent_color)
+                    dst[col] = color;
+            }
+        }
+    }
+    else {
+        for (uint16_t row = 0; row < height; row++) {
+            for (uint16_t col = 0; col < width; col++) {
+                uint16_t color = pixels[row * src_width + col];
+                if (color != transparent_color)
+                    vg_draw_pixel(x + col, y + row, color);
+            }
+        }
+    }
+
+    return 0;
+}
+
 void (vg_flip)(void) {
     memcpy(video_mem, back_buffer, vram_size);
 }

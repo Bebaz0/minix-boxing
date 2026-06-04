@@ -78,11 +78,12 @@ int(proj_main_loop)(int argc, char *argv[]) {
         }
     }
 
+    vg_exit();
+
     mouse_disable_data_reporting();
     mouse_unsubscribe_interrupts();
     kbc_unsubscribe_int();
     timer_unsubscribe_int();
 
-    vg_exit();
     return 0;
 }

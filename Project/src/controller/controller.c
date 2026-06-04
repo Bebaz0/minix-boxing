@@ -16,6 +16,18 @@ static int clamp_int(int value, int min, int max) {
     return value;
 }
 
+static void sync_game_mouse_from_controller(const Controller *ctrl, Game *g) {
+    g->mouse_x = ctrl->mouse_x;
+    g->mouse_y = ctrl->mouse_y;
+    g->mouse_held[0] = ctrl->mouse_left_down;
+    g->mouse_held[1] = ctrl->mouse_right_down;
+}
+
+static void sync_controller_mouse_from_game(Controller *ctrl, const Game *g) {
+    ctrl->mouse_x = g->mouse_x;
+    ctrl->mouse_y = g->mouse_y;
+}
+
 void controller_init(Controller *ctrl) {
     ctrl->mouse_x = SCREEN_WIDTH / 2;
     ctrl->mouse_y = SCREEN_HEIGHT / 2;
@@ -31,6 +43,8 @@ void controller_handle_keyboard(Controller *ctrl, Game *g) {
     if (kbc_error)
         return;
 
+    GameState previous_state = g->state;
+
     if (scancode == 0x01) {
         if (g->state == GS_ACTIVE) {
             g->pause_selected = 0;
@@ -40,6 +54,8 @@ void controller_handle_keyboard(Controller *ctrl, Game *g) {
         } else {
             g->state = GS_QUIT;
         }
+        if (previous_state != g->state)
+            sync_game_mouse_from_controller(ctrl, g);
         return;
     }
 
@@ -50,6 +66,11 @@ void controller_handle_keyboard(Controller *ctrl, Game *g) {
         case GS_PAUSE:       pause_ctrl_handle_keyboard(ctrl, g);       break;
         case GS_ROUND_END:   game_over_ctrl_handle_keyboard(ctrl, g);   break;
         case GS_QUIT:        game_over_ctrl_handle_keyboard(ctrl, g);   break;
+    }
+
+    if (previous_state != g->state) {
+        sync_controller_mouse_from_game(ctrl, g);
+        sync_game_mouse_from_controller(ctrl, g);
     }
 }
 
@@ -85,11 +106,9 @@ void controller_handle_mouse(Controller *ctrl, Game *g) {
     ctrl->mouse_left_down  = pkt.lb;
     ctrl->mouse_right_down = pkt.rb;
 
-    g->mouse_x = ctrl->mouse_x;
-    g->mouse_y = ctrl->mouse_y;
-    g->mouse_held[0] = pkt.lb;
-    g->mouse_held[1] = pkt.rb;
+    sync_game_mouse_from_controller(ctrl, g);
 
+    GameState previous_state = g->state;
     switch (g->state) {
         case GS_MENU:        menu_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);        break;
         case GS_ROUND_START: round_start_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked); break;
@@ -97,5 +116,10 @@ void controller_handle_mouse(Controller *ctrl, Game *g) {
         case GS_PAUSE:       pause_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);       break;
         case GS_ROUND_END:   game_over_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);   break;
         case GS_QUIT:        game_over_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);   break;
+    }
+
+    if (previous_state != g->state) {
+        sync_controller_mouse_from_game(ctrl, g);
+        sync_game_mouse_from_controller(ctrl, g);
     }
 }

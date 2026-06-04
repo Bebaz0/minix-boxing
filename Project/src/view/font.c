@@ -233,3 +233,28 @@ int font_draw_string(const font_t *font, const char *text, uint16_t x, uint16_t 
 
     return 0;
 }
+
+int font_draw_string_color(const font_t *font, const char *text, uint16_t x, uint16_t y, uint32_t color) {
+    if (font == NULL || text == NULL)
+        return 1;
+
+    uint16_t cursor_x = x;
+
+    for (uint32_t i = 0; text[i] != '\0'; i++) {
+        if (text[i] == ' ') {
+            cursor_x += font->spacing * 4 * font->scale;
+            continue;
+        }
+
+        const sprite_t *glyph = font_get_glyph(font, text[i]);
+        if (glyph == NULL)
+            continue;
+
+        if (sprite_draw_tinted(glyph, cursor_x, y, color) != 0)
+            return 1;
+
+        cursor_x += glyph->width + font->spacing * font->scale;
+    }
+
+    return 0;
+}

@@ -22,14 +22,6 @@
 #define WASD_COLOR_UNPRESSED 0x2104u  // dark
 #define WASD_COLOR_OUTLINE   0x7BEFu  // grey
 
-#define MOUSE_BTN_RADIUS     30u
-#define MOUSE_BTN_GAP        20u
-#define MOUSE_BTN_Y          690u
-#define MOUSE_BTN_RIGHT_X    (SCREEN_WIDTH - 60u)
-#define MOUSE_BTN_LEFT_X     (MOUSE_BTN_RIGHT_X - 2 * MOUSE_BTN_RADIUS - MOUSE_BTN_GAP)
-#define MOUSE_COLOR_PRESSED  0x07E0u  // green
-#define MOUSE_COLOR_OUTLINE  0x7BEFu  // grey (same as WASD)
-
 static sprite_t *get_idle_frame(int frame_index) {
     static sprite_t *idle_sprites[FIGHTER_IDLE_FRAME_COUNT] = {0};
 
@@ -57,7 +49,7 @@ void active_view_draw_background(void) {
     if (background != NULL)
         sprite_draw_opaque(background, 0, 0);
     else
-        view_draw_background(BG_COLOR);
+        view_draw_background(0x0000u);
 }
 
 static sprite_t *get_bubble_sprite(MouseButton btn) {
@@ -137,28 +129,6 @@ static void draw_wasd_keys(const Game *g) {
     }
 }
 
-static void draw_mouse_buttons(const Game *g) {
-    font_t *font = get_hud_font();
-    if (font == NULL)
-        return;
-
-    int cx[2] = { MOUSE_BTN_LEFT_X, MOUSE_BTN_RIGHT_X };
-    const char *labels[2] = { "L", "R" };
-
-    for (int i = 0; i < 2; i++) {
-        int dx = g->mouse_x - cx[i];
-        int dy = g->mouse_y - (int)MOUSE_BTN_Y;
-        bool hovered = (dx * dx + dy * dy) <= (int)(MOUSE_BTN_RADIUS * MOUSE_BTN_RADIUS);
-        view_draw_filled_circle(cx[i], MOUSE_BTN_Y, MOUSE_BTN_RADIUS, MOUSE_COLOR_OUTLINE);
-        uint32_t fill = (hovered && g->mouse_held[0]) ? MOUSE_COLOR_PRESSED : WASD_COLOR_UNPRESSED;
-        view_draw_filled_circle(cx[i], MOUSE_BTN_Y, MOUSE_BTN_RADIUS - 3, fill);
-
-        uint16_t lx = cx[i] - font_string_width(font, labels[i]) / 2;
-        uint16_t ly = MOUSE_BTN_Y - font_line_height(font) / 2;
-        font_draw_string(font, labels[i], lx, ly);
-    }
-}
-
 static void draw_round_timer(const Game *g) {
     font_t *font = get_hud_font();
     if (font == NULL)
@@ -175,10 +145,7 @@ static void draw_round_timer(const Game *g) {
 }
 
 void active_view_draw(const Game *g) {
-    if (g->state == GS_ROUND_END)
-        view_draw_background(BG_COLOR_ROUND_END);
-    else
-        active_view_draw_background();
+    active_view_draw_background();
 
     sprite_draw(get_idle_frame(g->p1.anim_frame), FIGHTER_INSET, FIGHTER_Y);
     sprite_draw_mirrored(get_idle_frame(g->p2.anim_frame),
@@ -199,5 +166,4 @@ void active_view_draw(const Game *g) {
     }
     draw_round_timer(g);
     draw_wasd_keys(g);
-    draw_mouse_buttons(g);
 }
