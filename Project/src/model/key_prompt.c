@@ -13,12 +13,16 @@ bool key_prompt_press(KeyPrompt *kp, char key) {
     if (!kp->active || kp->key != key)
         return false;
 
-    if (kp->elapsed_ms < kp->response_window_ms / 2) {
-        kp->hit     = false;
+    /* O tile cai do topo da lane até ao alvo ao longo da janela. Premir quando
+       já está alinhado com o alvo (últimos KEY_PERFECT_WINDOW_PCT%) = perfect.
+       Mesma lógica do bubble_on_click. */
+    int align_ms = kp->response_window_ms * (100 - KEY_PERFECT_WINDOW_PCT) / 100;
+    if (kp->elapsed_ms >= align_ms) {
         kp->perfect = true;
+        kp->hit     = false;
     } else {
-        kp->hit     = true;
         kp->perfect = false;
+        kp->hit     = true;
     }
     kp->active  = false;
 

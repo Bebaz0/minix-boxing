@@ -18,8 +18,6 @@ int sprite_draw(const sprite_t *sprite, uint16_t x, uint16_t y);
 int sprite_draw_region(const sprite_t *sprite, int src_x, int src_y, uint16_t w, uint16_t h,
                        int dst_x, int dst_y);
 int sprite_draw_mirrored(const sprite_t *sprite, uint16_t x, uint16_t y);
-/* Desenha o sprite reamostrado (nearest-neighbor) para dst_w x dst_h, sem alocar.
-   x/y são com sinal — o topo/esquerda podem ficar fora do ecrã (recortado). */
 int sprite_draw_to_size(const sprite_t *sprite, int x, int y, uint16_t dst_w, uint16_t dst_h);
 
 #endif /* PROJECT_SPRITES_H */

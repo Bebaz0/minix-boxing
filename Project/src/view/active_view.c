@@ -7,6 +7,7 @@
 #include "../assets/fighter.h"
 #include "../assets/bubble_sprites.h"
 #include "../assets/ring_sprites.h"
+#include "../assets/key_sprites.h"
 
 #define FIGHTER_Y     300u
 #define FIGHTER_INSET 100u
@@ -28,6 +29,9 @@
 #define MOUSE_BTN_LEFT_X     (MOUSE_BTN_RIGHT_X - 2 * MOUSE_BTN_RADIUS - MOUSE_BTN_GAP)
 #define MOUSE_COLOR_PRESSED  0x07E0u  // green
 #define MOUSE_COLOR_OUTLINE  0x7BEFu  // grey (same as WASD)
+
+/* Centros (x) das 4 lanes, distribuídos pela metade esquerda (512px). */
+static const uint16_t key_lane_cx[KEY_LANE_COUNT] = {64u, 192u, 320u, 448u};
 
 static sprite_t *get_idle_frame(int frame_index) {
     static sprite_t *idle_sprites[FIGHTER_IDLE_FRAME_COUNT] = {0};
@@ -155,6 +159,75 @@ static void draw_round_timer(const Game *g) {
     font_draw_string(font, buf, x, TIMER_Y);
 }
 
+static int key_lane_index(char key) {
+    const char *keys = KEY_PROMPT_KEYS;
+    for (int i = 0; keys[i] != '\0'; i++)
+        if (keys[i] == key)
+            return i;
+    return -1;
+}
+
+static sprite_t *get_key_sprite(int lane) {
+    static sprite_t *tiles[KEY_LANE_COUNT] = {0};
+
+    if (lane < 0 || lane >= KEY_LANE_COUNT)
+        return NULL;
+
+    if (tiles[lane] == NULL) {
+        switch (lane) {
+            case 0: tiles[0] = sprite_create((xpm_map_t)key_title_Q); break;
+            case 1: tiles[1] = sprite_create((xpm_map_t)key_title_W); break;
+            case 2: tiles[2] = sprite_create((xpm_map_t)key_title_E); break;
+            case 3: tiles[3] = sprite_create((xpm_map_t)key_title_R); break;
+        }
+    }
+
+    return tiles[lane];
+}
+
+static sprite_t *get_key_target_sprite(void) {
+    static sprite_t *target = NULL;
+
+    if (target == NULL)
+        target = sprite_create((xpm_map_t)key_target);
+
+    return target;
+}
+
+/* Alvos estáticos + tiles a cair (camada de frente). */
+static void draw_key_prompts(const Game *g) {
+    sprite_t *target = get_key_target_sprite();
+    int travel = KEY_HIT_ZONE_Y - KEY_LANE_TOP;
+
+    if (target != NULL) {
+        for (int lane = 0; lane < KEY_LANE_COUNT; lane++)
+            sprite_draw(target, (uint16_t)(key_lane_cx[lane] - target->width / 2),
+                        (uint16_t)((int)KEY_HIT_ZONE_Y - target->height / 2));
+    }
+
+    for (int i = 0; i < MAX_KEY_PROMPTS; i++) {
+        const KeyPrompt *kp = &g->key_prompts[i];
+        if (!kp->active)
+            continue;
+
+        int lane = key_lane_index(kp->key);
+        if (lane < 0)
+            continue;
+        uint16_t cx = key_lane_cx[lane];
+
+        int center_y = KEY_LANE_TOP;
+        if (kp->response_window_ms > 0)
+            center_y += travel * kp->elapsed_ms / kp->response_window_ms;
+        if (center_y > KEY_HIT_ZONE_Y)
+            center_y = KEY_HIT_ZONE_Y;
+
+        sprite_t *tile = get_key_sprite(lane);
+        if (tile != NULL)
+            sprite_draw(tile, (uint16_t)(cx - tile->width / 2),
+                        (uint16_t)(center_y - tile->height / 2));
+    }
+}
+
 void active_view_draw(const Game *g) {
     uint32_t bg = (g->state == GS_ROUND_END) ? BG_COLOR_ROUND_END : BG_COLOR;
     view_draw_background(bg);
@@ -175,6 +248,7 @@ void active_view_draw(const Game *g) {
                     (uint16_t)(b->x - b->radius),
                     (uint16_t)(b->y - b->radius));
     }
+    draw_key_prompts(g);
     draw_round_timer(g);
     draw_wasd_keys(g);
     draw_mouse_buttons(g);
