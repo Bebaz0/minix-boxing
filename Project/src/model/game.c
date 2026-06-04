@@ -70,7 +70,8 @@ void game_update(Game *g, int delta_ms) {
                                 rand() % (SCREEN_WIDTH / 2 - 2 * BUBBLE_RADIUS);
                         int y = BUBBLE_RADIUS +
                                 rand() % (SCREEN_HEIGHT - 2 * BUBBLE_RADIUS);
-                        MouseButton btn = (rand() % 2) ? MOUSE_BUTTON_LEFT : MOUSE_BUTTON_RIGHT;
+                        //Conta da Net porque usar só o rand estava a dar muito button left (algo a ver com os bits)
+                        MouseButton btn = (rand() > RAND_MAX / 2) ? MOUSE_BUTTON_LEFT : MOUSE_BUTTON_RIGHT;
                         bubble_spawn(&g->bubbles[i], x, y, BUBBLE_RADIUS, btn,
                                      g->response_window_ms);
                         break;
