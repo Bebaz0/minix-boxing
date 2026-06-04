@@ -7,6 +7,7 @@
 #include "../assets/fighter.h"
 #include "../assets/bubble_sprites.h"
 #include "../assets/ring_sprites.h"
+#include "../assets/game_background.xpm"
 #include "../assets/key_sprites.h"
 
 #define FIGHTER_Y     300u
@@ -26,6 +27,24 @@ static sprite_t *get_idle_frame(int frame_index) {
         idle_sprites[frame_index] = sprite_create(fighter_idle_frames[frame_index]);
 
     return idle_sprites[frame_index];
+}
+
+static sprite_t *get_game_background(void) {
+    static sprite_t *background = NULL;
+
+    if (background == NULL)
+        background = sprite_create((xpm_map_t)game_background_xpm);
+
+    return background;
+}
+
+void active_view_draw_background(void) {
+    sprite_t *background = get_game_background();
+
+    if (background != NULL)
+        sprite_draw_opaque(background, 0, 0);
+    else
+        view_draw_background(0x0000u);
 }
 
 static sprite_t *get_bubble_sprite(MouseButton btn) {
@@ -167,8 +186,8 @@ static void draw_key_prompts(const Game *g) {
 }
 
 void active_view_draw(const Game *g) {
-    uint32_t bg = (g->state == GS_ROUND_END) ? BG_COLOR_ROUND_END : BG_COLOR;
-    view_draw_background(bg);
+    active_view_draw_background();
+
     sprite_draw(get_idle_frame(g->p1.anim_frame), FIGHTER_INSET, FIGHTER_Y);
     sprite_draw_mirrored(get_idle_frame(g->p2.anim_frame),
                          SCREEN_WIDTH - FIGHTER_INSET - FIGHTER_W, FIGHTER_Y);

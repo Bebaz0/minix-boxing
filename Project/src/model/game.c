@@ -32,6 +32,7 @@ void game_init(Game *g) {
     g->response_window_ms = INITIAL_RESPONSE_WINDOW_MS;
     g->round_duration_ms  = ROUND_DURATION_MS;
     g->round_number       = 1;
+    g->state_timer_ms     = ROUND_START_MS;
     g->state_timer_ms     = INTER_ROUND_MS;
     g->key_prompt_next_spawn_ms = rand_range(KEY_PROMPT_SPAWN_MIN_MS, KEY_PROMPT_SPAWN_MAX_MS);
     g->bubble_next_spawn_ms     = rand_range(BUBBLE_SPAWN_MIN_MS, BUBBLE_SPAWN_MAX_MS);
@@ -50,7 +51,7 @@ void game_reset_round(Game *g) {
     g->round_number++;
     g->round_end_selected        = 0;
     g->state                     = GS_ROUND_START;
-    g->state_timer_ms            = INTER_ROUND_MS;
+    g->state_timer_ms            = ROUND_START_MS;
 }
 
 void game_update(Game *g, int delta_ms) {

@@ -48,6 +48,27 @@ static void render_menu_frame(const Game *g, bool force_full_redraw) {
     menu_frame_valid = true;
 }
 
+static int round_start_phase(const Game *g) {
+    if (g->state_timer_ms <= ROUND_SPLASH_MS)
+        return 0;
+
+    int digit = ((g->state_timer_ms - ROUND_SPLASH_MS) + 999) / 1000;
+    if (digit < 1) digit = 1;
+    if (digit > 3) digit = 3;
+    return digit;
+}
+
+static void render_round_start_frame(const Game *g, bool force_full_redraw) {
+    static int previous_phase = -1;
+    int phase = round_start_phase(g);
+
+    if (force_full_redraw || previous_phase != phase) {
+        round_start_view_draw(g);
+        vg_flip();
+        previous_phase = phase;
+    }
+}
+
 void render_frame(const Game *g) {
     static GameState previous_state = GS_QUIT;
 
@@ -67,15 +88,16 @@ void render_frame(const Game *g) {
             break;
 
         case GS_ROUND_START:
-            round_start_view_draw(g);
-            break;
+            render_round_start_frame(g, previous_state != GS_ROUND_START);
+            previous_state = g->state;
+            return;
 
         case GS_PAUSE:
             pause_view_draw(g);
             break;
 
         case GS_QUIT:
-            view_draw_background(BG_COLOR);
+            return;
             break;
     }
 
