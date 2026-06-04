@@ -49,7 +49,15 @@
 
 /* Escolha de Personagens */
 #define CHAR_COUNT       10   /* número de personagens disponíveis para seleção */
-#define CHAR_SELECT_COLS  5   /* colunas na grelha (linhas = CHAR_COUNT / CHAR_SELECT_COLS) */
+#define CHAR_SELECT_COLS  5   /* colunas na grelha  */
+
+/* Layout do ecrã de seleção de personagem (partilhado entre view e controller) */
+#define CS_BOX_SIZE  55u
+#define CS_BOX_GAP    5u
+#define CS_BOX_Y    475u
+#define CS_BTN_W    180u
+#define CS_BTN_H     50u
+#define CS_BTN_Y    660u
 
 /* Animação */
 #define FIGHTER_IDLE_FRAME_COUNT  5   /* aumentar quando adicionar mais frames ao fighter.h */

@@ -53,6 +53,7 @@ void game_update(Game *g, int delta_ms) {
         case GS_CHAR_SELECT:
             tick_anim(&g->p1, delta_ms);
             tick_anim(&g->p2, delta_ms);
+            if (char_select_both_ready(&g->char_select)) g->state =GS_ROUND_START;
             break;
 
         case GS_ROUND_START:

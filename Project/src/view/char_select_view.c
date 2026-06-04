@@ -23,13 +23,7 @@
 /* Layout */
 #define CS_LABEL_Y      20u
 #define CS_FIGHTER_Y    80u
-#define CS_BOX_SIZE     55u
-#define CS_BOX_GAP       5u
-#define CS_BOX_Y       475u
 #define CS_HINT_Y      620u
-#define CS_BTN_W       180u
-#define CS_BTN_H        50u
-#define CS_BTN_Y       660u
 
 static sprite_t *get_idle_frame(int frame_index) {
     static sprite_t *idle_sprites[FIGHTER_IDLE_FRAME_COUNT] = {0};
