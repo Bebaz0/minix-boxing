@@ -99,11 +99,13 @@ void game_over_view_draw(const Game *g) {
     }
 
     if (g->is_new_record >= 1) {
+        const char *primary_label = (g->winner == 0) ? "NEXT ROUND" : "PLAY AGAIN";
+
         draw_centered(title_font, winner_text, REC_TITLE_Y, winner_color);
 
         if (body_font != NULL) {
             draw_centered(body_font, "NEW RECORD!", REC_BADGE_Y, TEXT_YELLOW);
-            draw_centered(body_font, "Insert your name:", REC_PROMPT_Y, TEXT_YELLOW);
+            draw_centered(body_font, "INSERT YOUR NAME:", REC_PROMPT_Y, TEXT_YELLOW);
 
             uint16_t name_w = font_string_width(body_font, g->name_input);
             uint16_t name_x = (SCREEN_WIDTH - name_w - CURSOR_W - 4) / 2;
@@ -116,11 +118,13 @@ void game_over_view_draw(const Game *g) {
         }
 
         int sel = (g->is_new_record == 1) ? -1 : g->round_end_selected;
-        draw_end_button(title_font, 0, sel, "RESTART ROUND", REC_RESTART_Y);
-        draw_end_button(title_font, 1, sel, "MENU", REC_MENU_Y);
+        draw_end_button(title_font, 0, sel, primary_label, REC_RESTART_Y);
+        draw_end_button(title_font, 1, sel, "BACK TO MENU", REC_MENU_Y);
     } else {
+        const char *primary_label = (g->winner == 0) ? "NEXT ROUND" : "PLAY AGAIN";
+
         draw_centered(title_font, winner_text, END_TITLE_Y, winner_color);
-        draw_end_button(title_font, 0, g->round_end_selected, "RESTART ROUND", END_RESTART_Y);
-        draw_end_button(title_font, 1, g->round_end_selected, "MENU", END_MENU_Y);
+        draw_end_button(title_font, 0, g->round_end_selected, primary_label, END_RESTART_Y);
+        draw_end_button(title_font, 1, g->round_end_selected, "BACK TO MENU", END_MENU_Y);
     }
 }

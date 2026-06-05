@@ -10,7 +10,7 @@
 #include "../assets/menu_button_start_selected.xpm"
 #include "../assets/menu_background.xpm"
 
-#define MENU_HINT_TEXT  "Press L to LEADERBOARD"
+#define MENU_HINT_TEXT  "PRESS L TO LEADERBOARD"
 #define MENU_HINT_Y     690
 #define MENU_HINT_COLOR 0xF800u
 #define MENU_HINT_BLINK_MS 900

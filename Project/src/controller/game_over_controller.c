@@ -64,10 +64,16 @@ static void apply_end_selection(Game *g) {
     }
     g->is_new_record = 0;
 
-    if (g->round_end_selected == 0)
-        game_reset_round(g);
-    else
+    if (g->round_end_selected == 0) {
+        if (g->winner == 0) {
+            game_reset_round(g);
+        } else {
+            game_init(g);
+            g->state = GS_CHAR_SELECT;
+        }
+    } else {
         game_init(g);
+    }
 }
 
 void game_over_ctrl_handle_keyboard(Controller *ctrl, Game *g) {

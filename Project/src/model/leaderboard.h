@@ -5,8 +5,8 @@
 #include <stdbool.h>
 #include "rtc.h"
 
-#define LEADERBOARD_MAX_ENTRIES 10
-#define LEADERBOARD_FILE        "/root/lcom_leaderboard.dat"
+#define LEADERBOARD_MAX_ENTRIES 9
+#define LEADERBOARD_FILE        "/root/lcom_leaderboard_9.dat"
 #define LEADERBOARD_NAME_LEN    16
 
 typedef struct {

@@ -22,6 +22,7 @@ typedef struct {
 } Player;
 
 void player_init(Player *p);
+void player_reset_round_state(Player *p);
 void player_take_damage(Player *p, int dmg);
 void player_add_combo(Player *p, int pts);
 void player_reset_combo(Player *p);

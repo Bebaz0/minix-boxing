@@ -67,8 +67,8 @@ void game_init(Game *g) {
 }
 
 void game_reset_round(Game *g) {
-    player_init(&g->p1);
-    player_init(&g->p2);
+    player_reset_round_state(&g->p1);
+    player_reset_round_state(&g->p2);
     memset(g->key_prompts, 0, sizeof(g->key_prompts));
     memset(g->bubbles, 0, sizeof(g->bubbles));
     g->key_prompt_spawn_timer_ms = 0;
@@ -177,7 +177,7 @@ void game_update(Game *g, int delta_ms) {
                 if      (p1_dead && p2_dead) g->winner = 0;
                 else if (p1_dead)            g->winner = 2;
                 else if (p2_dead)            g->winner = 1;
-                else                         g->winner = (g->p1.hp >= g->p2.hp) ? 1 : 2;
+                else                         g->winner = 0;
 
                 if (g->winner != 0 &&
                     leaderboard_is_record(&g->leaderboard, g->match_elapsed_ms)) {
