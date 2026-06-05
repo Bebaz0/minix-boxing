@@ -43,7 +43,8 @@
 #define COLOR_COMBO_EMPTY 0x2104u
 
 /* Centros (x) das 4 lanes, distribuídos pela metade esquerda (512px). */
-static const uint16_t key_lane_cx[KEY_LANE_COUNT] = {64u, 192u, 320u, 448u};
+static const uint16_t key_lane_cx[KEY_LANE_COUNT] =
+    {KEY_LANE_CX_0, KEY_LANE_CX_1, KEY_LANE_CX_2, KEY_LANE_CX_3};
 
 
 
@@ -288,6 +289,51 @@ static void draw_key_prompts(const Game *g) {
     }
 }
 
+static font_t *get_tooltip_font(void) {
+    static font_t *font = NULL;
+    if (font == NULL) {
+        font = font_create_lcom(1);
+        font_set_scale(font, 2);
+    }
+    return font;
+}
+
+static void draw_tooltips(const Game *g) {
+    font_t *font = get_tooltip_font();
+    const Player *players[2];
+    int i;
+
+    if (!font) return;
+
+    players[0] = &g->p1;
+    players[1] = &g->p2;
+
+    for (i = 0; i < 2; i++) {
+        const Player *p = players[i];
+        const char *text;
+        uint32_t color;
+
+        if (p->tooltip_type == TOOLTIP_TYPE_NONE || p->tooltip_timer_ms <= 0)
+            continue;
+
+        switch (p->tooltip_type) {
+            case TOOLTIP_TYPE_PERFECT: text = "PERFECT"; color = 0xFEA0u; break;
+            case TOOLTIP_TYPE_HIT:     text = "HIT";     color = 0x07E0u; break;
+            case TOOLTIP_TYPE_MISS:    text = "MISS";    color = 0xE000u; break;
+            default: continue;
+        }
+
+        {
+            int tw = (int)font_string_width(font, text);
+            int tx = p->tooltip_x - tw / 2;
+            if (tx < 0) tx = 0;
+            if (tx + tw > SCREEN_WIDTH) tx = SCREEN_WIDTH - tw;
+            font_draw_string_color(font, text,
+                (uint16_t)tx, (uint16_t)p->tooltip_y, color);
+        }
+    }
+}
+
 void active_view_draw(const Game *g) {
     active_view_draw_background();
     draw_hud_bars(g);
@@ -337,4 +383,5 @@ void active_view_draw(const Game *g) {
     }
     draw_key_prompts(g);
     draw_round_timer(g);
+    draw_tooltips(g);
 }

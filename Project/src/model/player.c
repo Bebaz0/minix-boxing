@@ -6,6 +6,8 @@ void player_init(Player *p) {
     p->anim  = ANIM_IDLE;
     p->anim_frame = 0;
     p->anim_timer_ms = 0;
+    p->tooltip_type     = TOOLTIP_TYPE_NONE;
+    p->tooltip_timer_ms = 0;
 }
 
 void player_reset_round_state(Player *p) {
@@ -13,6 +15,8 @@ void player_reset_round_state(Player *p) {
     p->anim  = ANIM_IDLE;
     p->anim_frame = 0;
     p->anim_timer_ms = 0;
+    p->tooltip_type     = TOOLTIP_TYPE_NONE;
+    p->tooltip_timer_ms = 0;
 }
 
 void player_take_damage(Player *p, int dmg) {
