@@ -155,6 +155,13 @@ static const char * const *sonic_special_frames[9] = {
     (const char * const *)sonic_special9
 };
 
+/**
+ * @brief Returns the XPM data for a fighter's special-animation frame.
+ *
+ * @param fighter_type Fighter type identifier
+ * @param frame_index Frame index within the special animation
+ * @return XPM map for the frame, or NULL if the fighter has no special frames
+ */
 static inline const char * const *fighter_get_special_xpm(int fighter_type, int frame_index) {
     switch (fighter_type) {
         case FIGHTER_TYPE_GOKU:   return goku_special_frames[frame_index];
@@ -206,6 +213,13 @@ static const char * const *sonic_punch_frames[2] = {
     (const char * const *)sonic_punch2
 };
 
+/**
+ * @brief Returns the XPM data for a fighter's punch-animation frame.
+ *
+ * @param fighter_type Fighter type identifier
+ * @param frame_index Frame index within the punch animation
+ * @return XPM map for the frame, or NULL if the fighter has no punch frames
+ */
 static inline const char * const *fighter_get_punch_xpm(int fighter_type, int frame_index) {
     switch (fighter_type) {
         case FIGHTER_TYPE_GOKU:   return goku_punch_frames[frame_index];
@@ -246,6 +260,13 @@ static const char * const *sonic_defense_frames[2] = {
     (const char * const *)sonic_special6
 };
 
+/**
+ * @brief Returns the XPM data for a fighter's defense-animation frame.
+ *
+ * @param fighter_type Fighter type identifier
+ * @param frame_index Frame index within the defense animation
+ * @return XPM map for the frame, or NULL if the fighter has no defense frames
+ */
 static inline const char * const *fighter_get_defense_xpm(int fighter_type, int frame_index) {
     switch (fighter_type) {
         case FIGHTER_TYPE_GOKU:   return goku_defense_frames[frame_index];
@@ -256,6 +277,15 @@ static inline const char * const *fighter_get_defense_xpm(int fighter_type, int 
     }
 }
 
+/**
+ * @brief Returns the XPM data for a fighter's idle-animation frame.
+ *
+ * Out-of-range frame indices are clamped to frame 0.
+ *
+ * @param fighter_type Fighter type identifier
+ * @param frame_index Frame index within the idle animation
+ * @return XPM map for the frame
+ */
 static inline const char * const *fighter_get_idle_xpm(int fighter_type, int frame_index) {
     if (frame_index < 0 || frame_index >= fighter_get_idle_frame_count(fighter_type))
         frame_index = 0;

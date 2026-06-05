@@ -23,10 +23,28 @@
 #define SCANCODE_RIGHT      0x4D
 
 
+/**
+ * @brief Keyboard interrupt handler.
+ *
+ * Reads the KBC status and, when the output buffer holds a valid byte, stores it
+ * in the global ::scancode; on any error it sets ::kbc_error.
+ */
 void (kbc_ih)();
 int kbc_enable_int();
 
+/**
+ * @brief Subscribes to keyboard interrupts in exclusive, reenable mode.
+ *
+ * @param bit_no Output parameter set to the bit of the assigned IRQ line
+ * @return 0 on success, non-zero otherwise
+ */
 int kbc_subscribe_int(uint8_t *bit_no);
+
+/**
+ * @brief Unsubscribes from keyboard interrupts.
+ *
+ * @return 0 on success, non-zero otherwise
+ */
 int kbc_unsubscribe_int();
 
 /* Variáveis globais */

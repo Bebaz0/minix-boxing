@@ -22,7 +22,27 @@
 #define REC_RESTART_Y     (END_POPUP_Y + 255)
 #define REC_MENU_Y        (END_POPUP_Y + 323)
 
+/**
+ * @brief Handles keyboard input on the round-end / game-over screen.
+ *
+ * Drives record-name entry when a new record is set, and navigation/confirmation
+ * of the restart and menu options.
+ *
+ * @param ctrl Controller holding input state
+ * @param g Game to update
+ */
 void game_over_ctrl_handle_keyboard(Controller *ctrl, Game *g);
+
+/**
+ * @brief Handles mouse input on the round-end / game-over screen.
+ *
+ * Lets the player hover and click the restart or menu buttons.
+ *
+ * @param ctrl Controller holding cursor state
+ * @param g Game to update
+ * @param left_clicked true on a left-button press edge
+ * @param right_clicked true on a right-button press edge
+ */
 void game_over_ctrl_handle_mouse(Controller *ctrl, Game *g, bool left_clicked, bool right_clicked);
 
 #endif /* GAME_OVER_CONTROLLER_H */

@@ -52,11 +52,64 @@ typedef struct Game {
     int        is_new_record;                    /* 1 while round-end panel is showing a record entry prompt */
 } Game;
 
+/**
+ * @brief Initializes a game to its starting state.
+ *
+ * Zeroes the struct, loads the leaderboard from disk, initializes the menu and
+ * both players, and leaves the game in the GS_MENU state.
+ *
+ * @param g Game to initialize
+ */
 void game_init(Game *g);
+
+/**
+ * @brief Resets per-round state and advances to the next round.
+ *
+ * Clears both players' round state, all key prompts and bubbles, increments the
+ * round counter and transitions the game to GS_ROUND_START.
+ *
+ * @param g Game whose round is being reset
+ */
 void game_reset_round(Game *g);
+
+/**
+ * @brief Advances the game one logic tick.
+ *
+ * Drives the state machine: spawns/ticks timing events, resolves misses, updates
+ * animations and timers, and detects round end (KO or time-up).
+ *
+ * @param g Game to update
+ * @param delta_ms Elapsed time since the last update, in milliseconds
+ */
 void game_update(Game *g, int delta_ms);
+
+/**
+ * @brief Handles a Player 1 key press against the active key prompts.
+ *
+ * Matches the key to the most advanced active prompt and resolves the resulting
+ * hit / perfect / miss outcome.
+ *
+ * @param g Game receiving the input
+ * @param key Character of the key that was pressed
+ */
 void game_handle_key(Game *g, char key);
+
+/**
+ * @brief Handles a Player 2 mouse click against the active bubbles.
+ *
+ * @param g Game receiving the input
+ * @param mx Cursor x coordinate, in screen pixels
+ * @param my Cursor y coordinate, in screen pixels
+ * @param button Mouse button that was pressed
+ */
 void game_handle_click(Game *g, int mx, int my, MouseButton button);
+
+/**
+ * @brief Checks whether the game has reached the quit state.
+ *
+ * @param g Game to query
+ * @return true if the game state is GS_QUIT, false otherwise
+ */
 bool game_quit(const Game *g);
 
 #endif /* GAME_H */
