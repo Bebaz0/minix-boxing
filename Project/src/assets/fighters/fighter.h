@@ -5,18 +5,15 @@
 #include <lcom/lcf.h>
 
 /* ── Default ────────────────────────────────────────────────────── */
-#include "default/fighter_idle0.xpm"
-#include "default/fighter_idle1.xpm"
-#include "default/fighter_idle2.xpm"
-#include "default/fighter_idle3.xpm"
-#include "default/fighter_idle4.xpm"
 
-static const char * const *default_idle_frames[5] = {
-    fighter_idle0_xpm,
-    fighter_idle1_xpm,
-    fighter_idle2_xpm,
-    fighter_idle3_xpm,
-    fighter_idle4_xpm
+#include "default/fighter_idle00.xpm"
+#include "default/fighter_idle11.xpm"
+#include "default/fighter_idle22.xpm"
+
+static const char * const *default_idle_frames[3] = {
+    (const char * const *)fighter_idle0,
+    (const char * const *)fighter_idle1,
+    (const char * const *)fighter_idle2,
 };
 
 /* ── Goku ───────────────────────────────────────────────────────── */
@@ -85,6 +82,21 @@ static const char * const *sonic_idle_frames[7] = {
 
 
 /* ── Special attack frames ──────────────────────────────────────── */
+
+#include "default/fighter_special0.xpm"
+#include "default/fighter_special1.xpm"
+#include "default/fighter_special2.xpm"
+#include "default/fighter_special3.xpm"
+#include "default/fighter_special4.xpm"
+
+static const char * const *default_special_frames[5] = {
+    (const char * const *)fighter_special0,
+    (const char * const *)fighter_special1,
+    (const char * const *)fighter_special2,
+    (const char * const *)fighter_special3,
+    (const char * const *)fighter_special4,
+};
+
 #include "goku/goku_special0.xpm"
 #include "goku/goku_special1.xpm"
 #include "goku/goku_special2.xpm"
@@ -168,11 +180,24 @@ static inline const char * const *fighter_get_special_xpm(int fighter_type, int 
         case FIGHTER_TYPE_VEGETA: return vegeta_special_frames[frame_index];
         case FIGHTER_TYPE_MARIO:  return mario_special_frames[frame_index];
         case FIGHTER_TYPE_SONIC:  return sonic_special_frames[frame_index];
-        default:                  return NULL;
+        default:                  return default_special_frames[frame_index];
     }
 }
 
 /* ── Punch frames ───────────────────────────────────────────────── */
+
+#include "default/fighter_punch0.xpm"
+#include "default/fighter_punch1.xpm"
+#include "default/fighter_punch2.xpm"
+#include "default/fighter_punch3.xpm"
+
+static const char * const *default_punch_frames[4] = {
+    (const char * const *)fighter_punch0,
+    (const char * const *)fighter_punch1,
+    (const char * const *)fighter_punch2,
+    (const char * const *)fighter_punch3,
+};
+
 #include "goku/goku_punch0.xpm"
 #include "goku/goku_punch1.xpm"
 #include "goku/goku_punch2.xpm"
@@ -226,11 +251,18 @@ static inline const char * const *fighter_get_punch_xpm(int fighter_type, int fr
         case FIGHTER_TYPE_VEGETA: return vegeta_punch_frames[frame_index];
         case FIGHTER_TYPE_MARIO:  return mario_punch_frames[frame_index];
         case FIGHTER_TYPE_SONIC:  return sonic_punch_frames[frame_index];
-        default:                  return NULL;
+        default:                  return default_punch_frames[frame_index];
     }
 }
 
 /* ── Defense frames ─────────────────────────────────────────────── */
+
+#include "default/fighter_defense.xpm"
+
+static const char * const *default_defense_frames[2] = {
+    (const char * const *)fighter_defense,
+    (const char * const *)fighter_defense,
+};
 
 #include "goku/goku_defense.xpm"
 
@@ -273,7 +305,7 @@ static inline const char * const *fighter_get_defense_xpm(int fighter_type, int 
         case FIGHTER_TYPE_VEGETA: return vegeta_defense_frames[frame_index];
         case FIGHTER_TYPE_MARIO:  return mario_defense_frames[frame_index];
         case FIGHTER_TYPE_SONIC:  return sonic_defense_frames[frame_index];
-        default:                  return NULL;
+        default:                  return default_defense_frames[frame_index];
     }
 }
 
