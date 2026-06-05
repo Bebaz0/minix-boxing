@@ -5,6 +5,7 @@ VPATH = src:src/model:src/view:src/controller
 SRCS = main.c \
        game.c \
        menu.c \
+       char_select.c \
        player.c \
        key_prompt.c \
        bubble.c \
@@ -18,12 +19,15 @@ SRCS = main.c \
        sprites.c \
        controller.c \
        menu_controller.c \
+       char_select_controller.c \
        active_controller.c \
        pause_controller.c \
        round_start_controller.c \
        game_over_controller.c \
        game_over_view.c \
-       pause_view.c
+       pause_view.c \
+       char_select_view.c \
+       fighter_sprites.c
 
 CFLAGS += -pedantic -Isrc -Isrc/model -Isrc/view -Isrc/controller -Iinclude -I../lab2 -I../lab3 -I../lab4 -I../lab5
 

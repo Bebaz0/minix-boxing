@@ -52,8 +52,20 @@
 #define BUBBLE_SPAWN_MIN_MS            600
 #define BUBBLE_SPAWN_MAX_MS           1600
 
+/* Escolha de Personagens */
+#define CHAR_COUNT       5    /* número de personagens disponíveis */
+#define CHAR_SELECT_COLS 5    /* 1 fila × 5 colunas */
+
+/* Layout do ecrã de seleção de personagem  */
+#define CS_BOX_SIZE  55u
+#define CS_BOX_GAP    5u
+#define CS_BOX_Y    475u
+#define CS_BTN_W    180u
+#define CS_BTN_H     50u
+#define CS_BTN_Y    660u
+
 /* Animação */
-#define FIGHTER_IDLE_FRAME_COUNT  5   /* aumentar quando adicionar mais frames ao fighter.h */
+#define FIGHTER_IDLE_FRAME_COUNT  5   
 
 /* Teclas do Jogador 1 */
 #define KEY_PROMPT_KEYS "QWER"

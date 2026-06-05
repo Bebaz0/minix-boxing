@@ -29,6 +29,7 @@ void game_init(Game *g) {
     g->state              = GS_MENU;
     player_init(&g->p1);
     player_init(&g->p2);
+    char_select_init(&g->char_select);
     g->response_window_ms = INITIAL_RESPONSE_WINDOW_MS;
     g->round_duration_ms  = ROUND_DURATION_MS;
     g->round_number       = 1;
@@ -60,6 +61,12 @@ void game_update(Game *g, int delta_ms) {
         case GS_MENU:
         case GS_PAUSE:
         case GS_QUIT:
+            break;
+
+        case GS_CHAR_SELECT:
+            tick_anim(&g->p1, delta_ms);
+            tick_anim(&g->p2, delta_ms);
+            if (char_select_both_ready(&g->char_select)) g->state =GS_ROUND_START;
             break;
 
         case GS_ROUND_START:
