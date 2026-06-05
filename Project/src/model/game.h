@@ -8,6 +8,7 @@
 #include "bubble.h"
 #include "menu.h"
 #include "leaderboard.h"
+#include "char_select.h"
 
 typedef enum {
     GS_MENU,
@@ -15,8 +16,9 @@ typedef enum {
     GS_ACTIVE,
     GS_PAUSE,
     GS_ROUND_END,
-    GS_NAME_INPUT,
     GS_LEADERBOARD,
+    GS_CHAR_SELECT,
+    GS_INSTRUCTIONS,
     GS_QUIT
 } GameState;
 
@@ -25,6 +27,7 @@ typedef struct Game {
     Player     p1;                               /* Jogador 1 — teclado */
     Player     p2;                               /* Jogador 2 — rato    */
     Menu       menu;
+    CharSelect char_select;
     KeyPrompt  key_prompts[MAX_KEY_PROMPTS];     /* timing events do P1 */
     BubbleEvent bubbles[MAX_BUBBLES];            /* timing events do P2 */
     int        key_prompt_spawn_timer_ms;
@@ -45,6 +48,7 @@ typedef struct Game {
     Leaderboard leaderboard;
     char       name_input[LEADERBOARD_NAME_LEN];
     int        name_input_len;
+    int        is_new_record;                    /* 1 while round-end panel is showing a record entry prompt */
 } Game;
 
 void game_init(Game *g);

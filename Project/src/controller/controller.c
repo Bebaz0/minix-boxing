@@ -1,4 +1,5 @@
 #include <lcom/lcf.h>
+#include <string.h>
 
 #include "controller.h"
 #include "config.h"
@@ -10,7 +11,7 @@
 #include "round_start_controller.h"
 #include "game_over_controller.h"
 #include "leaderboard_controller.h"
-#include "name_input_controller.h"
+#include "char_select_controller.h"
 
 static int clamp_int(int value, int min, int max) {
     if (value < min) return min;
@@ -53,12 +54,15 @@ void controller_handle_keyboard(Controller *ctrl, Game *g) {
             g->state = GS_PAUSE;
         } else if (g->state == GS_PAUSE) {
             g->state = GS_ACTIVE;
-        } else if (g->state == GS_LEADERBOARD) {
+        } else if (g->state == GS_LEADERBOARD || g->state == GS_INSTRUCTIONS) {
             g->state = GS_MENU;
-        } else if (g->state == GS_NAME_INPUT) {
-            /* ESC cancels name entry and proceeds to round end without saving */
-            g->state          = GS_ROUND_END;
-            g->state_timer_ms = INTER_ROUND_MS;
+        } else if (g->state == GS_ROUND_END && g->is_new_record) {
+            /* ESC: skip saving the record, stay on round-end panel */
+            memset(g->name_input, 0, sizeof(g->name_input));
+            g->name_input_len = 0;
+            g->is_new_record  = 0;
+        } else if (g->state == GS_CHAR_SELECT) {
+            g->state = GS_MENU;
         } else {
             g->state = GS_QUIT;
         }
@@ -73,9 +77,10 @@ void controller_handle_keyboard(Controller *ctrl, Game *g) {
         case GS_ACTIVE:      active_ctrl_handle_keyboard(ctrl, g);        break;
         case GS_PAUSE:       pause_ctrl_handle_keyboard(ctrl, g);         break;
         case GS_ROUND_END:   game_over_ctrl_handle_keyboard(ctrl, g);     break;
-        case GS_NAME_INPUT:  name_input_ctrl_handle_keyboard(ctrl, g);    break;
-        case GS_LEADERBOARD: leaderboard_ctrl_handle_keyboard(ctrl, g);   break;
-        case GS_QUIT:        game_over_ctrl_handle_keyboard(ctrl, g);     break;
+        case GS_LEADERBOARD:  leaderboard_ctrl_handle_keyboard(ctrl, g);   break;
+        case GS_CHAR_SELECT:  char_select_ctrl_handle_keyboard(ctrl, g);   break;
+        case GS_INSTRUCTIONS: break;
+        case GS_QUIT:         game_over_ctrl_handle_keyboard(ctrl, g);     break;
     }
 
     if (previous_state != g->state) {
@@ -125,9 +130,10 @@ void controller_handle_mouse(Controller *ctrl, Game *g) {
         case GS_ACTIVE:      active_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);      break;
         case GS_PAUSE:       pause_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);       break;
         case GS_ROUND_END:   game_over_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);   break;
-        case GS_NAME_INPUT:  break;
-        case GS_LEADERBOARD: break;
-        case GS_QUIT:        game_over_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);   break;
+        case GS_LEADERBOARD:  break;
+        case GS_CHAR_SELECT:  char_select_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked); break;
+        case GS_INSTRUCTIONS: break;
+        case GS_QUIT:         game_over_ctrl_handle_mouse(ctrl, g, left_clicked, right_clicked);   break;
     }
 
     if (previous_state != g->state) {

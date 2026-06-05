@@ -4,14 +4,13 @@
 #include "font.h"
 #include "config.h"
 #include "view_utils.h"
-#include "../assets/fighter.h"
+#include "fighter_sprites.h"
 #include "../assets/bubble_sprites.h"
 #include "../assets/ring_sprites.h"
 #include "../assets/game_background.xpm"
 #include "../assets/key_sprites.h"
 #include "../assets/bar_sprites.h"
 
-#define FIGHTER_Y     230u
 #define FIGHTER_INSET 100u
 #define TIMER_Y       10u
 
@@ -41,17 +40,7 @@
 /* Centros (x) das 4 lanes, distribuídos pela metade esquerda (512px). */
 static const uint16_t key_lane_cx[KEY_LANE_COUNT] = {64u, 192u, 320u, 448u};
 
-static sprite_t *get_idle_frame(int frame_index) {
-    static sprite_t *idle_sprites[FIGHTER_IDLE_FRAME_COUNT] = {0};
 
-    if (frame_index < 0 || frame_index >= FIGHTER_IDLE_FRAME_COUNT)
-        frame_index = 0;
-
-    if (idle_sprites[frame_index] == NULL)
-        idle_sprites[frame_index] = sprite_create(fighter_idle_frames[frame_index]);
-
-    return idle_sprites[frame_index];
-}
 
 static sprite_t *get_game_background(void) {
     static sprite_t *background = NULL;
@@ -168,11 +157,11 @@ static void draw_hud_bars(const Game *g) {
 
     if (hp_spr) {
         sprite_draw(hp_spr, p1_hp_x, hp_y);
-        sprite_draw_mirrored(hp_spr, p2_hp_x, hp_y);
+        sprite_draw_to_size_mirrored(hp_spr, p2_hp_x, hp_y, hp_spr->width, hp_spr->height);
     }
     if (combo_spr) {
         sprite_draw(combo_spr, p1_combo_x, combo_y);
-        sprite_draw_mirrored(combo_spr, p2_combo_x, combo_y);
+        sprite_draw_to_size_mirrored(combo_spr, p2_combo_x, combo_y, combo_spr->width, combo_spr->height);
     }
 }
 
@@ -276,9 +265,22 @@ void active_view_draw(const Game *g) {
     active_view_draw_background();
     draw_hud_bars(g);
 
-    sprite_draw(get_idle_frame(g->p1.anim_frame), FIGHTER_INSET, FIGHTER_Y);
-    sprite_draw_mirrored(get_idle_frame(g->p2.anim_frame),
-                         SCREEN_WIDTH - FIGHTER_INSET - FIGHTER_W, FIGHTER_Y);
+    int ft1 = char_get_fighter_type(g->char_select.p1_char);
+    int ft2 = char_get_fighter_type(g->char_select.p2_char);
+    sprite_t *s1 = fighter_get_idle_sprite(ft1, g->p1.anim_frame);
+    sprite_t *s2 = fighter_get_idle_sprite(ft2, g->p2.anim_frame);
+
+    int w1 = fighter_w(ft1), h1 = fighter_h(ft1);
+    int w2 = fighter_w(ft2), h2 = fighter_h(ft2);
+
+    if (s1 != NULL) {
+        int x = FIGHTER_INSET + (FIGHTER_W - w1) / 2;
+        sprite_draw_to_size(s1, x, SCREEN_HEIGHT - h1, w1, h1);
+    }
+    if (s2 != NULL) {
+        int x = SCREEN_WIDTH - FIGHTER_INSET - FIGHTER_W + (FIGHTER_W - w2) / 2;
+        sprite_draw_to_size_mirrored(s2, x, SCREEN_HEIGHT - h2, w2, h2);
+    }
 
     for (int i = 0; i < MAX_BUBBLES; i++) {
         const BubbleEvent *b = &g->bubbles[i];

@@ -1,6 +1,8 @@
 #include "menu_controller.h"
 #include "kbc.h"
 
+#include "char_select.h"
+
 #define SCANCODE_ESC        0x01
 #define SCANCODE_ENTER      0x1C
 #define SCANCODE_W          0x11
@@ -13,10 +15,12 @@
 static void menu_apply_selected(Game *g) {
     switch (g->menu.selected) {
         case MENU_OPTION_START:
-            g->state = GS_ROUND_START;
-            g->state_timer_ms = ROUND_START_MS;
+            char_select_init(&g->char_select);
+            g->state = GS_CHAR_SELECT;
+            g->state_timer_ms = 0;
             break;
         case MENU_OPTION_INSTRUCTIONS:
+            g->state = GS_INSTRUCTIONS;
             break;
         case MENU_OPTION_EXIT:
             g->state = GS_QUIT;

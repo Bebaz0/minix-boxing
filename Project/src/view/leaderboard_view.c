@@ -1,8 +1,18 @@
 #include "leaderboard_view.h"
 #include "font.h"
-#include "view_utils.h"
+#include "sprites.h"
 #include "config.h"
+#include "../assets/leaderboard_background.xpm"
 #include <stdio.h>
+
+static sprite_t *get_leaderboard_background_sprite(void) {
+    static sprite_t *sprite = NULL;
+
+    if (sprite == NULL)
+        sprite = sprite_create(leaderboard_background_xpm);
+
+    return sprite;
+}
 
 #define TEXT_WHITE  0xFFFFu
 #define TEXT_YELLOW 0xFFE0u
@@ -12,22 +22,13 @@
 /* Column x positions */
 #define COL_RANK    60
 #define COL_NAME    160
-#define COL_PLAYER  580
+#define COL_PLAYER  520
 #define COL_TIME    680
-#define COL_DATE    790
+#define COL_DATE    800
 
 #define ROW_HEADER_Y 160
 #define ROW_START_Y  220
 #define ROW_STEP     46
-
-static font_t *get_title_font(void) {
-    static font_t *font = NULL;
-    if (font == NULL) {
-        font = font_create_lcom(2);
-        font_set_scale(font, 3);
-    }
-    return font;
-}
 
 static font_t *get_table_font(void) {
     static font_t *font = NULL;
@@ -38,28 +39,11 @@ static font_t *get_table_font(void) {
     return font;
 }
 
-static font_t *get_hint_font(void) {
-    static font_t *font = NULL;
-    if (font == NULL) {
-        font = font_create_lcom(1);
-        font_set_scale(font, 2);
-    }
-    return font;
-}
 
 void leaderboard_view_draw(const Game *g) {
-    view_draw_background(BG_COLOR);
+    sprite_draw(get_leaderboard_background_sprite(), 0, 0);
 
-    font_t *title_font = get_title_font();
     font_t *table_font = get_table_font();
-    font_t *hint_font  = get_hint_font();
-
-    if (title_font != NULL) {
-        const char *title = "LEADERBOARD";
-        uint16_t tw = font_string_width(title_font, title);
-        font_draw_string_color(title_font, title,
-                               (SCREEN_WIDTH - tw) / 2, 60, TEXT_YELLOW);
-    }
 
     if (table_font == NULL)
         return;
@@ -104,10 +88,4 @@ void leaderboard_view_draw(const Game *g) {
         }
     }
 
-    if (hint_font != NULL) {
-        const char *hint = "ESC  Back";
-        uint16_t hw = font_string_width(hint_font, hint);
-        font_draw_string_color(hint_font, hint,
-                               (SCREEN_WIDTH - hw) / 2, SCREEN_HEIGHT - 60, TEXT_GRAY);
-    }
 }
