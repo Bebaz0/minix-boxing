@@ -1,6 +1,16 @@
 #include "menu_controller.h"
 #include "kbc.h"
+
 #include "char_select.h"
+
+#define SCANCODE_ESC        0x01
+#define SCANCODE_ENTER      0x1C
+#define SCANCODE_W          0x11
+#define SCANCODE_S          0x1F
+#define SCANCODE_UP         0x48
+#define SCANCODE_DOWN       0x50
+#define SCANCODE_L          0x26   /* debug: open leaderboard */
+#define SCANCODE_BREAK_MASK 0x80
 
 static void menu_apply_selected(Game *g) {
     switch (g->menu.selected) {
@@ -10,6 +20,7 @@ static void menu_apply_selected(Game *g) {
             g->state_timer_ms = 0;
             break;
         case MENU_OPTION_INSTRUCTIONS:
+            g->state = GS_INSTRUCTIONS;
             break;
         case MENU_OPTION_EXIT:
             g->state = GS_QUIT;
@@ -39,6 +50,9 @@ void menu_ctrl_handle_keyboard(Controller *ctrl, Game *g) {
             break;
         case SCANCODE_ESC:
             g->state = GS_QUIT;
+            break;
+        case SCANCODE_L:
+            g->state = GS_LEADERBOARD;
             break;
         default:
             break;

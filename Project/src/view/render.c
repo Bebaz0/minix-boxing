@@ -4,7 +4,9 @@
 #include "round_start_view.h"
 #include "game_over_view.h"
 #include "pause_view.h"
+#include "leaderboard_view.h"
 #include "char_select_view.h"
+#include "instructions_view.h"
 #include "view_utils.h"
 #include "video.h"
 #include "sprites.h"
@@ -97,8 +99,16 @@ void render_frame(const Game *g) {
             pause_view_draw(g);
             break;
 
+        case GS_LEADERBOARD:
+            leaderboard_view_draw(g);
+            break;
+
         case GS_CHAR_SELECT:
             char_select_view_draw(g);
+            break;
+
+        case GS_INSTRUCTIONS:
+            instructions_view_draw(g);
             break;
 
         case GS_QUIT:
