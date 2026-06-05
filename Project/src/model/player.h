@@ -19,6 +19,10 @@ typedef struct {
     AnimState anim;
     int       anim_frame;       // 0 or 1
     int       anim_timer_ms;    // counts up
+    int       tooltip_type;
+    int       tooltip_timer_ms;
+    int       tooltip_x;
+    int       tooltip_y;
 } Player;
 
 void player_init(Player *p);
