@@ -45,8 +45,8 @@ void game_init(Game *g) {
 }
 
 void game_reset_round(Game *g) {
-    player_init(&g->p1);
-    player_init(&g->p2);
+    player_reset_round_state(&g->p1);
+    player_reset_round_state(&g->p2);
     memset(g->key_prompts, 0, sizeof(g->key_prompts));
     memset(g->bubbles, 0, sizeof(g->bubbles));
     g->key_prompt_spawn_timer_ms = 0;

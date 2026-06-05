@@ -58,7 +58,7 @@ void leaderboard_view_draw(const Game *g) {
     font_draw_string_color(table_font, "DATE",   COL_DATE,   ROW_HEADER_Y, TEXT_CYAN);
 
     if (g->leaderboard.count == 0) {
-        const char *empty = "No records yet";
+        const char *empty = "NO RECORDS YET";
         uint16_t ew = font_string_width(table_font, empty);
         font_draw_string_color(table_font, empty,
                                (SCREEN_WIDTH - ew) / 2, ROW_START_Y, TEXT_GRAY);
@@ -84,7 +84,7 @@ void leaderboard_view_draw(const Game *g) {
             font_draw_string_color(table_font, buf, COL_PLAYER, row_y, TEXT_WHITE);
 
             /* time in seconds */
-            snprintf(buf, sizeof(buf), "%ds", e->match_duration_ms / 1000);
+            snprintf(buf, sizeof(buf), "%dS", e->match_duration_ms / 1000);
             font_draw_string_color(table_font, buf, COL_TIME, row_y, TEXT_WHITE);
 
             /* date DD MM YY */
@@ -95,7 +95,7 @@ void leaderboard_view_draw(const Game *g) {
     }
 
     {
-        const char *hint = "Press any key to return";
+        const char *hint = "PRESS ANY KEY TO RETURN";
         uint16_t hint_w = font_string_width(table_font, hint);
         font_draw_string_color(table_font, hint,
                                (SCREEN_WIDTH - hint_w) / 2,

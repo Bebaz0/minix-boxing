@@ -8,6 +8,13 @@ void player_init(Player *p) {
     p->anim_timer_ms = 0;
 }
 
+void player_reset_round_state(Player *p) {
+    p->combo = 0;
+    p->anim  = ANIM_IDLE;
+    p->anim_frame = 0;
+    p->anim_timer_ms = 0;
+}
+
 void player_take_damage(Player *p, int dmg) {
     p->hp -= dmg;
     if (p->hp < 0)

@@ -16,8 +16,8 @@
 #define TIMER_FREQ     30      /* ticks por segundo */
 
 /* Jogador */
-#define PLAYER_MAX_HP       100
-#define PLAYER_MAX_COMBO    100
+#define PLAYER_MAX_HP       200
+#define PLAYER_MAX_COMBO    200
 
 /* TODO: Ajustar os valores de dano conforme o balanceamento do jogo */
 #define NORMAL_DAMAGE       10

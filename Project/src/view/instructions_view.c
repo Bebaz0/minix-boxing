@@ -57,25 +57,25 @@ void instructions_view_draw(const Game *g) {
         return;
 
     draw_section(body_font, "GENERAL",
-                 "Choose your character and press READY",
-                 "Both READY starts the round",
-                 "Keep HP high and reduce the opponent HP",
+                 "CHOOSE YOUR CHARACTER AND PRESS READY",
+                 "BOTH READY STARTS THE ROUND",
+                 "KEEP HP HIGH AND REDUCE THE OPPONENT HP",
                  GENERAL_Y, TEXT_YELLOW);
 
     draw_section(body_font, "PLAYER 1",
-                 "Keyboard player",
-                 "Press Q W E R when keys reach the target",
-                 "Perfect timing builds combo",
+                 "KEYBOARD PLAYER",
+                 "PRESS Q W E R WHEN KEYS REACH THE TARGET",
+                 "PERFECT TIMING BUILDS COMBO",
                  PLAYER1_Y, TEXT_CYAN);
 
     draw_section(body_font, "PLAYER 2",
-                 "Mouse player",
-                 "Click bubbles with LEFT or RIGHT button",
-                 "Match ring and bubble for perfect",
+                 "MOUSE PLAYER",
+                 "CLICK BUBBLES WITH LEFT OR RIGHT BUTTON",
+                 "MATCH RING AND BUBBLE FOR PERFECT",
                  PLAYER2_Y, TEXT_RED);
 
     {
-        const char *hint = "Press ESC to return";
+        const char *hint = "PRESS ESC TO RETURN";
         uint16_t hint_w = font_string_width(body_font, hint);
         font_draw_string_color(body_font, hint, (SCREEN_WIDTH - hint_w) / 2,
                                BACK_HINT_Y, TEXT_RED);

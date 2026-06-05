@@ -105,7 +105,7 @@ void game_over_view_draw(const Game *g) {
 
         if (body_font != NULL) {
             draw_centered(body_font, "NEW RECORD!", REC_BADGE_Y, TEXT_YELLOW);
-            draw_centered(body_font, "Insert your name:", REC_PROMPT_Y, TEXT_YELLOW);
+            draw_centered(body_font, "INSERT YOUR NAME:", REC_PROMPT_Y, TEXT_YELLOW);
 
             uint16_t name_w = font_string_width(body_font, g->name_input);
             uint16_t name_x = (SCREEN_WIDTH - name_w - CURSOR_W - 4) / 2;
