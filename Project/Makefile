@@ -1,6 +1,6 @@
 PROG = proj
 
-VPATH = src:src/model:src/view:src/controller:../lab1
+VPATH = src:src/model:src/view:src/controller
 
 SRCS = main.c \
        game.c \
@@ -32,8 +32,7 @@ SRCS = main.c \
        leaderboard_controller.c \
        char_select_view.c \
        fighter_sprites.c \
-       instructions_view.c \
-       rtc.c
+       instructions_view.c
 
 CFLAGS += -pedantic -Isrc -Isrc/model -Isrc/view -Isrc/controller -Iinclude -I../lab2 -I../lab3 -I../lab4 -I../lab5 -I../lab1
 
@@ -41,9 +40,10 @@ VIDEO_LIB = ../lab5/libvideo.a
 MOUSE_LIB = ../lab4/libmouse.a
 KBD_LIB   = ../lab3/libkbd.a
 TIMER_LIB = ../lab2/libtimer.a
+RTC_LIB   = ../lab1/librtc.a
 
-DPADD += ${LIBLCF} ${VIDEO_LIB} ${MOUSE_LIB} ${KBD_LIB} ${TIMER_LIB}
-LDADD += -llcf -L../lab5 -lvideo -L../lab4 -lmouse -L../lab3 -lkbd ../lab2/timer.o
+DPADD += ${LIBLCF} ${VIDEO_LIB} ${MOUSE_LIB} ${KBD_LIB} ${TIMER_LIB} ${RTC_LIB}
+LDADD += -llcf -L../lab5 -lvideo -L../lab4 -lmouse -L../lab3 -lkbd ../lab2/timer.o -L../lab1 -lrtc
 
 ${VIDEO_LIB}:
 	${MAKE} -C ../lab5 lib
@@ -56,5 +56,8 @@ ${KBD_LIB}:
 
 ${TIMER_LIB}:
 	${MAKE} -C ../lab2 lib
+
+${RTC_LIB}:
+	${MAKE} -C ../lab1 lib
 
 .include <minix.lcom.mk>

@@ -17,21 +17,24 @@
 #define FIGHTER_Y_OFFSET 40
 
 /* HUD bar frame sizes */
-#define BAR_HP_W    220u
+#define BAR_HP_W    440u
 #define BAR_HP_H     28u
-#define BAR_COMBO_W 170u
+#define BAR_COMBO_W 340u
 #define BAR_COMBO_H  20u
 #define BAR_MARGIN    5u
-#define BAR_GAP       4u
+#define BAR_GAP      12u
 
-#define HP_FILL_X_OFF   10
-#define HP_FILL_Y_OFF    5
-#define HP_FILL_W      200
+#define HP_FILL_X_OFF   11
+#define HP_FILL_X_OFF_L 15
+#define HP_FILL_Y_OFF    15
+#define HP_FILL_W      400
 #define HP_FILL_H       17
 #define COMBO_FILL_X_OFF 9
-#define COMBO_FILL_Y_OFF 5
-#define COMBO_FILL_W   152
+#define COMBO_FILL_Y_OFF 15
+#define COMBO_FILL_W   322
 #define COMBO_FILL_H    10
+
+#define BAR_LABEL_Y_OFF  5u
 
 /* Bar colours */
 #define COLOR_HP_FILL     0xE000u
@@ -116,6 +119,15 @@ static sprite_t *get_bar_combo_sprite(void) {
     return s;
 }
 
+static font_t *get_bar_label_font(void) {
+    static font_t *f = NULL;
+    if (f == NULL) {
+        f = font_create_lcom(1);
+        font_set_scale(f, 1);
+    }
+    return f;
+}
+
 static void draw_hud_bars(const Game *g) {
     sprite_t *hp_spr    = get_bar_hp_sprite();
     sprite_t *combo_spr = get_bar_combo_sprite();
@@ -128,10 +140,10 @@ static void draw_hud_bars(const Game *g) {
     uint16_t combo_y    = BAR_MARGIN + BAR_HP_H + BAR_GAP;
 
     int p1_hp_fill = g->p1.hp * HP_FILL_W / PLAYER_MAX_HP;
-    view_draw_rect(p1_hp_x + HP_FILL_X_OFF, hp_y + HP_FILL_Y_OFF,
+    view_draw_rect(p1_hp_x + HP_FILL_X_OFF_L, hp_y + HP_FILL_Y_OFF,
                    HP_FILL_W, HP_FILL_H, COLOR_HP_EMPTY);
     if (p1_hp_fill > 0)
-        view_draw_rect(p1_hp_x + HP_FILL_X_OFF, hp_y + HP_FILL_Y_OFF,
+        view_draw_rect(p1_hp_x + HP_FILL_X_OFF_L, hp_y + HP_FILL_Y_OFF,
                        (uint16_t)p1_hp_fill, HP_FILL_H, COLOR_HP_FILL);
 
     int p1_combo_fill = g->p1.combo * COMBO_FILL_W / PLAYER_MAX_COMBO;
@@ -157,13 +169,26 @@ static void draw_hud_bars(const Game *g) {
                        combo_y + COMBO_FILL_Y_OFF,
                        (uint16_t)p2_combo_fill, COMBO_FILL_H, COLOR_COMBO_FILL);
 
+    font_t *lf = get_bar_label_font();
     if (hp_spr) {
         sprite_draw(hp_spr, p1_hp_x, hp_y);
         sprite_draw_to_size_mirrored(hp_spr, p2_hp_x, hp_y, hp_spr->width, hp_spr->height);
+        if (lf != NULL) {
+            uint16_t w    = font_string_width(lf, "HP");
+            uint16_t lbl_y = hp_y - BAR_LABEL_Y_OFF;
+            font_draw_string_color(lf, "HP", (uint16_t)(p1_hp_x + 4), lbl_y, 0xFFFFu);
+            font_draw_string_color(lf, "HP", (uint16_t)(p2_hp_x + hp_spr->width - w - 4), lbl_y, 0xFFFFu);
+        }
     }
     if (combo_spr) {
         sprite_draw(combo_spr, p1_combo_x, combo_y);
         sprite_draw_to_size_mirrored(combo_spr, p2_combo_x, combo_y, combo_spr->width, combo_spr->height);
+        if (lf != NULL) {
+            uint16_t w    = font_string_width(lf, "COMBO");
+            uint16_t lbl_y = combo_y - BAR_LABEL_Y_OFF;
+            font_draw_string_color(lf, "COMBO", (uint16_t)(p1_combo_x + 4), lbl_y, 0xFEA0u);
+            font_draw_string_color(lf, "COMBO", (uint16_t)(p2_combo_x + combo_spr->width - w - 4), lbl_y, 0xFEA0u);
+        }
     }
 }
 
