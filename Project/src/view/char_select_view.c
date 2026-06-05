@@ -18,7 +18,7 @@
 
 /* Box border / fill colors */
 #define CS_COLOR_BOX_SEL    0xFFE0u   /* yellow  — selected   */
-#define CS_COLOR_BOX_BORDER 0x4208u   /* dim border           */
+#define CS_COLOR_BOX_BORDER 0x4208u   /* border               */
 #define CS_COLOR_BOX_FILL   0x2104u   /* dark fill — default  */
 
 /* Ready-button colors */
@@ -84,20 +84,20 @@ static void draw_char_boxes(uint16_t panel_left, int selected_char) {
         view_draw_rect(bx,     by,     CS_BOX_SIZE, CS_BOX_SIZE, border);
         view_draw_rect(bx + 2, by + 2, inner,       inner,       fill);
 
-        if (!char_has_sprite(i)) continue;
-
         int ft = char_fighter_type[i];
         sprite_t *thumb = fighter_get_idle_sprite(ft, 0);
         if (thumb == NULL) continue;
 
-        /* src_size > inner = menos zoom.
-           crop_y_pct: a altura do sprite que começa a cortar em percentagem. 
-           x_shift: para meter o sprite para a direita ou esquerda*/
+        /* src_size maior = menos zoom (mostra mais pixels do sprite na caixa).
+           crop_y_pct: altura do sprite onde começa o corte, em percentagem.
+           x_shift: move o conteúdo para a direita (+) ou esquerda (-). */
         int src_size, crop_y_pct, x_shift;
         switch (ft) {
             case FIGHTER_TYPE_GOKU:   src_size = 100; crop_y_pct = 20; x_shift = -45; break;
-            case FIGHTER_TYPE_VEGETA: src_size = 90; crop_y_pct = 22; x_shift =  0; break;
-            default:                  src_size = 70; crop_y_pct =  8; x_shift =  5; break;
+            case FIGHTER_TYPE_VEGETA: src_size =  90; crop_y_pct = 22; x_shift =   0; break;
+            case FIGHTER_TYPE_MARIO:  src_size =  25; crop_y_pct =  5; x_shift =   0; break;
+            case FIGHTER_TYPE_SONIC:  src_size =  20; crop_y_pct =  18; x_shift =   -10; break;
+            default:                  src_size =  70; crop_y_pct =  8; x_shift =   5; break;
         }
         draw_char_head(thumb, bx + 2, by + 2, (int)inner, src_size, crop_y_pct, x_shift);
     }
@@ -108,11 +108,13 @@ static void draw_fighter_preview(uint16_t panel_left, uint16_t center_x,
     sprite_t *frame = fighter_get_idle_sprite(fighter_type, anim_frame);
 
     if (frame != NULL) {
-        int draw_x = (int)center_x - FIGHTER_W / 2;
+        int w = fighter_w(fighter_type), h = fighter_h(fighter_type);
+        int draw_x = (int)center_x - w / 2;
+        int draw_y = CS_FIGHTER_Y + FIGHTER_H_PX - h;  
         if (mirrored)
-            sprite_draw_to_size_mirrored(frame, draw_x, CS_FIGHTER_Y, FIGHTER_W, FIGHTER_H_PX);
+            sprite_draw_to_size_mirrored(frame, draw_x, draw_y, w, h);
         else
-            sprite_draw_to_size(frame, draw_x, CS_FIGHTER_Y, FIGHTER_W, FIGHTER_H_PX);
+            sprite_draw_to_size(frame, draw_x, draw_y, w, h);
     }
 }
 
@@ -132,13 +134,6 @@ static void draw_ready_button(uint16_t center_x, bool ready) {
 
 void char_select_view_draw(const Game *g) {
     const CharSelect *cs = &g->char_select;
-
-
-    static int preload_type = FIGHTER_TYPE_DEFAULT;
-    if (preload_type < FIGHTER_TYPE_COUNT) {
-        fighter_get_idle_sprite(preload_type, 0);
-        preload_type++;
-    }
 
     view_draw_rect(0, 0, CS_PANEL_W, SCREEN_HEIGHT, CS_COLOR_P1_PANEL);
     view_draw_rect(CS_PANEL_W, 0, CS_PANEL_W, SCREEN_HEIGHT, CS_COLOR_P2_PANEL);

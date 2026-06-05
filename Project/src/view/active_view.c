@@ -270,14 +270,16 @@ void active_view_draw(const Game *g) {
     sprite_t *s1 = fighter_get_idle_sprite(ft1, g->p1.anim_frame);
     sprite_t *s2 = fighter_get_idle_sprite(ft2, g->p2.anim_frame);
 
+    int w1 = fighter_w(ft1), h1 = fighter_h(ft1);
+    int w2 = fighter_w(ft2), h2 = fighter_h(ft2);
+
     if (s1 != NULL) {
-        int y = SCREEN_HEIGHT - FIGHTER_H_PX;
-        sprite_draw_to_size(s1, FIGHTER_INSET, y, FIGHTER_W, FIGHTER_H_PX);
+        int x = FIGHTER_INSET + (FIGHTER_W - w1) / 2;
+        sprite_draw_to_size(s1, x, SCREEN_HEIGHT - h1, w1, h1);
     }
     if (s2 != NULL) {
-        int y = SCREEN_HEIGHT - FIGHTER_H_PX;
-        sprite_draw_to_size_mirrored(s2, SCREEN_WIDTH - FIGHTER_INSET - FIGHTER_W, y,
-                                     FIGHTER_W, FIGHTER_H_PX);
+        int x = SCREEN_WIDTH - FIGHTER_INSET - FIGHTER_W + (FIGHTER_W - w2) / 2;
+        sprite_draw_to_size_mirrored(s2, x, SCREEN_HEIGHT - h2, w2, h2);
     }
 
     for (int i = 0; i < MAX_BUBBLES; i++) {
