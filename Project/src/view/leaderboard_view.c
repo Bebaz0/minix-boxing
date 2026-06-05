@@ -29,6 +29,7 @@ static sprite_t *get_leaderboard_background_sprite(void) {
 #define ROW_HEADER_Y 160
 #define ROW_START_Y  220
 #define ROW_STEP     46
+#define BACK_HINT_Y  650
 
 static font_t *get_table_font(void) {
     static font_t *font = NULL;
@@ -88,4 +89,12 @@ void leaderboard_view_draw(const Game *g) {
         }
     }
 
+    {
+        const char *hint = "Press any key to return";
+        uint16_t hint_w = font_string_width(table_font, hint);
+        font_draw_string_color(table_font, hint,
+                               (SCREEN_WIDTH - hint_w) / 2,
+                               BACK_HINT_Y,
+                               TEXT_GRAY);
+    }
 }

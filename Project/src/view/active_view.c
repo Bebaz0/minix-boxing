@@ -11,8 +11,8 @@
 #include "../assets/key_sprites.h"
 #include "../assets/bar_sprites.h"
 
-#define FIGHTER_INSET 100u
 #define TIMER_Y       10u
+#define FIGHTER_GAP   24
 
 /* HUD bar frame sizes */
 #define BAR_HP_W    220u
@@ -273,14 +273,16 @@ void active_view_draw(const Game *g) {
     int w1 = fighter_w(ft1), h1 = fighter_h(ft1);
     int w2 = fighter_w(ft2), h2 = fighter_h(ft2);
 
-    if (s1 != NULL) {
-        int x = FIGHTER_INSET + (FIGHTER_W - w1) / 2;
-        sprite_draw_to_size(s1, x, SCREEN_HEIGHT - h1, w1, h1);
-    }
-    if (s2 != NULL) {
-        int x = SCREEN_WIDTH - FIGHTER_INSET - FIGHTER_W + (FIGHTER_W - w2) / 2;
-        sprite_draw_to_size_mirrored(s2, x, SCREEN_HEIGHT - h2, w2, h2);
-    }
+    int fighters_total_w = w1 + FIGHTER_GAP + w2;
+    int p1_x = (SCREEN_WIDTH - fighters_total_w) / 2;
+    int p2_x = p1_x + w1 + FIGHTER_GAP;
+    int p1_y = (SCREEN_HEIGHT - h1) / 2;
+    int p2_y = (SCREEN_HEIGHT - h2) / 2;
+
+    if (s1 != NULL)
+        sprite_draw_to_size(s1, p1_x, p1_y, w1, h1);
+    if (s2 != NULL)
+        sprite_draw_to_size_mirrored(s2, p2_x, p2_y, w2, h2);
 
     for (int i = 0; i < MAX_BUBBLES; i++) {
         const BubbleEvent *b = &g->bubbles[i];
