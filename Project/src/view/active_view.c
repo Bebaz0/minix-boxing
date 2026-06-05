@@ -11,7 +11,7 @@
 #include "../assets/key_sprites.h"
 #include "../assets/bar_sprites.h"
 
-#define FIGHTER_Y     300u
+#define FIGHTER_Y     230u
 #define FIGHTER_INSET 100u
 #define TIMER_Y       10u
 
