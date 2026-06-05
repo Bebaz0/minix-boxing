@@ -40,4 +40,44 @@ static inline int fighter_h(int fighter_type) {
            ? SMALL_FIGHTER_H : FIGHTER_H_PX;
 }
 
+static inline int fighter_get_special_frame_count(int fighter_type) {
+    switch (fighter_type) {
+        case FIGHTER_TYPE_GOKU:   return 4;
+        case FIGHTER_TYPE_VEGETA: return 5;
+        case FIGHTER_TYPE_MARIO:  return 9;
+        case FIGHTER_TYPE_SONIC:  return 9;
+        default:                  return 0;
+    }
+}
+
+static inline int fighter_get_punch_frame_count(int fighter_type) {
+    switch (fighter_type) {
+        case FIGHTER_TYPE_GOKU:   return 4;
+        case FIGHTER_TYPE_VEGETA: return 3;
+        case FIGHTER_TYPE_MARIO:  return 3;
+        case FIGHTER_TYPE_SONIC:  return 2;
+        default:                  return 0;
+    }
+}
+
+static inline int fighter_get_defense_frame_count(int fighter_type) {
+    switch (fighter_type) {
+        case FIGHTER_TYPE_GOKU:   return 2;
+        case FIGHTER_TYPE_VEGETA: return 2;
+        case FIGHTER_TYPE_MARIO:  return 2;
+        case FIGHTER_TYPE_SONIC:  return 2;
+        default:                  return 0;
+    }
+}
+
+static inline int fighter_get_idle_frame_count(int fighter_type) {
+    switch (fighter_type) {
+        case FIGHTER_TYPE_GOKU:   return 6;
+        case FIGHTER_TYPE_VEGETA: return 6;
+        case FIGHTER_TYPE_MARIO:  return 3;
+        case FIGHTER_TYPE_SONIC:  return 7;
+        default:                  return 5;
+    }
+}
+
 #endif /* FIGHTER_TYPES_H */

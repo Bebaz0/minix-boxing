@@ -5,6 +5,7 @@
 #include "config.h"
 #include "view_utils.h"
 #include "fighter_sprites.h"
+#include "../model/player.h"
 #include "../assets/bubble_sprites.h"
 #include "../assets/ring_sprites.h"
 #include "../assets/game_background.xpm"
@@ -268,8 +269,19 @@ void active_view_draw(const Game *g) {
 
     int ft1 = char_get_fighter_type(g->char_select.p1_char);
     int ft2 = char_get_fighter_type(g->char_select.p2_char);
-    sprite_t *s1 = fighter_get_idle_sprite(ft1, g->p1.anim_frame);
-    sprite_t *s2 = fighter_get_idle_sprite(ft2, g->p2.anim_frame);
+    sprite_t *s1, *s2;
+    switch (g->p1.anim) {
+        case ANIM_SPECIAL:  s1 = fighter_get_special_sprite(ft1, g->p1.anim_frame); break;
+        case ANIM_PUNCH:    s1 = fighter_get_punch_sprite(ft1, g->p1.anim_frame);   break;
+        case ANIM_DEFENSE:  s1 = fighter_get_defense_sprite(ft1, g->p1.anim_frame); break;
+        default:            s1 = fighter_get_idle_sprite(ft1, g->p1.anim_frame);    break;
+    }
+    switch (g->p2.anim) {
+        case ANIM_SPECIAL:  s2 = fighter_get_special_sprite(ft2, g->p2.anim_frame); break;
+        case ANIM_PUNCH:    s2 = fighter_get_punch_sprite(ft2, g->p2.anim_frame);   break;
+        case ANIM_DEFENSE:  s2 = fighter_get_defense_sprite(ft2, g->p2.anim_frame); break;
+        default:            s2 = fighter_get_idle_sprite(ft2, g->p2.anim_frame);    break;
+    }
 
     int w1 = fighter_w(ft1), h1 = fighter_h(ft1);
     int w2 = fighter_w(ft2), h2 = fighter_h(ft2);

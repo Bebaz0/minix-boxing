@@ -4,8 +4,9 @@
 #include "combat.h"
 #include "leaderboard.h"
 #include "rtc.h"
+#include "../assets/fighter_types.h"
 
-#define ANIM_FRAME_DURATION_MS 120
+#define ANIM_FRAME_DURATION_MS 140
 
 /* Inteiro aleatório em [lo, hi] usando os bits ALTOS do rand().
    Os bits baixos do rand() desta libc são fracos (ver comentário no spawn das
@@ -17,11 +18,32 @@ static int rand_range(int lo, int hi) {
     return lo + rand() / (RAND_MAX / span + 1);
 }
 
-static void tick_anim(Player *p, int delta_ms) {
+static void tick_anim(Player *p, int fighter_type, int delta_ms) {
     p->anim_timer_ms += delta_ms;
     if (p->anim_timer_ms >= ANIM_FRAME_DURATION_MS) {
         p->anim_timer_ms -= ANIM_FRAME_DURATION_MS;
-        p->anim_frame = (p->anim_frame + 1) % FIGHTER_IDLE_FRAME_COUNT;
+        if (p->anim == ANIM_SPECIAL || p->anim == ANIM_PUNCH || p->anim == ANIM_DEFENSE) {
+            int count;
+            if (p->anim == ANIM_SPECIAL)
+                count = fighter_get_special_frame_count(fighter_type);
+            else if (p->anim == ANIM_PUNCH)
+                count = fighter_get_punch_frame_count(fighter_type);
+            else
+                count = fighter_get_defense_frame_count(fighter_type);
+
+            if (count > 0) {
+                p->anim_frame++;
+                if (p->anim_frame >= count) {
+                    p->anim_frame = 0;
+                    p->anim = ANIM_IDLE;
+                }
+            } else {
+                p->anim = ANIM_IDLE;
+            }
+        } else {
+            int idle_count = fighter_get_idle_frame_count(fighter_type);
+            p->anim_frame = (p->anim_frame + 1) % idle_count;
+        }
     }
 }
 
@@ -70,8 +92,8 @@ void game_update(Game *g, int delta_ms) {
             break;
 
         case GS_CHAR_SELECT:
-            tick_anim(&g->p1, delta_ms);
-            tick_anim(&g->p2, delta_ms);
+            tick_anim(&g->p1, char_get_fighter_type(g->char_select.p1_char), delta_ms);
+            tick_anim(&g->p2, char_get_fighter_type(g->char_select.p2_char), delta_ms);
             if (char_select_both_ready(&g->char_select)) {
                 g->state          = GS_ROUND_START;
                 g->state_timer_ms = ROUND_START_MS;
@@ -93,8 +115,8 @@ void game_update(Game *g, int delta_ms) {
             break;
 
         case GS_ACTIVE: {
-            tick_anim(&g->p1, delta_ms);
-            tick_anim(&g->p2, delta_ms);
+            tick_anim(&g->p1, char_get_fighter_type(g->char_select.p1_char), delta_ms);
+            tick_anim(&g->p2, char_get_fighter_type(g->char_select.p2_char), delta_ms);
 
             g->round_elapsed_ms  += delta_ms;
             g->match_elapsed_ms  += delta_ms;
