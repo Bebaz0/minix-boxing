@@ -5,24 +5,6 @@
 #include "config.h"
 #include <string.h>
 
-#define SCANCODE_ENTER      0x1C
-#define SCANCODE_BACKSPACE  0x0E
-#define SCANCODE_W          0x11
-#define SCANCODE_S          0x1F
-#define SCANCODE_UP         0x48
-#define SCANCODE_DOWN       0x50
-#define SCANCODE_BREAK_MASK 0x80
-
-#define END_OPTION_W      440
-#define END_OPTION_H      56
-#define END_OPTION_X      ((SCREEN_WIDTH - END_OPTION_W) / 2)
-#define END_POPUP_H       401
-#define END_POPUP_Y       ((SCREEN_HEIGHT - END_POPUP_H) / 2)
-#define END_RESTART_Y     (END_POPUP_Y + 175)
-#define END_MENU_Y        (END_POPUP_Y + 245)
-#define REC_RESTART_Y     (END_POPUP_Y + 255)
-#define REC_MENU_Y        (END_POPUP_Y + 323)
-
 static char scancode_to_char(uint8_t sc) {
     switch (sc) {
         case 0x1E: return 'A'; case 0x30: return 'B'; case 0x2E: return 'C';

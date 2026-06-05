@@ -3,14 +3,6 @@
 
 #include "char_select.h"
 
-#define SCANCODE_ENTER      0x1C
-#define SCANCODE_W          0x11
-#define SCANCODE_S          0x1F
-#define SCANCODE_UP         0x48
-#define SCANCODE_DOWN       0x50
-#define SCANCODE_L          0x26   /* debug: open leaderboard */
-#define SCANCODE_BREAK_MASK 0x80
-
 static void menu_apply_selected(Game *g) {
     switch (g->menu.selected) {
         case MENU_OPTION_START:

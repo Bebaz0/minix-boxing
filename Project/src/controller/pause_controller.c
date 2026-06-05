@@ -2,21 +2,6 @@
 #include "kbc.h"
 #include "config.h"
 
-#define SCANCODE_ENTER      0x1C
-#define SCANCODE_W          0x11
-#define SCANCODE_S          0x1F
-#define SCANCODE_UP         0x48
-#define SCANCODE_DOWN       0x50
-#define SCANCODE_BREAK_MASK 0x80
-
-#define PAUSE_OPTION_W      440
-#define PAUSE_OPTION_H      56
-#define PAUSE_OPTION_X      ((SCREEN_WIDTH - PAUSE_OPTION_W) / 2)
-#define PAUSE_POPUP_H       401
-#define PAUSE_POPUP_Y       ((SCREEN_HEIGHT - PAUSE_POPUP_H) / 2)
-#define PAUSE_RESUME_Y      (PAUSE_POPUP_Y + 175)
-#define PAUSE_EXIT_Y        (PAUSE_POPUP_Y + 245)
-
 static int pause_option_at(int x, int y) {
     if (x >= PAUSE_OPTION_X && x < PAUSE_OPTION_X + PAUSE_OPTION_W) {
         if (y >= PAUSE_RESUME_Y && y < PAUSE_RESUME_Y + PAUSE_OPTION_H) return 0;
