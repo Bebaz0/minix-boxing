@@ -63,6 +63,8 @@ void controller_handle_keyboard(Controller *ctrl, Game *g) {
             g->is_new_record  = 0;
         } else if (g->state == GS_CHAR_SELECT) {
             g->state = GS_MENU;
+        } else if (g->state == GS_MENU) {
+            /* ESC does nothing in the main menu; use EXIT to quit. */
         } else {
             g->state = GS_QUIT;
         }

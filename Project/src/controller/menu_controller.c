@@ -3,7 +3,6 @@
 
 #include "char_select.h"
 
-#define SCANCODE_ESC        0x01
 #define SCANCODE_ENTER      0x1C
 #define SCANCODE_W          0x11
 #define SCANCODE_S          0x1F
@@ -47,9 +46,6 @@ void menu_ctrl_handle_keyboard(Controller *ctrl, Game *g) {
             break;
         case SCANCODE_ENTER:
             menu_apply_selected(g);
-            break;
-        case SCANCODE_ESC:
-            g->state = GS_QUIT;
             break;
         case SCANCODE_L:
             g->state = GS_LEADERBOARD;
