@@ -103,9 +103,9 @@ void game_update(Game *g, int delta_ms) {
                     rand_range(BUBBLE_SPAWN_MIN_MS, BUBBLE_SPAWN_MAX_MS);
                 for (int i = 0; i < MAX_BUBBLES; i++) {
                     if (!g->bubbles[i].active) {
-                        int x = rand_range(SCREEN_WIDTH / 2 + BUBBLE_RADIUS,
-                                           SCREEN_WIDTH - BUBBLE_RADIUS);
-                        int y = rand_range(BUBBLE_RADIUS, SCREEN_HEIGHT - BUBBLE_RADIUS);
+                        int x = rand_range(SCREEN_WIDTH / 2 + BUBBLE_RADIUS + 20, //+20 para não ficar muito perto do meio
+                                            SCREEN_WIDTH - BUBBLE_RADIUS);
+                        int y = rand_range(BUBBLE_RADIUS + 70, SCREEN_HEIGHT - BUBBLE_RADIUS - 50); //-20 para não ficar muito perto do chão
                         MouseButton btn = rand_range(0, 1) == 0 ? MOUSE_BUTTON_LEFT
                                                                : MOUSE_BUTTON_RIGHT;
                         bubble_spawn(&g->bubbles[i], x, y, BUBBLE_RADIUS, btn,
