@@ -1,6 +1,6 @@
 PROG = proj
 
-VPATH = src:src/model:src/view:src/controller
+VPATH = src:src/model:src/view/core:src/view/screens:src/view/fighters:src/controller
 
 SRCS = main.c \
        game.c \
@@ -34,7 +34,7 @@ SRCS = main.c \
        fighter_sprites.c \
        instructions_view.c
 
-CFLAGS += -pedantic -Isrc -Isrc/model -Isrc/view -Isrc/controller -Iinclude -I../lab2 -I../lab3 -I../lab4 -I../lab5 -I../lab1
+CFLAGS += -pedantic -Isrc -Isrc/model -Isrc/view/core -Isrc/view/screens -Isrc/view/fighters -Isrc/controller -Iinclude -I../lab2 -I../lab3 -I../lab4 -I../lab5 -I../lab1
 
 VIDEO_LIB = ../lab5/libvideo.a
 MOUSE_LIB = ../lab4/libmouse.a

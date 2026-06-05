@@ -2,7 +2,7 @@
 #include "font.h"
 #include "sprites.h"
 #include "config.h"
-#include "../assets/backgrounds/leaderboard_background.xpm"
+#include "../../assets/backgrounds/leaderboard_background.xpm"
 #include <stdio.h>
 
 static sprite_t *get_leaderboard_background_sprite(void) {

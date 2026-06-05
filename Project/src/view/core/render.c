@@ -10,7 +10,7 @@
 #include "view_utils.h"
 #include "video.h"
 #include "sprites.h"
-#include "../assets/ui/cursor.xpm"
+#include "../../assets/ui/cursor.xpm"
 
 static sprite_t *get_cursor_sprite(void) {
     static sprite_t *cursor = NULL;

@@ -1,7 +1,7 @@
 #include "font.h"
 #include "config.h"
 #include "video.h"
-#include "../assets/fonts/lcomfont.h"
+#include "../../assets/fonts/lcomfont.h"
 
 #include <stdlib.h>
 

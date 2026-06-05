@@ -4,7 +4,7 @@
 #include "config.h"
 #include "view_utils.h"
 #include "sprites.h"
-#include "../assets/ui/pause_rectangle.xpm"
+#include "../../assets/ui/pause_rectangle.xpm"
 
 #define TEXT_WHITE  0xFFFFu
 #define TEXT_YELLOW 0xFFE0u

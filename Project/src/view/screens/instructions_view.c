@@ -2,7 +2,7 @@
 #include "sprites.h"
 #include "font.h"
 #include "config.h"
-#include "../assets/backgrounds/instructions_background.xpm"
+#include "../../assets/backgrounds/instructions_background.xpm"
 
 #define TEXT_WHITE  0xFFFFu
 #define TEXT_YELLOW 0xFFE0u
