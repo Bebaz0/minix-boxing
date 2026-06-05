@@ -99,6 +99,8 @@ void game_over_view_draw(const Game *g) {
     }
 
     if (g->is_new_record >= 1) {
+        const char *primary_label = (g->winner == 0) ? "NEXT ROUND" : "PLAY AGAIN";
+
         draw_centered(title_font, winner_text, REC_TITLE_Y, winner_color);
 
         if (body_font != NULL) {
@@ -116,11 +118,13 @@ void game_over_view_draw(const Game *g) {
         }
 
         int sel = (g->is_new_record == 1) ? -1 : g->round_end_selected;
-        draw_end_button(title_font, 0, sel, "RESTART ROUND", REC_RESTART_Y);
-        draw_end_button(title_font, 1, sel, "MENU", REC_MENU_Y);
+        draw_end_button(title_font, 0, sel, primary_label, REC_RESTART_Y);
+        draw_end_button(title_font, 1, sel, "BACK TO MENU", REC_MENU_Y);
     } else {
+        const char *primary_label = (g->winner == 0) ? "NEXT ROUND" : "PLAY AGAIN";
+
         draw_centered(title_font, winner_text, END_TITLE_Y, winner_color);
-        draw_end_button(title_font, 0, g->round_end_selected, "RESTART ROUND", END_RESTART_Y);
-        draw_end_button(title_font, 1, g->round_end_selected, "MENU", END_MENU_Y);
+        draw_end_button(title_font, 0, g->round_end_selected, primary_label, END_RESTART_Y);
+        draw_end_button(title_font, 1, g->round_end_selected, "BACK TO MENU", END_MENU_Y);
     }
 }

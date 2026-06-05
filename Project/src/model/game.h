@@ -41,7 +41,7 @@ typedef struct Game {
     int        menu_blink_timer_ms;              /* anima texto arcade no menu */
     int        round_number;                     /* começa em 1         */
     int        winner;                           /* 1, 2, ou 0 em empate */
-    int        round_end_selected;               /* 0 = RESTART, 1 = MENU */
+    int        round_end_selected;               /* 0 = primary action, 1 = menu */
     int        pause_selected;                   /* 0 = RESUME,  1 = EXIT */
     bool       mouse_held[2];                    /* [0]=left [1]=right held state (visual feedback) */
     int        mouse_x, mouse_y;                 /* cursor position in screen coords */
