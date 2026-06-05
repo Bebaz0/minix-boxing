@@ -1,7 +1,6 @@
 #include "leaderboard_controller.h"
 #include "kbc.h"
 
-#define SCANCODE_BREAK_MASK 0x80
 
 void leaderboard_ctrl_handle_keyboard(Controller *ctrl, Game *g) {
     (void)ctrl;

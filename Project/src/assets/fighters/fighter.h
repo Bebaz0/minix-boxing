@@ -5,11 +5,11 @@
 #include <lcom/lcf.h>
 
 /* ── Default ────────────────────────────────────────────────────── */
-#include "fighters/default/fighter_idle0.xpm"
-#include "fighters/default/fighter_idle1.xpm"
-#include "fighters/default/fighter_idle2.xpm"
-#include "fighters/default/fighter_idle3.xpm"
-#include "fighters/default/fighter_idle4.xpm"
+#include "default/fighter_idle0.xpm"
+#include "default/fighter_idle1.xpm"
+#include "default/fighter_idle2.xpm"
+#include "default/fighter_idle3.xpm"
+#include "default/fighter_idle4.xpm"
 
 static const char * const *default_idle_frames[5] = {
     fighter_idle0_xpm,
@@ -20,12 +20,12 @@ static const char * const *default_idle_frames[5] = {
 };
 
 /* ── Goku ───────────────────────────────────────────────────────── */
-#include "fighters/goku/goku_idle0.xpm"
-#include "fighters/goku/goku_idle1.xpm"
-#include "fighters/goku/goku_idle2.xpm"
-#include "fighters/goku/goku_idle3.xpm"
-#include "fighters/goku/goku_idle4.xpm"
-#include "fighters/goku/goku_idle5.xpm"
+#include "goku/goku_idle0.xpm"
+#include "goku/goku_idle1.xpm"
+#include "goku/goku_idle2.xpm"
+#include "goku/goku_idle3.xpm"
+#include "goku/goku_idle4.xpm"
+#include "goku/goku_idle5.xpm"
 
 static const char * const *goku_idle_frames[6] = {
     (const char * const *)goku_idle0,
@@ -37,12 +37,12 @@ static const char * const *goku_idle_frames[6] = {
 };
 
 /* ── Vegeta ─────────────────────────────────────────────────────── */
-#include "fighters/vegeta/vegeta_idle0.xpm"
-#include "fighters/vegeta/vegeta_idle1.xpm"
-#include "fighters/vegeta/vegeta_idle2.xpm"
-#include "fighters/vegeta/vegeta_idle3.xpm"
-#include "fighters/vegeta/vegeta_idle4.xpm"
-#include "fighters/vegeta/vegeta_idle5.xpm"
+#include "vegeta/vegeta_idle0.xpm"
+#include "vegeta/vegeta_idle1.xpm"
+#include "vegeta/vegeta_idle2.xpm"
+#include "vegeta/vegeta_idle3.xpm"
+#include "vegeta/vegeta_idle4.xpm"
+#include "vegeta/vegeta_idle5.xpm"
 
 static const char * const *vegeta_idle_frames[6] = {
     (const char * const *)vegeta_idle0,
@@ -54,9 +54,9 @@ static const char * const *vegeta_idle_frames[6] = {
 };
 
 /* ── Mario ──────────────────────────────────────────────────────── */
-#include "fighters/mario/mario_idle_1.xpm"
-#include "fighters/mario/mario_idle_2.xpm"
-#include "fighters/mario/mario_idle_3.xpm"
+#include "mario/mario_idle_1.xpm"
+#include "mario/mario_idle_2.xpm"
+#include "mario/mario_idle_3.xpm"
 
 static const char * const *mario_idle_frames[3] = {
     (const char * const *)mario_idle_1,
@@ -65,13 +65,13 @@ static const char * const *mario_idle_frames[3] = {
 };
 
 /* ── Sonic ──────────────────────────────────────────────────────── */
-#include "fighters/sonic/sonic_idle1.xpm"
-#include "fighters/sonic/sonic_idle2.xpm"
-#include "fighters/sonic/sonic_idle3.xpm"
-#include "fighters/sonic/sonic_idle4.xpm"
-#include "fighters/sonic/sonic_idle5.xpm"
-#include "fighters/sonic/sonic_idle6.xpm"
-#include "fighters/sonic/sonic_idle7.xpm"
+#include "sonic/sonic_idle1.xpm"
+#include "sonic/sonic_idle2.xpm"
+#include "sonic/sonic_idle3.xpm"
+#include "sonic/sonic_idle4.xpm"
+#include "sonic/sonic_idle5.xpm"
+#include "sonic/sonic_idle6.xpm"
+#include "sonic/sonic_idle7.xpm"
 
 static const char * const *sonic_idle_frames[7] = {
     (const char * const *)sonic_idle1,
@@ -85,10 +85,10 @@ static const char * const *sonic_idle_frames[7] = {
 
 
 /* ── Special attack frames ──────────────────────────────────────── */
-#include "fighters/goku/goku_special0.xpm"
-#include "fighters/goku/goku_special1.xpm"
-#include "fighters/goku/goku_special2.xpm"
-#include "fighters/goku/goku_special3.xpm"
+#include "goku/goku_special0.xpm"
+#include "goku/goku_special1.xpm"
+#include "goku/goku_special2.xpm"
+#include "goku/goku_special3.xpm"
 
 static const char * const *goku_special_frames[4] = {
     (const char * const *)goku_special0,
@@ -97,11 +97,11 @@ static const char * const *goku_special_frames[4] = {
     (const char * const *)goku_special3
 };
 
-#include "fighters/vegeta/vegeta_special0.xpm"
-#include "fighters/vegeta/vegeta_special1.xpm"
-#include "fighters/vegeta/vegeta_special2.xpm"
-#include "fighters/vegeta/vegeta_special3.xpm"
-#include "fighters/vegeta/vegeta_special4.xpm"
+#include "vegeta/vegeta_special0.xpm"
+#include "vegeta/vegeta_special1.xpm"
+#include "vegeta/vegeta_special2.xpm"
+#include "vegeta/vegeta_special3.xpm"
+#include "vegeta/vegeta_special4.xpm"
 
 static const char * const *vegeta_special_frames[5] = {
     (const char * const *)vegeta_special0,
@@ -111,15 +111,15 @@ static const char * const *vegeta_special_frames[5] = {
     (const char * const *)vegeta_special4
 };
 
-#include "fighters/mario/mario_special_1.xpm"
-#include "fighters/mario/mario_special_2.xpm"
-#include "fighters/mario/mario_special_3.xpm"
-#include "fighters/mario/mario_special_4.xpm"
-#include "fighters/mario/mario_special_5.xpm"
-#include "fighters/mario/mario_special_6.xpm"
-#include "fighters/mario/mario_special_7.xpm"
-#include "fighters/mario/mario_special_8.xpm"
-#include "fighters/mario/mario_special_9.xpm"
+#include "mario/mario_special_1.xpm"
+#include "mario/mario_special_2.xpm"
+#include "mario/mario_special_3.xpm"
+#include "mario/mario_special_4.xpm"
+#include "mario/mario_special_5.xpm"
+#include "mario/mario_special_6.xpm"
+#include "mario/mario_special_7.xpm"
+#include "mario/mario_special_8.xpm"
+#include "mario/mario_special_9.xpm"
 
 static const char * const *mario_special_frames[9] = {
     (const char * const *)mario_special_1,
@@ -133,15 +133,15 @@ static const char * const *mario_special_frames[9] = {
     (const char * const *)mario_special_9
 };
 
-#include "fighters/sonic/sonic_special1.xpm"
-#include "fighters/sonic/sonic_special2.xpm"
-#include "fighters/sonic/sonic_special3.xpm"
-#include "fighters/sonic/sonic_special4.xpm"
-#include "fighters/sonic/sonic_special5.xpm"
-#include "fighters/sonic/sonic_special6.xpm"
-#include "fighters/sonic/sonic_special7.xpm"
-#include "fighters/sonic/sonic_special8.xpm"
-#include "fighters/sonic/sonic_special9.xpm"
+#include "sonic/sonic_special1.xpm"
+#include "sonic/sonic_special2.xpm"
+#include "sonic/sonic_special3.xpm"
+#include "sonic/sonic_special4.xpm"
+#include "sonic/sonic_special5.xpm"
+#include "sonic/sonic_special6.xpm"
+#include "sonic/sonic_special7.xpm"
+#include "sonic/sonic_special8.xpm"
+#include "sonic/sonic_special9.xpm"
 
 static const char * const *sonic_special_frames[9] = {
     (const char * const *)sonic_special1,
@@ -166,10 +166,10 @@ static inline const char * const *fighter_get_special_xpm(int fighter_type, int 
 }
 
 /* ── Punch frames ───────────────────────────────────────────────── */
-#include "fighters/goku/goku_punch0.xpm"
-#include "fighters/goku/goku_punch1.xpm"
-#include "fighters/goku/goku_punch2.xpm"
-#include "fighters/goku/goku_punch3.xpm"
+#include "goku/goku_punch0.xpm"
+#include "goku/goku_punch1.xpm"
+#include "goku/goku_punch2.xpm"
+#include "goku/goku_punch3.xpm"
 
 static const char * const *goku_punch_frames[4] = {
     (const char * const *)goku_punch0,
@@ -178,9 +178,9 @@ static const char * const *goku_punch_frames[4] = {
     (const char * const *)goku_punch3
 };
 
-#include "fighters/vegeta/vegeta_punch0.xpm"
-#include "fighters/vegeta/vegeta_punch1.xpm"
-#include "fighters/vegeta/vegeta_punch2.xpm"
+#include "vegeta/vegeta_punch0.xpm"
+#include "vegeta/vegeta_punch1.xpm"
+#include "vegeta/vegeta_punch2.xpm"
 
 static const char * const *vegeta_punch_frames[3] = {
     (const char * const *)vegeta_punch0,
@@ -188,9 +188,9 @@ static const char * const *vegeta_punch_frames[3] = {
     (const char * const *)vegeta_punch2
 };
 
-#include "fighters/mario/mario_punch_1.xpm"
-#include "fighters/mario/mario_punch_2.xpm"
-#include "fighters/mario/mario_punch_3.xpm"
+#include "mario/mario_punch_1.xpm"
+#include "mario/mario_punch_2.xpm"
+#include "mario/mario_punch_3.xpm"
 
 static const char * const *mario_punch_frames[3] = {
     (const char * const *)mario_punch_1,
@@ -198,8 +198,8 @@ static const char * const *mario_punch_frames[3] = {
     (const char * const *)mario_punch_3
 };
 
-#include "fighters/sonic/sonic_punch1.xpm"
-#include "fighters/sonic/sonic_punch2.xpm"
+#include "sonic/sonic_punch1.xpm"
+#include "sonic/sonic_punch2.xpm"
 
 static const char * const *sonic_punch_frames[2] = {
     (const char * const *)sonic_punch1,
@@ -218,21 +218,21 @@ static inline const char * const *fighter_get_punch_xpm(int fighter_type, int fr
 
 /* ── Defense frames ─────────────────────────────────────────────── */
 
-#include "fighters/goku/goku_defense.xpm"
+#include "goku/goku_defense.xpm"
 
 static const char * const *goku_defense_frames[2] = {
     (const char * const *)goku_defense,
     (const char * const *)goku_defense
 };
 
-#include "fighters/vegeta/vegeta_defense.xpm"
+#include "vegeta/vegeta_defense.xpm"
 
 static const char * const *vegeta_defense_frames[2] = {
     (const char * const *)vegeta_defense,
     (const char * const *)vegeta_defense
 };
 
-#include "fighters/mario/mario_defense.xpm"
+#include "mario/mario_defense.xpm"
 
 static const char * const *mario_defense_frames[2] = {
     (const char * const *)mario_defense,

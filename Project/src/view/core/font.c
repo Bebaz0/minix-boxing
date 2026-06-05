@@ -1,5 +1,7 @@
 #include "font.h"
-#include "../assets/fonts/lcomfont.h"
+#include "config.h"
+#include "video.h"
+#include "../../assets/fonts/lcomfont.h"
 
 #include <stdlib.h>
 
@@ -201,6 +203,32 @@ uint16_t font_line_height(const font_t *font) {
     return height;
 }
 
+static int font_draw_glyph_color(const sprite_t *glyph, uint16_t x, uint16_t y,
+                                 uint32_t color) {
+    if (glyph == NULL || glyph->pixels == NULL)
+        return 1;
+
+    uint16_t *pixels = (uint16_t *)glyph->pixels;
+
+    for (uint16_t row = 0; row < glyph->height; row++) {
+        if (y + row >= SCREEN_HEIGHT)
+            break;
+
+        for (uint16_t col = 0; col < glyph->width; col++) {
+            if (x + col >= SCREEN_WIDTH)
+                break;
+
+            uint32_t pixel = pixels[row * glyph->width + col];
+            if (pixel == glyph->transparent_color)
+                continue;
+
+            vg_draw_pixel(x + col, y + row, color);
+        }
+    }
+
+    return 0;
+}
+
 int font_draw_char(const font_t *font, char character, uint16_t x, uint16_t y) {
     const sprite_t *glyph = font_get_glyph(font, character);
     if (glyph == NULL)
@@ -250,7 +278,7 @@ int font_draw_string_color(const font_t *font, const char *text, uint16_t x, uin
         if (glyph == NULL)
             continue;
 
-        if (sprite_draw_tinted(glyph, cursor_x, y, color) != 0)
+        if (font_draw_glyph_color(glyph, cursor_x, y, color) != 0)
             return 1;
 
         cursor_x += glyph->width + font->spacing * font->scale;
