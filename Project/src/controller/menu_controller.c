@@ -7,6 +7,7 @@
 #define SCANCODE_S          0x1F
 #define SCANCODE_UP         0x48
 #define SCANCODE_DOWN       0x50
+#define SCANCODE_L          0x26   /* debug: open leaderboard */
 #define SCANCODE_BREAK_MASK 0x80
 
 static void menu_apply_selected(Game *g) {
@@ -45,6 +46,9 @@ void menu_ctrl_handle_keyboard(Controller *ctrl, Game *g) {
             break;
         case SCANCODE_ESC:
             g->state = GS_QUIT;
+            break;
+        case SCANCODE_L:
+            g->state = GS_LEADERBOARD;
             break;
         default:
             break;

@@ -7,6 +7,7 @@
 #include "key_prompt.h"
 #include "bubble.h"
 #include "menu.h"
+#include "leaderboard.h"
 
 typedef enum {
     GS_MENU,
@@ -14,6 +15,8 @@ typedef enum {
     GS_ACTIVE,
     GS_PAUSE,
     GS_ROUND_END,
+    GS_NAME_INPUT,
+    GS_LEADERBOARD,
     GS_QUIT
 } GameState;
 
@@ -38,6 +41,10 @@ typedef struct Game {
     int        pause_selected;                   /* 0 = RESUME,  1 = EXIT */
     bool       mouse_held[2];                    /* [0]=left [1]=right held state (visual feedback) */
     int        mouse_x, mouse_y;                 /* cursor position in screen coords */
+    int        match_elapsed_ms;                 /* total match time, accumulates across rounds */
+    Leaderboard leaderboard;
+    char       name_input[LEADERBOARD_NAME_LEN];
+    int        name_input_len;
 } Game;
 
 void game_init(Game *g);

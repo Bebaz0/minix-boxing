@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include "game.h"
 #include "combat.h"
+#include "leaderboard.h"
+#include "rtc.h"
 
 #define ANIM_FRAME_DURATION_MS 120
 
@@ -25,6 +27,7 @@ static void tick_anim(Player *p, int delta_ms) {
 
 void game_init(Game *g) {
     memset(g, 0, sizeof(*g));
+    leaderboard_load(&g->leaderboard, LEADERBOARD_FILE);
     menu_init(&g->menu);
     g->state              = GS_MENU;
     player_init(&g->p1);
@@ -80,7 +83,8 @@ void game_update(Game *g, int delta_ms) {
             tick_anim(&g->p1, delta_ms);
             tick_anim(&g->p2, delta_ms);
 
-            g->round_elapsed_ms += delta_ms;
+            g->round_elapsed_ms  += delta_ms;
+            g->match_elapsed_ms  += delta_ms;
 
             g->key_prompt_spawn_timer_ms += delta_ms;
             if (g->key_prompt_spawn_timer_ms >= g->key_prompt_next_spawn_ms) {
@@ -140,14 +144,23 @@ void game_update(Game *g, int delta_ms) {
                 else if (p2_dead)            g->winner = 1;
                 else                         g->winner = (g->p1.hp >= g->p2.hp) ? 1 : 2;
 
-                g->state          = GS_ROUND_END;
-                g->state_timer_ms = INTER_ROUND_MS;
+                if (g->winner != 0 &&
+                    leaderboard_is_record(&g->leaderboard, g->match_elapsed_ms)) {
+                    memset(g->name_input, 0, sizeof(g->name_input));
+                    g->name_input_len = 0;
+                    g->state = GS_NAME_INPUT;
+                } else {
+                    g->state          = GS_ROUND_END;
+                    g->state_timer_ms = INTER_ROUND_MS;
+                }
             }
             }
             break;
         }
 
         case GS_ROUND_END:
+        case GS_NAME_INPUT:
+        case GS_LEADERBOARD:
             break;
     }
 }
