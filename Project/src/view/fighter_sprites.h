@@ -4,8 +4,9 @@
 #include "sprites.h"
 #include "../assets/fighter_types.h"
 
-/* Retorna o sprite idle (cache partilhada) para o tipo e frame dados.
-   Nunca retorna um valor sem verificar NULL — sprite_create pode falhar. */
 sprite_t *fighter_get_idle_sprite(int fighter_type, int frame_index);
+sprite_t *fighter_get_special_sprite(int fighter_type, int frame_index);
+sprite_t *fighter_get_punch_sprite(int fighter_type, int frame_index);
+sprite_t *fighter_get_defense_sprite(int fighter_type, int frame_index);
 
 #endif /* FIGHTER_SPRITES_H */
