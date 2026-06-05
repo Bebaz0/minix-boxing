@@ -13,7 +13,7 @@
 #ifdef TIMER_FREQ
 #undef TIMER_FREQ
 #endif
-#define TIMER_FREQ     60      /* ticks por segundo */
+#define TIMER_FREQ     30      /* ticks por segundo */
 
 /* Jogador */
 #define PLAYER_MAX_HP       100
@@ -28,6 +28,8 @@
 #define ROUND_DURATION_MS             60000  /* 60 s safety net — match ends when someone dies */
 
 /* Pausa entre rondas (ms) */
+#define ROUND_START_MS                4000
+#define ROUND_SPLASH_MS               1000
 #define INTER_ROUND_MS                3000
 
 /* TODO: Ajustar conforme o design do jogo */

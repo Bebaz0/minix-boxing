@@ -9,16 +9,18 @@
 #define SCANCODE_DOWN       0x50
 #define SCANCODE_BREAK_MASK 0x80
 
-#define PAUSE_BTN_W      440
-#define PAUSE_BTN_H      56
-#define PAUSE_BTN_X      ((SCREEN_WIDTH - PAUSE_BTN_W) / 2)
-#define PAUSE_RESUME_Y   355
-#define PAUSE_EXIT_Y     427
+#define PAUSE_OPTION_W      440
+#define PAUSE_OPTION_H      56
+#define PAUSE_OPTION_X      ((SCREEN_WIDTH - PAUSE_OPTION_W) / 2)
+#define PAUSE_POPUP_H       401
+#define PAUSE_POPUP_Y       ((SCREEN_HEIGHT - PAUSE_POPUP_H) / 2)
+#define PAUSE_RESUME_Y      (PAUSE_POPUP_Y + 175)
+#define PAUSE_EXIT_Y        (PAUSE_POPUP_Y + 245)
 
 static int pause_option_at(int x, int y) {
-    if (x >= PAUSE_BTN_X && x < PAUSE_BTN_X + PAUSE_BTN_W) {
-        if (y >= PAUSE_RESUME_Y && y < PAUSE_RESUME_Y + PAUSE_BTN_H) return 0;
-        if (y >= PAUSE_EXIT_Y   && y < PAUSE_EXIT_Y   + PAUSE_BTN_H) return 1;
+    if (x >= PAUSE_OPTION_X && x < PAUSE_OPTION_X + PAUSE_OPTION_W) {
+        if (y >= PAUSE_RESUME_Y && y < PAUSE_RESUME_Y + PAUSE_OPTION_H) return 0;
+        if (y >= PAUSE_EXIT_Y   && y < PAUSE_EXIT_Y   + PAUSE_OPTION_H) return 1;
     }
     return -1;
 }

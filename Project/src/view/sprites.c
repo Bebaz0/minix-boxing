@@ -77,6 +77,22 @@ int sprite_draw(const sprite_t *sprite, uint16_t x, uint16_t y) {
     if (sprite == NULL || sprite->pixels == NULL)
         return 1;
 
+    return vg_draw_transparent_image(x, y, sprite->width, sprite->height,
+                                     (uint16_t *)sprite->pixels,
+                                     (uint16_t)sprite->transparent_color);
+}
+
+int sprite_draw_opaque(const sprite_t *sprite, uint16_t x, uint16_t y) {
+    if (sprite == NULL || sprite->pixels == NULL)
+        return 1;
+
+    return vg_draw_image(x, y, sprite->width, sprite->height, (uint16_t *)sprite->pixels);
+}
+
+int sprite_draw_tinted(const sprite_t *sprite, uint16_t x, uint16_t y, uint32_t tint) {
+    if (sprite == NULL || sprite->pixels == NULL)
+        return 1;
+
     uint16_t *pixels = (uint16_t *)sprite->pixels;
 
     for (uint16_t row = 0; row < sprite->height; row++) {
@@ -85,7 +101,7 @@ int sprite_draw(const sprite_t *sprite, uint16_t x, uint16_t y) {
             if (x + col >= SCREEN_WIDTH) break;
             uint32_t color = pixels[row * sprite->width + col];
             if (color == sprite->transparent_color) continue;
-            vg_draw_pixel(x + col, y + row, color);
+            vg_draw_pixel(x + col, y + row, tint);
         }
     }
 
@@ -125,10 +141,17 @@ int sprite_draw_to_size(const sprite_t *sprite, int x, int y, uint16_t dst_w, ui
         return 1;
 
     uint16_t *pixels = (uint16_t *)sprite->pixels;
+    int start_row = y < 0 ? -y : 0;
+    int start_col = x < 0 ? -x : 0;
+    int end_row = y + dst_h > SCREEN_HEIGHT ? SCREEN_HEIGHT - y : dst_h;
+    int end_col = x + dst_w > SCREEN_WIDTH ? SCREEN_WIDTH - x : dst_w;
 
-    for (uint16_t row = 0; row < dst_h; row++) {
+    if (start_row >= end_row || start_col >= end_col)
+        return 0;
+
+    for (int row = start_row; row < end_row; row++) {
         uint16_t src_row = (uint16_t)((uint32_t)row * sprite->height / dst_h);
-        for (uint16_t col = 0; col < dst_w; col++) {
+        for (int col = start_col; col < end_col; col++) {
             uint16_t src_col = (uint16_t)((uint32_t)col * sprite->width / dst_w);
             uint32_t color = pixels[src_row * sprite->width + src_col];
             if (color == sprite->transparent_color) continue;

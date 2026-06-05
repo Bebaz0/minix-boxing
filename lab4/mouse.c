@@ -6,6 +6,7 @@
 
 static int mouse_hook_id = 2;
 static uint8_t mouse_byte;
+static bool mouse_byte_ready = false;
 
 int (mouse_subscribe_interrupts)(uint8_t *bit_no) {
     if (bit_no == NULL) return 1;
@@ -28,17 +29,33 @@ int (mouse_write_cmd)(uint8_t cmd) {
     return (ack == MOUSE_ACK) ? 0 : 1; 
 }
 
+int (mouse_disable_data_reporting)(void) {
+    int ret;
+
+    if (sys_irqdisable(&mouse_hook_id) != 0)
+        return 1;
+
+    ret = mouse_write_cmd(MOUSE_DISABLE_DATA);
+
+    if (sys_irqenable(&mouse_hook_id) != 0)
+        return 1;
+
+    return ret;
+}
+
 void (mouse_ih)() {
     uint8_t status;
     if (util_sys_inb(KBC_STATUS_REG, &status) != 0) return;
 
     if (!(status & FULL_OUT_BUFFER)) return;
+    if (!(status & BIT(5))) return;
+    if (status & (BIT(6) | BIT(7))) return;
 
     uint8_t byte;
     if (util_sys_inb(KBC_OUT_CMD, &byte) != 0) return;
 
-    if (status & BIT(5))   /* auxiliary (mouse) data */
-        mouse_byte = byte;
+    mouse_byte = byte;
+    mouse_byte_ready = true;
 }
 
 void (mouse_parse_packet)(uint8_t *packet_bytes, struct packet *p) {
@@ -69,6 +86,10 @@ void (mouse_parse_packet)(uint8_t *packet_bytes, struct packet *p) {
 }
 
 uint8_t get_mouse_byte() {
+    mouse_byte_ready = false;
     return mouse_byte;
 }
 
+bool mouse_has_byte(void) {
+    return mouse_byte_ready;
+}

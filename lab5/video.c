@@ -81,21 +81,103 @@ int (vg_draw_pixel)(uint16_t x, uint16_t y, uint32_t color) {
 
     char *pixel_addr = back_buffer + pixel_i * bytes_per_pixel;
 
-    memcpy(pixel_addr, &color, bytes_per_pixel);
+    if (bytes_per_pixel == 2)
+        *((uint16_t *)pixel_addr) = (uint16_t)color;
+    else
+        memcpy(pixel_addr, &color, bytes_per_pixel);
 
     return 0;
 }
 
 int (vg_draw_hline)(uint16_t x, uint16_t y, uint16_t len, uint32_t color) {
 
-    for (uint16_t i = 0; i < len; i++) {
-        if (vg_draw_pixel(x + i, y, color) != 0)
-            return 1;
+    if (y >= vmi.YResolution || x >= vmi.XResolution)
+        return 1;
+
+    if (x + len > vmi.XResolution)
+        len = vmi.XResolution - x;
+
+    char *line = back_buffer + (y * vmi.XResolution + x) * bytes_per_pixel;
+
+    if (bytes_per_pixel == 2) {
+        uint16_t *pixels = (uint16_t *)line;
+        uint16_t c = (uint16_t)color;
+        for (uint16_t i = 0; i < len; i++)
+            pixels[i] = c;
     }
+    else {
+        for (uint16_t i = 0; i < len; i++)
+            memcpy(line + i * bytes_per_pixel, &color, bytes_per_pixel);
+    }
+
+    return 0;
+}
+
+int (vg_draw_image)(uint16_t x, uint16_t y, uint16_t width, uint16_t height, const uint16_t *pixels) {
+    if (pixels == NULL || x >= vmi.XResolution || y >= vmi.YResolution)
+        return 1;
+
+    uint16_t src_width = width;
+
+    if (x + width > vmi.XResolution)
+        width = vmi.XResolution - x;
+    if (y + height > vmi.YResolution)
+        height = vmi.YResolution - y;
+
+    if (bytes_per_pixel == 2) {
+        for (uint16_t row = 0; row < height; row++) {
+            char *dst = back_buffer + ((y + row) * vmi.XResolution + x) * bytes_per_pixel;
+            const uint16_t *src = pixels + row * src_width;
+            memcpy(dst, src, width * sizeof(uint16_t));
+        }
+    }
+    else {
+        for (uint16_t row = 0; row < height; row++) {
+            for (uint16_t col = 0; col < width; col++)
+                vg_draw_pixel(x + col, y + row, pixels[row * src_width + col]);
+        }
+    }
+
+    return 0;
+}
+
+int (vg_draw_transparent_image)(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
+                                const uint16_t *pixels, uint16_t transparent_color) {
+    if (pixels == NULL || x >= vmi.XResolution || y >= vmi.YResolution)
+        return 1;
+
+    uint16_t src_width = width;
+
+    if (x + width > vmi.XResolution)
+        width = vmi.XResolution - x;
+    if (y + height > vmi.YResolution)
+        height = vmi.YResolution - y;
+
+    if (bytes_per_pixel == 2) {
+        for (uint16_t row = 0; row < height; row++) {
+            uint16_t *dst = (uint16_t *)(back_buffer + ((y + row) * vmi.XResolution + x) * bytes_per_pixel);
+            const uint16_t *src = pixels + row * src_width;
+
+            for (uint16_t col = 0; col < width; col++) {
+                uint16_t color = src[col];
+                if (color != transparent_color)
+                    dst[col] = color;
+            }
+        }
+    }
+    else {
+        for (uint16_t row = 0; row < height; row++) {
+            for (uint16_t col = 0; col < width; col++) {
+                uint16_t color = pixels[row * src_width + col];
+                if (color != transparent_color)
+                    vg_draw_pixel(x + col, y + row, color);
+            }
+        }
+    }
+
     return 0;
 }
 
 void (vg_flip)(void) {
     memcpy(video_mem, back_buffer, vram_size);
 }
-

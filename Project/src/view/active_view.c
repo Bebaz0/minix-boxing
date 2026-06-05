@@ -7,15 +7,58 @@
 #include "fighter_sprites.h"
 #include "../assets/bubble_sprites.h"
 #include "../assets/ring_sprites.h"
+#include "../assets/game_background.xpm"
 #include "../assets/key_sprites.h"
+#include "../assets/bar_sprites.h"
 
 #define FIGHTER_INSET 100u
 #define TIMER_Y       10u
+
+/* HUD bar frame sizes */
+#define BAR_HP_W    220u
+#define BAR_HP_H     28u
+#define BAR_COMBO_W 170u
+#define BAR_COMBO_H  20u
+#define BAR_MARGIN    5u
+#define BAR_GAP       4u
+
+#define HP_FILL_X_OFF   10
+#define HP_FILL_Y_OFF    5
+#define HP_FILL_W      200
+#define HP_FILL_H       17
+#define COMBO_FILL_X_OFF 9
+#define COMBO_FILL_Y_OFF 5
+#define COMBO_FILL_W   152
+#define COMBO_FILL_H    10
+
+/* Bar colours */
+#define COLOR_HP_FILL     0xE000u
+#define COLOR_HP_EMPTY    0x2104u
+#define COLOR_COMBO_FILL  0xFEA0u
+#define COLOR_COMBO_EMPTY 0x2104u
 
 /* Centros (x) das 4 lanes, distribuídos pela metade esquerda (512px). */
 static const uint16_t key_lane_cx[KEY_LANE_COUNT] = {64u, 192u, 320u, 448u};
 
 
+
+static sprite_t *get_game_background(void) {
+    static sprite_t *background = NULL;
+
+    if (background == NULL)
+        background = sprite_create((xpm_map_t)game_background_xpm);
+
+    return background;
+}
+
+void active_view_draw_background(void) {
+    sprite_t *background = get_game_background();
+
+    if (background != NULL)
+        sprite_draw_opaque(background, 0, 0);
+    else
+        view_draw_background(0x0000u);
+}
 
 static sprite_t *get_bubble_sprite(MouseButton btn) {
     static sprite_t *bubble_left  = NULL;
@@ -57,6 +100,69 @@ static int ring_diameter(const BubbleEvent *b) {
 
     int start_d = bubble_d * RING_START_SCALE_PCT / 100;
     return bubble_d + (start_d - bubble_d) * (align_ms - b->elapsed_ms) / align_ms;
+}
+
+static sprite_t *get_bar_hp_sprite(void) {
+    static sprite_t *s = NULL;
+    if (s == NULL) s = sprite_create((xpm_map_t)bar_hp);
+    return s;
+}
+
+static sprite_t *get_bar_combo_sprite(void) {
+    static sprite_t *s = NULL;
+    if (s == NULL) s = sprite_create((xpm_map_t)bar_combo);
+    return s;
+}
+
+static void draw_hud_bars(const Game *g) {
+    sprite_t *hp_spr    = get_bar_hp_sprite();
+    sprite_t *combo_spr = get_bar_combo_sprite();
+
+    uint16_t p1_hp_x    = BAR_MARGIN;
+    uint16_t p1_combo_x = BAR_MARGIN;
+    uint16_t p2_hp_x    = SCREEN_WIDTH - BAR_HP_W    - BAR_MARGIN;
+    uint16_t p2_combo_x = SCREEN_WIDTH - BAR_COMBO_W - BAR_MARGIN;
+    uint16_t hp_y       = BAR_MARGIN;
+    uint16_t combo_y    = BAR_MARGIN + BAR_HP_H + BAR_GAP;
+
+    int p1_hp_fill = g->p1.hp * HP_FILL_W / PLAYER_MAX_HP;
+    view_draw_rect(p1_hp_x + HP_FILL_X_OFF, hp_y + HP_FILL_Y_OFF,
+                   HP_FILL_W, HP_FILL_H, COLOR_HP_EMPTY);
+    if (p1_hp_fill > 0)
+        view_draw_rect(p1_hp_x + HP_FILL_X_OFF, hp_y + HP_FILL_Y_OFF,
+                       (uint16_t)p1_hp_fill, HP_FILL_H, COLOR_HP_FILL);
+
+    int p1_combo_fill = g->p1.combo * COMBO_FILL_W / PLAYER_MAX_COMBO;
+    view_draw_rect(p1_combo_x + COMBO_FILL_X_OFF, combo_y + COMBO_FILL_Y_OFF,
+                   COMBO_FILL_W, COMBO_FILL_H, COLOR_COMBO_EMPTY);
+    if (p1_combo_fill > 0)
+        view_draw_rect(p1_combo_x + COMBO_FILL_X_OFF, combo_y + COMBO_FILL_Y_OFF,
+                       (uint16_t)p1_combo_fill, COMBO_FILL_H, COLOR_COMBO_FILL);
+
+    int p2_hp_fill = g->p2.hp * HP_FILL_W / PLAYER_MAX_HP;
+    view_draw_rect(p2_hp_x + HP_FILL_X_OFF, hp_y + HP_FILL_Y_OFF,
+                   HP_FILL_W, HP_FILL_H, COLOR_HP_EMPTY);
+    if (p2_hp_fill > 0)
+        view_draw_rect(p2_hp_x + HP_FILL_X_OFF + (HP_FILL_W - p2_hp_fill),
+                       hp_y + HP_FILL_Y_OFF,
+                       (uint16_t)p2_hp_fill, HP_FILL_H, COLOR_HP_FILL);
+
+    int p2_combo_fill = g->p2.combo * COMBO_FILL_W / PLAYER_MAX_COMBO;
+    view_draw_rect(p2_combo_x + COMBO_FILL_X_OFF, combo_y + COMBO_FILL_Y_OFF,
+                   COMBO_FILL_W, COMBO_FILL_H, COLOR_COMBO_EMPTY);
+    if (p2_combo_fill > 0)
+        view_draw_rect(p2_combo_x + COMBO_FILL_X_OFF + (COMBO_FILL_W - p2_combo_fill),
+                       combo_y + COMBO_FILL_Y_OFF,
+                       (uint16_t)p2_combo_fill, COMBO_FILL_H, COLOR_COMBO_FILL);
+
+    if (hp_spr) {
+        sprite_draw(hp_spr, p1_hp_x, hp_y);
+        sprite_draw_to_size_mirrored(hp_spr, p2_hp_x, hp_y, hp_spr->width, hp_spr->height);
+    }
+    if (combo_spr) {
+        sprite_draw(combo_spr, p1_combo_x, combo_y);
+        sprite_draw_to_size_mirrored(combo_spr, p2_combo_x, combo_y, combo_spr->width, combo_spr->height);
+    }
 }
 
 static font_t *get_hud_font(void) {
@@ -156,14 +262,13 @@ static void draw_key_prompts(const Game *g) {
 }
 
 void active_view_draw(const Game *g) {
-    uint32_t bg = (g->state == GS_ROUND_END) ? BG_COLOR_ROUND_END : BG_COLOR;
-    view_draw_background(bg);
+    active_view_draw_background();
+    draw_hud_bars(g);
 
     int ft1 = char_get_fighter_type(g->char_select.p1_char);
     int ft2 = char_get_fighter_type(g->char_select.p2_char);
     sprite_t *s1 = fighter_get_idle_sprite(ft1, g->p1.anim_frame);
     sprite_t *s2 = fighter_get_idle_sprite(ft2, g->p2.anim_frame);
-
 
     if (s1 != NULL) {
         int y = SCREEN_HEIGHT - FIGHTER_H_PX;

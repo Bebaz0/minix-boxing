@@ -9,16 +9,18 @@
 #define SCANCODE_DOWN       0x50
 #define SCANCODE_BREAK_MASK 0x80
 
-#define END_BTN_W     440
-#define END_BTN_H     56
-#define END_BTN_X     ((SCREEN_WIDTH - END_BTN_W) / 2)  /* 292 */
-#define END_RESTART_Y 355
-#define END_MENU_Y    427
+#define END_OPTION_W      440
+#define END_OPTION_H      56
+#define END_OPTION_X      ((SCREEN_WIDTH - END_OPTION_W) / 2)
+#define END_POPUP_H       401
+#define END_POPUP_Y       ((SCREEN_HEIGHT - END_POPUP_H) / 2)
+#define END_RESTART_Y     (END_POPUP_Y + 175)
+#define END_MENU_Y        (END_POPUP_Y + 245)
 
 static int end_option_at(int x, int y) {
-    if (x >= END_BTN_X && x < END_BTN_X + END_BTN_W) {
-        if (y >= END_RESTART_Y && y < END_RESTART_Y + END_BTN_H) return 0;
-        if (y >= END_MENU_Y    && y < END_MENU_Y    + END_BTN_H) return 1;
+    if (x >= END_OPTION_X && x < END_OPTION_X + END_OPTION_W) {
+        if (y >= END_RESTART_Y && y < END_RESTART_Y + END_OPTION_H) return 0;
+        if (y >= END_MENU_Y    && y < END_MENU_Y    + END_OPTION_H) return 1;
     }
     return -1;
 }

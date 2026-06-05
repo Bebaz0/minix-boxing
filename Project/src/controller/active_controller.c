@@ -15,19 +15,11 @@ static char active_scancode_to_key(uint8_t code) {
     }
 }
 
-static const uint8_t wasd_make[4]  = {0x11, 0x1E, 0x1F, 0x20};
-static const uint8_t wasd_break[4] = {0x91, 0x9E, 0x9F, 0xA0};
-
 void active_ctrl_handle_keyboard(Controller *ctrl, Game *g) {
     (void)ctrl;
     char key = active_scancode_to_key(scancode);
     if (key != '\0')
         game_handle_key(g, key);
-
-    for (int i = 0; i < 4; i++) {
-        if (scancode == wasd_make[i])  g->wasd_held[i] = true;
-        if (scancode == wasd_break[i]) g->wasd_held[i] = false;
-    }
 }
 
 void active_ctrl_handle_mouse(Controller *ctrl, Game *g, bool left_clicked, bool right_clicked) {

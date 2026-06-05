@@ -33,6 +33,7 @@ void game_init(Game *g) {
     g->response_window_ms = INITIAL_RESPONSE_WINDOW_MS;
     g->round_duration_ms  = ROUND_DURATION_MS;
     g->round_number       = 1;
+    g->state_timer_ms     = ROUND_START_MS;
     g->state_timer_ms     = INTER_ROUND_MS;
     g->key_prompt_next_spawn_ms = rand_range(KEY_PROMPT_SPAWN_MIN_MS, KEY_PROMPT_SPAWN_MAX_MS);
     g->bubble_next_spawn_ms     = rand_range(BUBBLE_SPAWN_MIN_MS, BUBBLE_SPAWN_MAX_MS);
@@ -51,7 +52,7 @@ void game_reset_round(Game *g) {
     g->round_number++;
     g->round_end_selected        = 0;
     g->state                     = GS_ROUND_START;
-    g->state_timer_ms            = INTER_ROUND_MS;
+    g->state_timer_ms            = ROUND_START_MS;
 }
 
 void game_update(Game *g, int delta_ms) {
@@ -109,9 +110,9 @@ void game_update(Game *g, int delta_ms) {
                     rand_range(BUBBLE_SPAWN_MIN_MS, BUBBLE_SPAWN_MAX_MS);
                 for (int i = 0; i < MAX_BUBBLES; i++) {
                     if (!g->bubbles[i].active) {
-                        int x = rand_range(SCREEN_WIDTH / 2 + BUBBLE_RADIUS,
-                                           SCREEN_WIDTH - BUBBLE_RADIUS);
-                        int y = rand_range(BUBBLE_RADIUS, SCREEN_HEIGHT - BUBBLE_RADIUS);
+                        int x = rand_range(SCREEN_WIDTH / 2 + BUBBLE_RADIUS + 20, //+20 para não ficar muito perto do meio
+                                            SCREEN_WIDTH - BUBBLE_RADIUS);
+                        int y = rand_range(BUBBLE_RADIUS + 70, SCREEN_HEIGHT - BUBBLE_RADIUS - 50); //-20 para não ficar muito perto do chão
                         MouseButton btn = rand_range(0, 1) == 0 ? MOUSE_BUTTON_LEFT
                                                                : MOUSE_BUTTON_RIGHT;
                         bubble_spawn(&g->bubbles[i], x, y, BUBBLE_RADIUS, btn,
