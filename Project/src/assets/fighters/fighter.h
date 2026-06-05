@@ -6,16 +6,14 @@
 
 /* ── Default ────────────────────────────────────────────────────── */
 
-#include "default/fighter_idle0.xpm"
-#include "default/fighter_idle1.xpm"
-#include "default/fighter_idle2.xpm"
-#include "default/fighter_idle3.xpm"
+#include "default/fighter_idle00.xpm"
+#include "default/fighter_idle11.xpm"
+#include "default/fighter_idle22.xpm"
 
-static const char * const *default_idle_frames[4] = {
+static const char * const *default_idle_frames[3] = {
     (const char * const *)fighter_idle0,
     (const char * const *)fighter_idle1,
     (const char * const *)fighter_idle2,
-    (const char * const *)fighter_idle3,
 };
 
 /* ── Goku ───────────────────────────────────────────────────────── */
