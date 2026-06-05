@@ -18,6 +18,7 @@ static sprite_t *get_leaderboard_background_sprite(void) {
 #define TEXT_YELLOW 0xFFE0u
 #define TEXT_CYAN   0x07FFu
 #define TEXT_GRAY   0xC618u
+#define TEXT_RED    0xF800u
 
 /* Column x positions */
 #define COL_RANK    60
@@ -29,7 +30,7 @@ static sprite_t *get_leaderboard_background_sprite(void) {
 #define ROW_HEADER_Y 160
 #define ROW_START_Y  220
 #define ROW_STEP     46
-#define BACK_HINT_Y  650
+#define BACK_HINT_Y  700
 
 static font_t *get_table_font(void) {
     static font_t *font = NULL;
@@ -95,6 +96,6 @@ void leaderboard_view_draw(const Game *g) {
         font_draw_string_color(table_font, hint,
                                (SCREEN_WIDTH - hint_w) / 2,
                                BACK_HINT_Y,
-                               TEXT_GRAY);
+                               TEXT_RED);
     }
 }

@@ -13,6 +13,7 @@
 
 #define TIMER_Y       10u
 #define FIGHTER_GAP   24
+#define FIGHTER_Y_OFFSET 40
 
 /* HUD bar frame sizes */
 #define BAR_HP_W    220u
@@ -276,8 +277,8 @@ void active_view_draw(const Game *g) {
     int fighters_total_w = w1 + FIGHTER_GAP + w2;
     int p1_x = (SCREEN_WIDTH - fighters_total_w) / 2;
     int p2_x = p1_x + w1 + FIGHTER_GAP;
-    int p1_y = (SCREEN_HEIGHT - h1) / 2;
-    int p2_y = (SCREEN_HEIGHT - h2) / 2;
+    int p1_y = (SCREEN_HEIGHT - h1) / 2 + FIGHTER_Y_OFFSET;
+    int p2_y = (SCREEN_HEIGHT - h2) / 2 + FIGHTER_Y_OFFSET;
 
     if (s1 != NULL)
         sprite_draw_to_size(s1, p1_x, p1_y, w1, h1);
