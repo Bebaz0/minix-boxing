@@ -6,6 +6,7 @@ SRCS = main.c \
        game.c \
        menu.c \
        char_select.c \
+       animation.c \
        player.c \
        key_prompt.c \
        bubble.c \
