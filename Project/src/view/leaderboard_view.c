@@ -30,7 +30,7 @@ static sprite_t *get_leaderboard_background_sprite(void) {
 #define ROW_HEADER_Y 160
 #define ROW_START_Y  220
 #define ROW_STEP     46
-#define BACK_HINT_Y  700
+#define BACK_HINT_Y  650
 
 static font_t *get_table_font(void) {
     static font_t *font = NULL;
@@ -64,7 +64,11 @@ void leaderboard_view_draw(const Game *g) {
                                (SCREEN_WIDTH - ew) / 2, ROW_START_Y, TEXT_GRAY);
     } else {
         char buf[32];
-        for (int i = 0; i < g->leaderboard.count; i++) {
+        int count = g->leaderboard.count;
+        if (count > LEADERBOARD_MAX_ENTRIES)
+            count = LEADERBOARD_MAX_ENTRIES;
+
+        for (int i = 0; i < count; i++) {
             const LeaderboardEntry *e = &g->leaderboard.entries[i];
             uint16_t row_y = (uint16_t)(ROW_START_Y + i * ROW_STEP);
 

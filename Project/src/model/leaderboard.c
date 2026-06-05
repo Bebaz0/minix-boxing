@@ -43,5 +43,12 @@ int leaderboard_load(Leaderboard *lb, const char *path) {
         return 0;
     fread(lb, sizeof(*lb), 1, f);
     fclose(f);
+
+    if (lb->count < 0)
+        lb->count = 0;
+    if (lb->count > LEADERBOARD_MAX_ENTRIES)
+        lb->count = LEADERBOARD_MAX_ENTRIES;
+    for (int i = 0; i < lb->count; i++)
+        lb->entries[i].name[LEADERBOARD_NAME_LEN - 1] = '\0';
     return 0;
 }
