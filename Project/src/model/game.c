@@ -11,6 +11,23 @@
 /* Inteiro aleatório em [lo, hi] usando os bits ALTOS do rand().
    Os bits baixos do rand() desta libc são fracos (ver comentário no spawn das
    bubbles), por isso rand() % n ficava enviesado — daí a divisão. */
+static int key_tooltip_cx(char key) {
+    static const int cx[4] = {KEY_LANE_CX_0, KEY_LANE_CX_1,
+                               KEY_LANE_CX_2, KEY_LANE_CX_3};
+    const char *keys = KEY_PROMPT_KEYS;
+    int i;
+    for (i = 0; i < KEY_LANE_COUNT; i++)
+        if (keys[i] == key) return cx[i];
+    return SCREEN_WIDTH / 2;
+}
+
+static void set_tooltip(Player *p, int type, int x, int y) {
+    p->tooltip_type     = type;
+    p->tooltip_timer_ms = TOOLTIP_DURATION_MS;
+    p->tooltip_x        = x;
+    p->tooltip_y        = y;
+}
+
 static int rand_range(int lo, int hi) {
     if (hi <= lo)
         return lo;
@@ -118,6 +135,9 @@ void game_update(Game *g, int delta_ms) {
             tick_anim(&g->p1, char_get_fighter_type(g->char_select.p1_char), delta_ms);
             tick_anim(&g->p2, char_get_fighter_type(g->char_select.p2_char), delta_ms);
 
+            if (g->p1.tooltip_timer_ms > 0) g->p1.tooltip_timer_ms -= delta_ms;
+            if (g->p2.tooltip_timer_ms > 0) g->p2.tooltip_timer_ms -= delta_ms;
+
             g->round_elapsed_ms  += delta_ms;
             g->match_elapsed_ms  += delta_ms;
 
@@ -157,15 +177,23 @@ void game_update(Game *g, int delta_ms) {
             for (int i = 0; i < MAX_KEY_PROMPTS; i++) {
                 if (!g->key_prompts[i].active) continue;
                 key_prompt_tick(&g->key_prompts[i], delta_ms);
-                if (key_prompt_failed(&g->key_prompts[i]))
+                if (key_prompt_failed(&g->key_prompts[i])) {
                     combat_resolve(&g->p1, &g->p2, false, false);
+                    set_tooltip(&g->p1, TOOLTIP_TYPE_MISS,
+                                key_tooltip_cx(g->key_prompts[i].key),
+                                KEY_HIT_ZONE_Y - KEY_TOOLTIP_Y_OFFSET);
+                }
             }
 
             for (int i = 0; i < MAX_BUBBLES; i++) {
                 if (!g->bubbles[i].active) continue;
                 bubble_tick(&g->bubbles[i], delta_ms);
-                if (bubble_failed(&g->bubbles[i]))
+                if (bubble_failed(&g->bubbles[i])) {
                     combat_resolve(&g->p2, &g->p1, false, false);
+                    set_tooltip(&g->p2, TOOLTIP_TYPE_MISS,
+                                g->bubbles[i].x,
+                                g->bubbles[i].y - g->bubbles[i].radius - 20);
+                }
             }
 
             {
@@ -211,6 +239,14 @@ void game_handle_key(Game *g, char key) {
         const KeyPrompt *kp = &g->key_prompts[best];
         bool landed = kp->hit || kp->perfect;
         combat_resolve(&g->p1, &g->p2, landed, kp->perfect);
+        {
+            int tt = !landed ? TOOLTIP_TYPE_MISS
+                   : kp->perfect ? TOOLTIP_TYPE_PERFECT
+                   : TOOLTIP_TYPE_HIT;
+            set_tooltip(&g->p1, tt,
+                        key_tooltip_cx(kp->key),
+                        KEY_HIT_ZONE_Y - KEY_TOOLTIP_Y_OFFSET);
+        }
     }
 }
 
@@ -218,7 +254,11 @@ void game_handle_click(Game *g, int mx, int my, MouseButton button) {
     for (int i = 0; i < MAX_BUBBLES; i++) {
         if (!g->bubbles[i].active) continue;
         if (bubble_on_click(&g->bubbles[i], mx, my, button)) {
+            int tt = g->bubbles[i].perfect ? TOOLTIP_TYPE_PERFECT : TOOLTIP_TYPE_HIT;
             combat_resolve(&g->p2, &g->p1, true, g->bubbles[i].perfect);
+            set_tooltip(&g->p2, tt,
+                        g->bubbles[i].x,
+                        g->bubbles[i].y - g->bubbles[i].radius - 20);
             return;
         }
     }

@@ -94,4 +94,18 @@
 #define RING_START_SCALE_PCT    240  /* arranca a 2.4× o diâmetro da bubble */
 #define RING_PERFECT_WINDOW_PCT  35  /* últimos 35% da janela: ring alinhado = perfect */
 
+/* Tooltip feedback */
+#define TOOLTIP_DURATION_MS     800
+#define KEY_TOOLTIP_Y_OFFSET     80  /* px above KEY_HIT_ZONE_Y */
+#define TOOLTIP_TYPE_NONE     0
+#define TOOLTIP_TYPE_HIT      1
+#define TOOLTIP_TYPE_PERFECT  2
+#define TOOLTIP_TYPE_MISS     3
+
+/* Key lane center X — shared between game.c (tooltip anchor) and active_view.c */
+#define KEY_LANE_CX_0   64u
+#define KEY_LANE_CX_1  192u
+#define KEY_LANE_CX_2  320u
+#define KEY_LANE_CX_3  448u
+
 #endif /* CONFIG_H */
