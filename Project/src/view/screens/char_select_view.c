@@ -144,6 +144,7 @@ void char_select_view_draw(const Game *g) {
 
     int ft1 = char_get_fighter_type(cs->p1_char);
     int ft2 = char_get_fighter_type(cs->p2_char);
+
     draw_fighter_preview(0, CS_P1_CENTER_X, ft1, g->p1.anim_frame, false);
     draw_fighter_preview(CS_PANEL_W, CS_P2_CENTER_X, ft2, g->p2.anim_frame, true);
 
