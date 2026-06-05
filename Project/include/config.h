@@ -65,7 +65,7 @@
 #define CS_BTN_Y    660u
 
 /* Animação */
-#define FIGHTER_IDLE_FRAME_COUNT  5   
+#define FIGHTER_IDLE_FRAME_COUNT  7
 
 /* Teclas do Jogador 1 */
 #define KEY_PROMPT_KEYS "QWER"

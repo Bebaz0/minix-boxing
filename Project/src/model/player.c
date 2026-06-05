@@ -19,7 +19,6 @@ void player_take_damage(Player *p, int dmg) {
     p->hp -= dmg;
     if (p->hp < 0)
         p->hp = 0;
-    p->anim = ANIM_HIT;
 }
 
 void player_add_combo(Player *p, int pts) {

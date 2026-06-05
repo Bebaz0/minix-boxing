@@ -6,8 +6,9 @@
 
 typedef enum {
     ANIM_IDLE,
-    ANIM_ATTACK,
-    ANIM_HIT,
+    ANIM_SPECIAL,
+    ANIM_PUNCH,
+    ANIM_DEFENSE,
     ANIM_WIN,
     ANIM_LOSE
 } AnimState;
