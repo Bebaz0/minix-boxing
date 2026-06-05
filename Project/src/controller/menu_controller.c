@@ -1,9 +1,11 @@
 #include "menu_controller.h"
 #include "kbc.h"
+#include "char_select.h"
 
 static void menu_apply_selected(Game *g) {
     switch (g->menu.selected) {
         case MENU_OPTION_START:
+            char_select_init(&g->char_select);
             g->state = GS_CHAR_SELECT;
             g->state_timer_ms = 0;
             break;

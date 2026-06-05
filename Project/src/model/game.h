@@ -28,7 +28,9 @@ typedef struct Game {
     KeyPrompt  key_prompts[MAX_KEY_PROMPTS];     /* timing events do P1 */
     BubbleEvent bubbles[MAX_BUBBLES];            /* timing events do P2 */
     int        key_prompt_spawn_timer_ms;
+    int        key_prompt_next_spawn_ms;        /* limiar aleatório para o próximo spawn */
     int        bubble_spawn_timer_ms;
+    int        bubble_next_spawn_ms;            /* limiar aleatório para o próximo spawn */
     int        response_window_ms;               /* diminui por ronda   */
     int        round_elapsed_ms;
     int        round_duration_ms;

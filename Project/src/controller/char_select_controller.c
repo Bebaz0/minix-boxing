@@ -18,17 +18,7 @@
               char_select_p1_next(&g->char_select);
               g->char_select.p1_ready = false;
               break;
-          case SCANCODE_UP:
-          case SCANCODE_W:
-              char_select_p1_up(&g->char_select);
-              g->char_select.p1_ready = false;
-              break;
-          case SCANCODE_DOWN:
-          case SCANCODE_S:
-              char_select_p1_down(&g->char_select);
-              g->char_select.p1_ready = false;
-              break;
-          case SCANCODE_ENTER:
+case SCANCODE_ENTER:
               g->char_select.p1_ready = !g->char_select.p1_ready;
               break;
           case SCANCODE_ESC:
@@ -49,18 +39,15 @@
         int mx = ctrl->mouse_x;
         int my = ctrl->mouse_y;
 
-        /* P2 panel is the right half */
         if (mx < SCREEN_WIDTH / 2)
             return;
 
-        /* Layout */
         int panel_left = SCREEN_WIDTH / 2;
         int panel_w    = SCREEN_WIDTH / 2;
         int center_x   = 3 * SCREEN_WIDTH / 4;
         int total_w    = CHAR_SELECT_COLS * CS_BOX_SIZE + (CHAR_SELECT_COLS - 1) * CS_BOX_GAP;
         int row_x      = panel_left + (panel_w - total_w) / 2;
 
-        /* Character boxes */
         for (int i = 0; i < CHAR_COUNT; i++) {
             int col = i % CHAR_SELECT_COLS;
             int row = i / CHAR_SELECT_COLS;
@@ -74,7 +61,6 @@
             }
         }
 
-        /* READY button */
         int bx = center_x - (int)CS_BTN_W / 2;
 
         if (mx >= bx && mx < bx + (int)CS_BTN_W && my >= (int)CS_BTN_Y && my < (int)CS_BTN_Y + (int)CS_BTN_H)

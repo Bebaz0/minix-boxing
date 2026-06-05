@@ -2,11 +2,11 @@
 static char *bubble_R[] = {
 /* columns rows colors chars-per-pixel */
 "80 80 5 1 ",
-"  c #6E3410",
+"  c None",
 ". c #E57E23",
-"X c green",
+"X c None",
 "o c #F3BD7A",
-"O c white",
+"O c #FFFFFF",
 /* pixels */
 "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
 "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",

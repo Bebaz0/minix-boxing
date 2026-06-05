@@ -14,8 +14,6 @@
  void (char_select_init)(CharSelect *cs);
  void (char_select_p1_prev)(CharSelect *cs);
  void (char_select_p1_next)(CharSelect *cs);
- void (char_select_p1_up)(CharSelect *cs);
- void (char_select_p1_down)(CharSelect *cs);
  void (char_select_p2_set_char)(CharSelect *cs, int idx);
  bool (char_select_both_ready)(const CharSelect *cs);
 
