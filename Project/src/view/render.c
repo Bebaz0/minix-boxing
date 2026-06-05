@@ -31,14 +31,18 @@ static void draw_cursor(const Game *g) {
 static void render_menu_frame(const Game *g, bool force_full_redraw) {
     static bool menu_frame_valid = false;
     static MenuOption previous_selected = MENU_OPTION_COUNT;
+    static bool previous_hint_visible = true;
     static int previous_mouse_x = 0;
     static int previous_mouse_y = 0;
+    bool hint_visible = menu_view_hint_visible(g);
 
     sprite_t *cursor = get_cursor_sprite();
     uint16_t cursor_w = cursor != NULL ? cursor->width : 12;
     uint16_t cursor_h = cursor != NULL ? cursor->height : 16;
 
-    if (force_full_redraw || !menu_frame_valid || previous_selected != g->menu.selected) {
+    if (force_full_redraw || !menu_frame_valid ||
+        previous_selected != g->menu.selected ||
+        previous_hint_visible != hint_visible) {
         menu_view_draw(g);
     } else {
         menu_view_restore_region(g, previous_mouse_x, previous_mouse_y, cursor_w, cursor_h);
@@ -48,6 +52,7 @@ static void render_menu_frame(const Game *g, bool force_full_redraw) {
     previous_mouse_x = g->mouse_x;
     previous_mouse_y = g->mouse_y;
     previous_selected = g->menu.selected;
+    previous_hint_visible = hint_visible;
     menu_frame_valid = true;
 }
 

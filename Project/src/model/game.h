@@ -38,6 +38,7 @@ typedef struct Game {
     int        round_elapsed_ms;
     int        round_duration_ms;
     int        state_timer_ms;                   /* conta ROUND_START / ROUND_END */
+    int        menu_blink_timer_ms;              /* anima texto arcade no menu */
     int        round_number;                     /* começa em 1         */
     int        winner;                           /* 1, 2, ou 0 em empate */
     int        round_end_selected;               /* 0 = RESTART, 1 = MENU */
