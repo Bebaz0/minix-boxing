@@ -4,12 +4,12 @@
 #include "view_utils.h"
 #include "sprites.h"
 #include "active_view.h"
-#include "../assets/round_1.xpm"
-#include "../assets/round_2.xpm"
-#include "../assets/round_3.xpm"
-#include "../assets/round_4.xpm"
-#include "../assets/round_5.xpm"
-#include "../assets/round_6.xpm"
+#include "../assets/rounds/round_1.xpm"
+#include "../assets/rounds/round_2.xpm"
+#include "../assets/rounds/round_3.xpm"
+#include "../assets/rounds/round_4.xpm"
+#include "../assets/rounds/round_5.xpm"
+#include "../assets/rounds/round_6.xpm"
 
 #define ROUND_SPLASH_SCALE 2
 

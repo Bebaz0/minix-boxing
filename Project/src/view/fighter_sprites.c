@@ -1,5 +1,5 @@
 #include "fighter_sprites.h"
-#include "../assets/fighter.h"
+#include "../assets/fighters/fighter.h"
 
 #define FIGHTER_MAX_SPECIAL_FRAMES 9
 #define FIGHTER_MAX_PUNCH_FRAMES   4

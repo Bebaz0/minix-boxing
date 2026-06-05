@@ -6,11 +6,11 @@
 #include "view_utils.h"
 #include "fighter_sprites.h"
 #include "../model/player.h"
-#include "../assets/bubble_sprites.h"
-#include "../assets/ring_sprites.h"
-#include "../assets/game_background.xpm"
-#include "../assets/key_sprites.h"
-#include "../assets/bar_sprites.h"
+#include "../assets/input/bubble_sprites.h"
+#include "../assets/input/ring_sprites.h"
+#include "../assets/backgrounds/game_background.xpm"
+#include "../assets/input/key_sprites.h"
+#include "../assets/hud/bar_sprites.h"
 
 #define TIMER_Y       10u
 #define FIGHTER_GAP   24

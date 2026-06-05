@@ -1,5 +1,5 @@
 #include "animation.h"
-#include "../assets/fighter_types.h"
+#include "../assets/fighters/fighter_types.h"
 
 #define ANIM_FRAME_DURATION_MS 140
 
