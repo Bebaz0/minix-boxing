@@ -78,8 +78,8 @@
      - dentro de HIT_WINDOW_PCT do alvo      -> hit normal (seguro, sem combo)
      - fora disso (cedo demais OU já passou)  -> MISS (carregaste, mas falhaste)
 */
-#define KEY_PERFECT_WINDOW_PCT  5
-#define KEY_HIT_WINDOW_PCT      35
+#define KEY_PERFECT_WINDOW_PCT  3
+#define KEY_HIT_WINDOW_PCT      26
 /* Após o alvo, o tile continua a cair por +EXTRA% da janela antes de desaparecer
    (quase a sair do ecrã).*/
 #define KEY_DESPAWN_EXTRA_PCT   40
