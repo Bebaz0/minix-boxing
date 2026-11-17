@@ -5,10 +5,10 @@ PROG=lab4
 SRCS = lab4.c
 
 # "-Wall -Wextra -Werror -I . -std=c11 -Wno-unused-parameter" are already set
-CFLAGS += -pedantic -I../lab2
+CFLAGS += -pedantic -I../timer
 
 # list of library dependencies
-TIMER_LIB = ../lab2/libtimer.a
+TIMER_LIB = ../timer/libtimer.a
 DPADD += ${LIBLCF} ${LIB_NAME} ${TIMER_LIB}
 LDADD += -llcf -L. -lmouse ${TIMER_LIB}
 
@@ -22,7 +22,7 @@ lib: ${LIB_OBJS}
 	ar rcs ${LIB_NAME} ${LIB_OBJS}
 
 ${TIMER_LIB}:
-	${MAKE} -C ../lab2 lib
+	${MAKE} -C ../timer lib
 
 # include LCOM's makefile that does all the "heavy lifting"
 .include <minix.lcom.mk>

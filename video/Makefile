@@ -5,15 +5,15 @@ PROG=lab5
 SRCS = lab5.c
 
 # additional compilation flags
-CFLAGS += -pedantic -I../lab2 -I../lab3
+CFLAGS += -pedantic -I../timer -I../keyboard
 
 # path to external libraries
-TIMER_LIB = ../lab2/libtimer.a
-KBD_LIB = ../lab3/libkbd.a
+TIMER_LIB = ../timer/libtimer.a
+KBD_LIB = ../keyboard/libkbd.a
 
 # list of library dependencies
 DPADD += ${LIBLCF} ${TIMER_LIB} ${KBD_LIB} ${LIB_NAME}
-LDADD += -llcf -L../lab2 -ltimer -L../lab3 -lkbd -L. -lvideo
+LDADD += -llcf -L../timer -ltimer -L../keyboard -lkbd -L. -lvideo
 
 LIB_NAME = libvideo.a
 LIB_SRCS = video.c
@@ -26,10 +26,10 @@ lib: ${LIB_OBJS}
 
 # Build external libraries when needed
 ${TIMER_LIB}:
-	${MAKE} -C ../lab2 lib
+	${MAKE} -C ../timer lib
 
 ${KBD_LIB}:
-	${MAKE} -C ../lab3 lib
+	${MAKE} -C ../keyboard lib
 
 # include LCOM's makefile that does all the "heavy lifting"
 .include <minix.lcom.mk>

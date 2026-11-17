@@ -5,11 +5,11 @@ PROG=lab3
 SRCS = lab3.c
 
 # additional compilation flags
-CFLAGS += -pedantic -DLAB3 -I../lab2
+CFLAGS += -pedantic -DLAB3 -I../timer
 
 # list of library dependencies
-DPADD += ${LIB_NAME} ../lab2/libtimer.a ${LIBLCF}
-LDADD += -L. -lkbd -L../lab2 -ltimer -llcf
+DPADD += ${LIB_NAME} ../timer/libtimer.a ${LIBLCF}
+LDADD += -L. -lkbd -L../timer -ltimer -llcf
 
 LIB_NAME = libkbd.a
 LIB_SRCS = kbc.c utils.c
@@ -21,6 +21,6 @@ lib: ${LIB_OBJS}
 	ar rcs ${LIB_NAME} ${LIB_OBJS}
 
 ${TIMER_LIB}:
-	${MAKE} -C ../lab2 lib
+	${MAKE} -C ../timer lib
 
 .include <minix.lcom.mk>

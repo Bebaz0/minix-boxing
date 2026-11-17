@@ -34,30 +34,30 @@ SRCS = main.c \
        fighter_sprites.c \
        instructions_view.c
 
-CFLAGS += -pedantic -Isrc -Isrc/model -Isrc/view/core -Isrc/view/screens -Isrc/view/fighters -Isrc/controller -Iinclude -I../lab2 -I../lab3 -I../lab4 -I../lab5 -I../lab1
+CFLAGS += -pedantic -Isrc -Isrc/model -Isrc/view/core -Isrc/view/screens -Isrc/view/fighters -Isrc/controller -Iinclude -I../timer -I../keyboard -I../mouse -I../video -I../rtc
 
-VIDEO_LIB = ../lab5/libvideo.a
-MOUSE_LIB = ../lab4/libmouse.a
-KBD_LIB   = ../lab3/libkbd.a
-TIMER_LIB = ../lab2/libtimer.a
-RTC_LIB   = ../lab1/librtc.a
+VIDEO_LIB = ../video/libvideo.a
+MOUSE_LIB = ../mouse/libmouse.a
+KBD_LIB   = ../keyboard/libkbd.a
+TIMER_LIB = ../timer/libtimer.a
+RTC_LIB   = ../rtc/librtc.a
 
 DPADD += ${LIBLCF} ${VIDEO_LIB} ${MOUSE_LIB} ${KBD_LIB} ${TIMER_LIB} ${RTC_LIB}
-LDADD += -llcf -L../lab5 -lvideo -L../lab4 -lmouse -L../lab3 -lkbd ../lab2/timer.o -L../lab1 -lrtc
+LDADD += -llcf -L../video -lvideo -L../mouse -lmouse -L../keyboard -lkbd ../timer/timer.o -L../rtc -lrtc
 
 ${VIDEO_LIB}:
-	${MAKE} -C ../lab5 lib
+	${MAKE} -C ../video lib
 
-${MOUSE_LIB}: ../lab4/mouse.c ../lab4/kbc.c ../lab4/utils.c ../lab4/mouse.h ../lab4/kbc.h ../lab4/i8042.h
-	${MAKE} -C ../lab4 lib
+${MOUSE_LIB}: ../mouse/mouse.c ../mouse/kbc.c ../mouse/utils.c ../mouse/mouse.h ../mouse/kbc.h ../mouse/i8042.h
+	${MAKE} -C ../mouse lib
 
 ${KBD_LIB}:
-	${MAKE} -C ../lab3 lib
+	${MAKE} -C ../keyboard lib
 
 ${TIMER_LIB}:
-	${MAKE} -C ../lab2 lib
+	${MAKE} -C ../timer lib
 
 ${RTC_LIB}:
-	${MAKE} -C ../lab1 lib
+	${MAKE} -C ../rtc lib
 
 .include <minix.lcom.mk>
